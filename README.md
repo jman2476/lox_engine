@@ -2,38 +2,38 @@
 Lox engine is a rudimentary chess engine and game platform where you can play against Lox, a basic chess engine, or against your friends in timed or untimed games.
 
 ## Brainstorming:
-- Write board representation
-    - Should just show the board in the terminal for now
-    - Input chess notation to CLI to move pieces, no logic for now
-- Write FEN or PGN parser
-- Build classes for pieces
-    - Write movement per piece
-    - Write special moves:
-        - en-passent
-        - castling
-        - promotion
-- Write game state reader:
-    - Before move is committed:
-        - Check if move is valid
-            - Can this piece make this move?
-            - Will this move result in putting self in check?
-            - Are you trying to capture your own piece?
-        - If not valid, revert
-    - After move is committed:
-        - Check for promotion
-        - Check for check
-        - Check for stalemate
-        - Check for checkmate
-- Lox:
-    - Write board-to-evaluation reader
-    - Write search algorithm:
-        - Look at first 20 moves found:
-            - Best 5 get recursively searched to depth of 5 layers
-            - Build map of positions to navigate
-        - Make what move has the best outcome at layer 5
-        - After opponent moves, see if this is still within searched positions
-            - If it is, do recursive search to build out possibility library
-            - If it isn't, delete incompatible positions, and do recursive search
+- [ ] Write board representation
+    - [ ] Should just show the board in the terminal for now
+    - [ ] Input chess notation to CLI to move pieces, no logic for now
+- [ ] Write FEN or PGN parser
+- [ ] Build classes for pieces
+    - [ ] Write movement per piece
+    - [ ] Write special moves:
+        - [ ] en-passent
+        - [ ] castling
+        - [ ] promotion
+- [ ] Write game state reader:
+    - [ ] Before move is committed:
+        - [ ] Check if move is valid
+            - [ ] Can this piece make this move?
+            - [ ] Will this move result in putting self in check?
+            - [ ] Are you trying to capture your own piece?
+        - [ ] If not valid, revert
+    - [ ] After move is committed:
+        - [ ] Check for promotion
+        - [ ] Check for check
+        - [ ] Check for stalemate
+        - [ ] Check for checkmate
+- [ ] Lox:
+    - [ ] Write board-to-evaluation reader
+    - [ ] Write search algorithm:
+        - [ ] Look at first 20 moves found:
+            - [ ] Best 5 get recursively searched to depth of 5 layers
+            - [ ] Build map of positions to navigate
+        - [ ] Make what move has the best outcome at layer 5
+        - [ ] After opponent moves, see if this is still within searched positions
+            - [ ] If it is, do recursive search to build out possibility library
+            - [ ] If it isn't, delete incompatible positions, and do recursive search
 
                 
 
