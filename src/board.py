@@ -1,4 +1,5 @@
 from .piece import Piece, Pawn, King, Queen, Bishop, Knight, Rook
+from .functions.parse import parse_square
 
 class Board():
     def __init__(self):
@@ -68,6 +69,14 @@ class Board():
         if file == 'e':
             return King
         raise ValueError('set_back_rank: File value given is out of range')
+    
+    # Takes a pre-parsed square rank and file
+    def check_square_filled(self, file, rank):
+        piece = self.board[file][rank]
+        if piece is None:
+            return False, None
+        else:
+            return True, piece.side
     
     def parse_move_notation(self, string):
         pass
