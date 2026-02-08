@@ -3,9 +3,13 @@ Lox engine is a rudimentary chess engine and game platform where you can play ag
 
 ## Brainstorming:
 - [ ] Write board representation
-    - [ ] Should just show the board in the terminal for now
+    - [X] Should just show the board in the terminal for now
     - [ ] Input chess notation to CLI to move pieces, no logic for now
 - [ ] Write FEN or PGN parser
+    - [ ] board to FEN
+    - [ ] FEN to board setup
+    - [ ] export game as PGN
+    - [ ] import PGN as game
 - [ ] Build classes for pieces
     - [ ] Write movement per piece
     - [ ] Write special moves:

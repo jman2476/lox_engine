@@ -17,27 +17,34 @@ class Board():
         self.frame = (self.ranks, self.files)
         
 
-    def __repr__(self):
-        dark = True
-        files = '   '
+    def __repr__(self, flip = False):
+        dark = False
+        files = ' '
         board = ''
+        rank_array = [i for i in range(7,-1,-1)]
+        
         # Print files:
         for f in self.files:
-            files += f' {f} '
+            files += f' {f}'
         board += files + '\n'
 
+        if flip:
+            rank_array.reverse()
         # Print ranks:
-        for r in self.ranks:
-            rank = f'{r+1} —'
+        for r in rank_array:
+            rank = f'{r+1}'
             for key, file in self.board.items():
                 piece = file[r]
                 if piece is None: 
-                    piece = '\u25A0' if dark else '\u25A1'
-                else:
+                    piece = '\u25A0' if dark else '\u2610'
+                else: 
                     piece = piece.icon
                 dark = not dark if key != 'h' else dark
-                rank += f' {piece} '
+                rank += f' {piece}'
+            rank += f' {r+1}'
             board += rank + '\n'
+        
+        board += files + '\n'
 
         return board
 
@@ -61,3 +68,9 @@ class Board():
         if file == 'e':
             return King
         raise ValueError('set_back_rank: File value given is out of range')
+    
+    def parse_move_notation(self, string):
+        pass
+
+    def parse_game_notation(self, string):
+        pass

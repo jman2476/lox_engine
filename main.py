@@ -1,10 +1,11 @@
 from src.board import Board
+from src.game import Game
 
 def main():
-    print("Hello from lox-engine!")
-    board = Board()
-    board.setup_new()
-    print(board)
+    print("Starting new game with lox-engine!")
+    game = Game() 
+    game.board.setup_new()
+    print(game.board)
 
 
 if __name__ == "__main__":
