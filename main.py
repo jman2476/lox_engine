@@ -3,6 +3,7 @@ from src.board import Board
 def main():
     print("Hello from lox-engine!")
     board = Board()
+    board.setup_new()
     print(board)
 
 
