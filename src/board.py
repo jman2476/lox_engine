@@ -18,7 +18,6 @@ class Board():
         
 
     def __repr__(self):
-        print(self.board)
         dark = True
         files = '   '
         board = ''
