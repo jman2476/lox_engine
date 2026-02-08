@@ -43,61 +43,21 @@ class Board():
 
     def setup_new(self):
         for key, file in self.board.items():
-            rank = 1
-            while rank <= 8:
-                if key == 'a' or key == 'h':
-                    match rank:
-                        case 1:
-                            file[rank-1] = Rook('white', f'{key}{rank}')
-                        case 2:
-                            file[rank-1] = Pawn('white', f'{key}{rank}')
-                        case 7:
-                            file[rank-1] = Pawn('black', f'{key}{rank}')
-                        case 8:
-                            file[rank-1] = Rook('black', f'{key}{rank}')
-                elif key == 'b' or key == 'g':
-                    match rank:
-                        case 1:
-                            file[rank-1] = Knight('white', f'{key}{rank}')
-                        case 2:
-                            file[rank-1] = Pawn('white', f'{key}{rank}')
-                        case 7:
-                            file[rank-1] = Pawn('black', f'{key}{rank}')
-                        case 8:
-                            file[rank-1] = Knight('black', f'{key}{rank}')
-                elif key == 'c' or key == 'f':
-                    match rank:
-                        case 1:
-                            file[rank-1] = Bishop('white', f'{key}{rank}')
-                        case 2:
-                            file[rank-1] = Pawn('white', f'{key}{rank}')
-                        case 7:
-                            file[rank-1] = Pawn('black', f'{key}{rank}')
-                        case 8:
-                            file[rank-1] = Bishop('black', f'{key}{rank}')
-                elif key == 'd':
-                    match rank:
-                        case 1:
-                            file[rank-1] = Queen('white', f'{key}{rank}')
-                        case 2:
-                            file[rank-1] = Pawn('white', f'{key}{rank}')
-                        case 7:
-                            file[rank-1] = Pawn('black', f'{key}{rank}')
-                        case 8:
-                            file[rank-1] = Queen('black', f'{key}{rank}')
-                elif key == 'e':
-                    match rank:
-                        case 1:
-                            file[rank-1] = King('white', f'{key}{rank}')
-                        case 2:
-                            file[rank-1] = Pawn('white', f'{key}{rank}')
-                        case 7:
-                            file[rank-1] = Pawn('black', f'{key}{rank}')
-                        case 8:
-                            file[rank-1] = King('black', f'{key}{rank}')
+            file[0] = self.set_back_rank(key)('white', f'{key}1')
+            file[1] = Pawn('white', f'{key}2')
+            file[6] = Pawn('black', f'{key}7')
+            file[7] = self.set_back_rank(key)('black', f'{key}8')
+            
 
-
-                if (rank == 2): rank = 7
-                else: rank += 1
-
-                            
+    def set_back_rank(self, file):
+        if file == 'a' or file == 'h':
+            return Rook
+        if file == 'b' or file == 'g':
+            return Knight
+        if file == 'c' or file == 'f':
+            return Bishop
+        if file == 'd':
+            return Queen
+        if file == 'e':
+            return King
+        raise ValueError('set_back_rank: File value given is out of range')
