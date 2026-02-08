@@ -32,9 +32,9 @@ class Board():
             rank = f'{r+1} —'
             for key, file in self.board.items():
                 piece = file[r]
-                if piece is None:
-                        piece = 'X' if dark else 'O'
-                        dark = not dark if key is not 'h' else dark
+                if piece is None: 
+                    piece = '\u25A0' if dark else '\u25A1'
+                    dark = not dark if key is not 'h' else dark
                 rank += f' {piece} '
             board += rank + '\n'
 
