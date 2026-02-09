@@ -21,8 +21,6 @@ class TestBoard(unittest.TestCase):
         board.setup_new()
         f5 = board.check_square_filled('f', 5)
         e7 = board.check_square_filled('e', 7)
-        print('f5', f5)
-        print('e7', e7)
         self.assertFalse(f5[0])
         self.assertIsNone(f5[1])
         self.assertTrue(e7[0])

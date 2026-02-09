@@ -23,7 +23,7 @@ class TestQueen(unittest.TestCase):
             f, r = parse_square(p.square)
             board.board[f][r-1] = p
 
-        print(f'Board\n{board}')
+        print(f'Queen movement\n{board}')
         
         self.assertTrue(queen.move_valid(7, 'd', board))
         self.assertTrue(queen.move_valid(4, 'a', board))
@@ -31,5 +31,7 @@ class TestQueen(unittest.TestCase):
         
         with self.assertRaises(ValueError):
             queen.move_valid(2, 'd', board)
+        with self.assertRaises(ValueError):
             queen.move_valid(8, 'd', board)
-            queen.move_valid(8, 'h', board)
+        with self.assertRaises(ValueError):
+            queen.move_valid(8, 'a', board)

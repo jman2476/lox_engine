@@ -36,7 +36,9 @@ class TestPawn(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             b_pawnA.move_valid(6, 'g', board)
+        with self.assertRaises(ValueError):
             b_pawnB.move_valid(4, 'g', board)
+        with self.assertRaises(ValueError):
             w_pawnA.move_valid(2, 'b', board)
             
     def test_move(self):

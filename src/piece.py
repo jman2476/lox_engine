@@ -54,7 +54,7 @@ class Pawn(Piece):
         
         distance = rank - self.rank
         dst_occupied, dst_side = board.check_square_filled(file, rank)
-        if not dst_occupied and dst_side == self.side:
+        if dst_occupied and dst_side == self.side:
             raise ValueError(f'Cannot capture own piece at {file}{rank}.')
         
         if self.file == file:
@@ -105,7 +105,7 @@ class King(Piece):
             raise ValueError('King cannot move more than 1 square unless castling')
         
         dst_occupied, dst_side = board.check_square_filled(file, rank)
-        if not dst_occupied and dst_side == self.side:
+        if dst_occupied and dst_side == self.side:
             raise ValueError(f'Cannot capture own piece at {file}{rank}.')
         
         return True
@@ -128,6 +128,9 @@ class Queen(Piece):
             raise Exception('Queen move error')
         
     def move_valid(self, rank, file, board):
+        dst_occupied, dst_side = board.check_square_filled(file, rank)
+        if dst_occupied and dst_side == self.side:
+            raise ValueError(f'Cannot capture own piece at {file}{rank}.')
         # determine if move is horizontal, vertical, or diagonal
         dist_hor = ord(file) - ord(self.file)
         dist_ver = rank - self.rank
@@ -143,7 +146,7 @@ class Queen(Piece):
             while rank_check != rank or file_check != file:
                 # print(f'Checking square {file_check}{rank_check}')
                 if board.check_square_filled(file_check, rank_check)[0]:
-                    raise ValueError(f'There\s a piece in the way at {file_check}{rank_check}')
+                    raise ValueError(f'There\'s a piece in the way at {file_check}{rank_check}')
                 rank_check += dir_ver
                 file_check = chr(ord(file_check) + dir_hor)
             return True
@@ -195,12 +198,10 @@ class Rook(Piece):
     def move_valid(self, rank, file, board):
         # validations for castling will be added later
         if self.rank != rank and self.file != file:
-            print('f', self.file, file)
-            print('r', self.rank, rank)
             raise ValueError('Rooks only move vertically and horizontally')
         
         dst_occupied, dst_side = board.check_square_filled(file, rank)
-        if not dst_occupied and dst_side == self.side:
+        if dst_occupied and dst_side == self.side:
             raise ValueError(f'Cannot capture own piece at {file}{rank}.')
         
         if self.rank == rank:
@@ -247,15 +248,11 @@ class Bishop(Piece):
         dist_ver = rank - self.rank
 
         dst_occupied, dst_side = board.check_square_filled(file, rank)
-        if not dst_occupied and dst_side == self.side:
+        if dst_occupied and dst_side == self.side:
             raise ValueError(f'Cannot capture own piece at {file}{rank}.')
 
         if abs(dist_hor) != abs(dist_ver):
             raise ValueError('Bishop must move diagonally')
-        
-        dst_occupied, dst_side = board.check_square_filled(file, rank)
-        if not dst_occupied and dst_side == self.side:
-            raise ValueError(f'Cannot capture own piece at {file}{rank}.')
 
         # + -> to h; - -> to a
         dir_hor = int(dist_hor/abs(dist_hor))
@@ -277,3 +274,33 @@ class Knight(Piece):
     def __init__(self, side, square):
         super().__init__(side, square)
         self.icon = '\u2658' if self.side == 'white' else '\u265E'
+
+    def move(self, board, destination):
+        (file, rank) = parse_square(destination)
+        try:
+            self.check_nil_move(rank, file)
+            self.move_valid(rank, file, board)
+            board.board[file][rank-1] = self
+            board.board[self.file][self.rank-1] = None
+            self.rank, self.file = rank, file 
+        except Exception as e:
+            print('Knight move error:', e)
+            raise Exception('Knight move error')
+        
+    def move_valid(self, rank, file, board):
+        dst_occupied, dst_side = board.check_square_filled(file, rank)
+        if dst_occupied and dst_side == self.side:
+            raise ValueError(f'Cannot capture own piece at {file}{rank}.')
+        
+        dist_hor = ord(file) - ord(self.file)
+        dist_ver = rank - self.rank
+
+
+        if ((abs(dist_hor) == 2 
+            and abs(dist_ver) == 1)
+            or
+            (abs(dist_hor) == 1 
+            and abs(dist_ver) == 2)):
+            return True
+        else:
+            raise ValueError('Knight must move two squares in one direction, then one square perpendicular to that.')

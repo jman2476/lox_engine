@@ -23,15 +23,19 @@ class TestKing(unittest.TestCase):
         b_king = King('black', 'f5')
         b_king.in_start_pos = False
         board = Board()
-        board.board['e'][1] = w_king
+        board.board['e'][0] = w_king
         board.board['f'][4] = b_king
+
+        print(f'King movement\n{board}')
 
         self.assertTrue(w_king.move_valid(2, 'e', board))
         self.assertTrue(b_king.move_valid(5, 'g', board))
         self.assertTrue(b_king.move_valid(6, 'g', board))
 
         with self.assertRaises(ValueError):
-            b_king.move_valid(6, 'g', board)
+            b_king.move_valid(6, 'a', board)
+
+        with self.assertRaises(ValueError):
             w_king.move_valid(4, 'g', board)
 
             
