@@ -115,6 +115,64 @@ class Queen(Piece):
         super().__init__(side, square)
         self.icon = '\u2655' if self.side == 'white' else '\u265B'
 
+    def move(self, board, destination):
+        (file, rank) = parse_square(destination)
+        try:
+            self.check_nil_move(rank, file)
+            self.move_valid(rank, file, board)
+            board.board[file][rank-1] = self
+            board.board[self.file][self.rank-1] = None
+            self.rank, self.file = rank, file 
+        except Exception as e:
+            print('Queen move error:', e)
+            raise Exception('Queen move error')
+        
+    def move_valid(self, rank, file, board):
+        # determine if move is horizontal, vertical, or diagonal
+        dist_hor = ord(file) - ord(self.file)
+        dist_ver = rank - self.rank
+        if dist_hor == dist_ver:
+            #treat like bishop
+            # + -> to h; - -> to a
+            dir_hor = int(dist_hor/abs(dist_hor))
+            # + -> to 8; - -> to 1
+            dir_ver = int(dist_ver/abs(dist_ver))
+
+            rank_check = self.rank + dir_ver
+            file_check = chr(ord(self.file) + dir_hor)
+            while rank_check != rank or file_check != file:
+                # print(f'Checking square {file_check}{rank_check}')
+                if board.check_square_filled(file_check, rank_check)[0]:
+                    raise ValueError(f'There\s a piece in the way at {file_check}{rank_check}')
+                rank_check += dir_ver
+                file_check = chr(ord(file_check) + dir_hor)
+            return True
+        elif dist_ver == 0 or dist_hor == 0:
+            #treat like rook
+            if self.rank == rank:
+                # positive direction -> right/to h
+                # negative direction -> left/ to a
+                direction = int((ord(file)-ord(self.file))/abs(ord(self.file)-ord(file)))
+                for f_ord in range(ord(self.file), ord(file), direction):
+                    if f_ord == ord(self.file): continue
+                    f_char = chr(f_ord)
+                    blocked, _ = board.check_square_filled(f_char, rank)
+                    if blocked:
+                        raise ValueError(f'There\'s a piece in the way at {f_char}{rank}')
+                return True
+            if self.file == file:
+                # positive direction -> up/  to 8
+                # negative direction -> down/to 1
+                direction = int((rank - self.rank)/abs(self.rank - rank))
+                for r in range(self.rank, rank, direction):
+                    if r == self.rank: continue
+                    blocked, _ = board.check_square_filled(self.file, r)
+                    if blocked:
+                        raise ValueError(f'There\'s a piece in the way at {file}{r}')
+                return True
+        else:
+            raise ValueError('Queen cannot move like that')
+
 class Rook(Piece):
     def __init__(self, side, square):
         super().__init__(side, square)
@@ -188,6 +246,10 @@ class Bishop(Piece):
         dist_hor = ord(file) - ord(self.file)
         dist_ver = rank - self.rank
 
+        dst_occupied, dst_side = board.check_square_filled(file, rank)
+        if not dst_occupied and dst_side == self.side:
+            raise ValueError(f'Cannot capture own piece at {file}{rank}.')
+
         if abs(dist_hor) != abs(dist_ver):
             raise ValueError('Bishop must move diagonally')
         
@@ -203,7 +265,7 @@ class Bishop(Piece):
         rank_check = self.rank + dir_ver
         file_check = chr(ord(self.file) + dir_hor)
         while rank_check != rank or file_check != file:
-            print(f'Checking square {file_check}{rank_check}')
+            # print(f'Checking square {file_check}{rank_check}')
             if board.check_square_filled(file_check, rank_check)[0]:
                 raise ValueError(f'There\s a piece in the way at {file_check}{rank_check}')
             rank_check += dir_ver
