@@ -1,4 +1,6 @@
-def parse_square(self, square_string):
+def parse_square(square_string):
+        if len(square_string) > 2:
+             raise ValueError('parse_square: square_string is too long, should be 2 characters')
         (file, rank) = (square_string[0], square_string[1])
         if ord(rank) not in range(49, 57):
             raise ValueError('parse_square: rank not between 1 and 8')

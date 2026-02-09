@@ -1,4 +1,4 @@
-from .board import Board
+from src.board import Board
 
 class Game():
     def __init__(self,  w_player=None, b_player=None):
@@ -8,3 +8,5 @@ class Game():
         self.board.setup_new()
         self.fen = ''
         self.pgn = ''
+        
+

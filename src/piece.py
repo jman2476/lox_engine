@@ -1,4 +1,4 @@
-from .functions.parse import parse_square
+from src.functions.parse import parse_square
 
 class Piece():
     def __init__(self, side, square):
@@ -15,7 +15,7 @@ class Piece():
         #must override
         pass
     
-    def move_valid_for_piece(self, rank, file):
+    def move_valid(self, rank, file):
         pass
 
     
@@ -30,15 +30,16 @@ class Pawn(Piece):
     def move(self, board, destination):
         (file, rank) = parse_square(destination)
         try:
-            self.move_valid_for_piece(rank, file, board)
-            board.board[file][rank] = self
-            board.board[self.file][self.rank] = None
+            self.move_valid(rank, file, board)
+            board.board[file][rank-1] = self
+            board.board[self.file][self.rank-1] = None
             self.rank, self.file = rank, file 
+            self.in_start_pos = False
         except Exception as e:
             print('Pawn move error:', e)
             raise Exception('Pawn move error')
 
-    def move_valid_for_piece(self, rank, file, board):
+    def move_valid(self, rank, file, board):
         if self.rank == rank:
             raise ValueError('Pawns cannot move laterally')
         elif (self.rank > rank and self.side == 'white'):
@@ -51,24 +52,24 @@ class Pawn(Piece):
         distance = rank - self.rank
         dst_occupied, dst_side = board.check_square_filled(file, rank)
         if not dst_occupied and dst_side == self.side:
-            return Exception(f'Cannot capture own piece at {file}{rank}.')
+            raise ValueError(f'Cannot capture own piece at {file}{rank}.')
         
         if self.file == file:
             if dst_occupied:
-                raise Exception('Pawns cannot capture forward')
+                raise ValueError('Pawns cannot capture forward')
             if abs(distance) == 2:
                 if self.in_start_pos:
                     return True
-                raise Exception('Pawns cannot move two square after leaving starting rank')
+                raise ValueError('Pawns cannot move two square after leaving starting rank')
             elif abs(distance) == 1:
                 return True
             else:
-                raise Exception(f'Pawn cannot move distance of {distance} squares')
+                raise ValueError(f'Pawn cannot move distance of {distance} squares')
         else:
             if distance != 1:
-                raise Exception('Too far for pawn to capture')
+                raise ValueError('Too far for pawn to capture')
             elif not dst_occupied:
-                raise Exception('No piece for pawn to capture')
+                raise ValueError('No piece for pawn to capture')
             else:
                 return True
 
