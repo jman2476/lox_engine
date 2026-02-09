@@ -7,4 +7,4 @@ def parse_square(square_string):
         if ord(file) not in range(97, 105) and ord(file) not in range(65, 72):
             raise ValueError('parse_square: file not between a and h, or A and H')
         # print(f'Good square: {file}{ord(rank) - 48}')
-        return file, ord(rank) - 48
+        return file.lower(), ord(rank) - 48

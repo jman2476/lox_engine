@@ -2,7 +2,7 @@ from src.functions.parse import parse_square
 
 class Piece():
     def __init__(self, side, square):
-        self.side = side
+        self.side = side.lower()
         self.square = square
         self.file, self.rank = parse_square(self.square)
 
@@ -171,6 +171,45 @@ class Bishop(Piece):
     def __init__(self, side, square):
         super().__init__(side, square)
         self.icon = '\u2657' if self.side == 'white' else '\u265D'
+
+    def move(self, board, destination):
+        (file, rank) = parse_square(destination)
+        try:
+            self.check_nil_move(rank, file)
+            self.move_valid(rank, file, board)
+            board.board[file][rank-1] = self
+            board.board[self.file][self.rank-1] = None
+            self.rank, self.file = rank, file 
+        except Exception as e:
+            print('Bishop move error:', e)
+            raise Exception('Bishop move error')
+        
+    def move_valid(self, rank, file, board):
+        dist_hor = ord(file) - ord(self.file)
+        dist_ver = rank - self.rank
+
+        if abs(dist_hor) != abs(dist_ver):
+            raise ValueError('Bishop must move diagonally')
+        
+        dst_occupied, dst_side = board.check_square_filled(file, rank)
+        if not dst_occupied and dst_side == self.side:
+            raise ValueError(f'Cannot capture own piece at {file}{rank}.')
+
+        # + -> to h; - -> to a
+        dir_hor = int(dist_hor/abs(dist_hor))
+        # + -> to 8; - -> to 1
+        dir_ver = int(dist_ver/abs(dist_ver))
+
+        rank_check = self.rank + dir_ver
+        file_check = chr(ord(self.file) + dir_hor)
+        while rank_check != rank or file_check != file:
+            print(f'Checking square {file_check}{rank_check}')
+            if board.check_square_filled(file_check, rank_check)[0]:
+                raise ValueError(f'There\s a piece in the way at {file_check}{rank_check}')
+            rank_check += dir_ver
+            file_check = chr(ord(file_check) + dir_hor)
+
+        return True
 
 class Knight(Piece):
     def __init__(self, side, square):
