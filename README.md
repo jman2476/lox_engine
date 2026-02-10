@@ -6,7 +6,7 @@ Lox engine is a rudimentary chess engine and game platform where you can play ag
     - [X] Should just show the board in the terminal for now
     - [ ] Input chess notation to CLI to move pieces, no logic for now
 - [ ] Write FEN or PGN parser
-    - [ ] board to FEN
+    - [X] board to FEN
     - [ ] FEN to board setup
     - [ ] export game as PGN
     - [ ] import PGN as game
@@ -39,7 +39,7 @@ Lox engine is a rudimentary chess engine and game platform where you can play ag
             - [ ] If it is, do recursive search to build out possibility library
             - [ ] If it isn't, delete incompatible positions, and do recursive search
 
-                
+## Parsing Move notation:        
 
 
 

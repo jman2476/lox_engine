@@ -5,7 +5,10 @@ class Piece():
         self.side = side.lower()
         self.square = square
         self.file, self.rank = parse_square(self.square)
+        self.name = None
 
+    def __repr__(self):
+        return f'{self.side} {self.name} at {self.file}{self.rank}'
 
     def move(self, board, destination):
         # must overide
@@ -28,8 +31,9 @@ class Pawn(Piece):
         super().__init__(side, square)
         self.in_start_pos = True
         self.icon = '\u2659' if self.side == 'white' else '\u265F'
-
-    def move(self, board, destination):
+        self.name = 'pawn'
+    
+    def move(self, board, destination): 
         (file, rank) = parse_square(destination)
         try:
             self.check_nil_move(rank, file)
@@ -85,6 +89,7 @@ class King(Piece):
         self.in_start_pos = True
         self.in_check = False
         self.icon = '\u2654' if self.side == 'white' else '\u265A'
+        self.name = 'king'
 
     def move(self, board, destination):
         (file, rank) = parse_square(destination)
@@ -114,6 +119,7 @@ class Queen(Piece):
     def __init__(self, side, square):
         super().__init__(side, square)
         self.icon = '\u2655' if self.side == 'white' else '\u265B'
+        self.name = 'queen'
 
     def move(self, board, destination):
         (file, rank) = parse_square(destination)
@@ -181,6 +187,7 @@ class Rook(Piece):
         super().__init__(side, square)
         self.icon = '\u2656' if self.side == 'white' else '\u265C'
         self.in_start_pos = True
+        self.name = 'rook'
 
     def move(self, board, destination):
         (file, rank) = parse_square(destination)
@@ -230,6 +237,7 @@ class Bishop(Piece):
     def __init__(self, side, square):
         super().__init__(side, square)
         self.icon = '\u2657' if self.side == 'white' else '\u265D'
+        self.name = 'bishop'
 
     def move(self, board, destination):
         (file, rank) = parse_square(destination)
@@ -264,7 +272,7 @@ class Bishop(Piece):
         while rank_check != rank or file_check != file:
             # print(f'Checking square {file_check}{rank_check}')
             if board.check_square_filled(file_check, rank_check)[0]:
-                raise ValueError(f'There\s a piece in the way at {file_check}{rank_check}')
+                raise ValueError(f'There\'s a piece in the way at {file_check}{rank_check}')
             rank_check += dir_ver
             file_check = chr(ord(file_check) + dir_hor)
 
@@ -274,6 +282,7 @@ class Knight(Piece):
     def __init__(self, side, square):
         super().__init__(side, square)
         self.icon = '\u2658' if self.side == 'white' else '\u265E'
+        self.name = 'king'
 
     def move(self, board, destination):
         (file, rank) = parse_square(destination)

@@ -5,8 +5,15 @@ def main():
     print("Starting new game with lox-engine!")
     game = Game() 
     game.board.setup_new()
-    print(game.board)
+    game.set_fen()
+    while(game.winner == None):
+        print(game.board)
+        print(game.fen)
+        move = input()
+        game.board.parse_move_notation(move)
 
 
 if __name__ == "__main__":
     main()
+
+ 
