@@ -10,3 +10,13 @@ class TestGame(unittest.TestCase):
         game.start_new_game()
 
         self.assertEqual(game.fen, 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1')
+
+    def test_repr(self):
+        game = Game()
+
+        game.start_new_game()
+
+        self.assertEqual(
+            print(game),
+            print(game.fen)
+        )
