@@ -30,13 +30,13 @@ class Game():
             count = 0
             for key in game_board:
                 piece = game_board[key][i]
-                if piece is None:
-                    print(piece, f'at {key}{i}')
-                else:
-                    print(piece)
+                # if piece is None:
+                #     print(piece, f'at {key}{i}')
+                # else:
+                #     print(piece)
                 if piece is None:
                     count += 1
-                    print(count)
+                    # print(count)
                 else:
                     char = piece.name[0]
                     if piece.name == 'knight':
@@ -49,7 +49,7 @@ class Game():
                         count = 0
                     fen += char
             if count > 0:
-                print(count, fen)
+                # print(count, fen)
                 fen += f'{count}'
             fen += '/'
         
@@ -67,12 +67,17 @@ class Game():
         e_one = game_board['e'][0]
         h_one = game_board['h'][0]
 
-        if e_one is not None:
-            if e_one.name == 'king' and e_one.in_start_pos:
-                if h_one.name == 'rook' and h_one.in_start_pos:
-                    castle_str += 'K'
-                if a_one.name == 'rook' and a_one.in_start_pos:
-                    castle_str += 'Q'
+        if (e_one is not None
+            and e_one.name == 'king' 
+            and e_one.in_start_pos):
+            if (h_one is not None
+                and h_one.name == 'rook' 
+                and h_one.in_start_pos):
+                castle_str += 'K'
+            if (a_one is not None
+                and a_one.name == 'rook' 
+                and a_one.in_start_pos):
+                castle_str += 'Q'
 
         # check black king, rooks:
         # check a8, e8, h8
@@ -80,18 +85,27 @@ class Game():
         e_eight = game_board['e'][7]
         h_eight = game_board['h'][7]
 
-        if e_eight is not None:
-            if e_eight.name == 'king' and e_eight.in_start_pos:
-                if h_eight.name == 'rook' and h_eight.in_start_pos:
-                    castle_str += 'k'
-                if a_eight.name == 'rook' and a_eight.in_start_pos:
-                    castle_str += 'q'
+        if (e_eight is not None
+            and e_eight.name == 'king' 
+            and e_eight.in_start_pos):
+            if (h_eight is not None 
+                and h_eight.name == 'rook' 
+                and h_eight.in_start_pos):
+                castle_str += 'k'
+            if ( a_eight is not None
+                and a_eight.name == 'rook' 
+                and a_eight.in_start_pos):
+                castle_str += 'q'
 
         if len(castle_str) == 0:
             castle_str = '-'
         
         self.castling = castle_str
         return castle_str
+    
+    def get_castle_state(self):
+        self.__read_castling()
+        return self.castling
     
     def parse_move(self, string):
         pass

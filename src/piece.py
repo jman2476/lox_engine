@@ -282,7 +282,7 @@ class Knight(Piece):
     def __init__(self, side, square):
         super().__init__(side, square)
         self.icon = '\u2658' if self.side == 'white' else '\u265E'
-        self.name = 'king'
+        self.name = 'knight'
 
     def move(self, board, destination):
         (file, rank) = parse_square(destination)

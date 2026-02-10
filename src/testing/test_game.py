@@ -20,3 +20,33 @@ class TestGame(unittest.TestCase):
             print(game),
             print(game.fen)
         )
+
+    def test_get_castle_state(self):
+        game = Game()
+        game.start_new_game()
+        b = game.board
+
+        self.assertEqual(
+            game.get_castle_state(),
+            'KQkq'
+        )
+
+        rpawn = b.board['a'][6]
+        rook = b.board['a'][7]
+        rpawn.move(b, 'a6')
+        rook.move(b, 'a7')
+
+        self.assertEqual(
+            game.get_castle_state(),
+            'KQk'
+        )
+
+        Kpawn = b.board['e'][1]
+        king = b.board['e'][0]
+        Kpawn.move(b, 'e4')
+        king.move(b, 'e2')
+
+        self.assertEqual(
+            game.get_castle_state(),
+            'k'
+        )
