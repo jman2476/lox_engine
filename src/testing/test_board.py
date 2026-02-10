@@ -15,7 +15,23 @@ class TestBoard(unittest.TestCase):
         self.assertEqual(board.set_back_rank('a'), Rook)
         self.assertEqual(board.set_back_rank('d'), Queen)
         self.assertEqual(board.set_back_rank('e'), King)
+
+    def test_get_white_pieces(self):
+        board = Board()
+        board.setup_new()
+        white_pieces = board.get_white_pieces()
+        self.assertEqual(
+            len(white_pieces), 16
+        )
         
+    def test_get_black_pieces(self):
+        board = Board()
+        board.setup_new()
+        black_pieces = board.get_black_pieces()
+        self.assertEqual(
+            len(black_pieces), 16
+        )
+
     def test_check_square_filled(self):
         board = Board()
         board.setup_new()

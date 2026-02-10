@@ -70,34 +70,6 @@ class Board():
             file[6] = Pawn('black', f'{key}7')
             file[7] = self.set_back_rank(key)('black', f'{key}8')
             
-
-    def set_back_rank(self, file):
-        if file == 'a' or file == 'h':
-            return Rook
-        if file == 'b' or file == 'g':
-            return Knight
-        if file == 'c' or file == 'f':
-            return Bishop
-        if file == 'd':
-            return Queen
-        if file == 'e':
-            return King
-        raise ValueError('set_back_rank: File value given is out of range')
-    
-    # Takes a pre-parsed square rank and file
-    def check_square_filled(self, file, rank):
-        piece = self.board[file][rank-1]
-        if piece is None:
-            return False, None
-        else:
-            return True, piece.side
-    
-    def parse_move_notation(self, string):
-        pass
-
-    def parse_game_notation(self, string):
-        pass
-
     def setup_by_fen(self, fen_string):
         fen_arr = fen_string.split()
         ranks = fen_arr[0].split('/')
@@ -159,3 +131,64 @@ class Board():
                             piece.in_start_pos = False
                     
         return fen_arr, ranks
+
+    def set_back_rank(self, file):
+        if file == 'a' or file == 'h':
+            return Rook
+        if file == 'b' or file == 'g':
+            return Knight
+        if file == 'c' or file == 'f':
+            return Bishop
+        if file == 'd':
+            return Queen
+        if file == 'e':
+            return King
+        raise ValueError('set_back_rank: File value given is out of range')
+    
+    # Takes a pre-parsed square rank and file
+    def check_square_filled(self, file, rank):
+        piece = self.board[file][rank-1]
+        if piece is None:
+            return False, None
+        else:
+            return True, piece.side
+    
+    def get_white_pieces(self):
+        white_pieces = []
+        for i in self.files:
+            for j in self.ranks:
+                piece = self.board[i][j]
+                if piece is None:
+                    continue
+                if piece.side == 'white':
+                    white_pieces.append(piece)
+        return white_pieces
+    
+    def get_black_pieces(self):
+        black_pieces = []
+        for i in self.files:
+            for j in self.ranks:
+                piece = self.board[i][j]
+                if piece is None:
+                    continue
+                if piece.side == 'black':
+                    black_pieces.append(piece)
+        return black_pieces
+
+    def parse_move_notation(self, string):
+        pass
+
+    def parse_game_notation(self, string):
+        pass
+
+        
+    # To use for validating moves, in this order:
+    # does move put self in check?
+    # does castling move self through check?
+    # does move put opponent in check?
+    # Order of checks:
+    #   - from rooks, queens
+    #   - from pawns, bishops, queens
+    #   - from knights
+    def find_checks(self, king_square, side):
+        pass
