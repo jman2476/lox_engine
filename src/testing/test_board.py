@@ -89,3 +89,10 @@ class TestBoard(unittest.TestCase):
         self.assertEqual(
             black_pawn.in_start_pos, False
         )
+
+    def test_find_checks(self):
+        board = Board()
+        board.setup_new()
+        checks = board.find_checks('e1', 'white')
+
+        self.assertEqual(checks, [])

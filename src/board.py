@@ -191,4 +191,90 @@ class Board():
     #   - from pawns, bishops, queens
     #   - from knights
     def find_checks(self, king_square, side):
-        pass
+        (king_file, king_rank) = parse_square(king_square)
+        checks = []
+        directions = [
+            'horizontal',
+            'vertical',
+            'back_diagonal',
+            'forward_diagonal',
+            'knight'
+        ]
+        # Iterate through all directions
+        for dir in directions:
+            pieces = self.next_piece(dir)(king_file, king_rank)
+            for piece in pieces:
+                if piece is not None and piece.side != side:
+                    checks.append(piece)
+
+
+        return checks
+    
+    # Nested function to return what pieces 
+    # have eyes on a specific square
+    def next_piece(self, direction):
+        def horizontal(file, rank):
+            pieces = [None, None] # a-side, h-side
+            side_of_square = 0
+
+            for f in self.files:
+                if f == file:
+                    side_of_square = 1
+                    continue
+                piece = self.board[f][rank - 1]
+                if piece is None:
+                    continue
+                elif piece.name == 'queen' or piece.name == 'rook':
+                    pieces[side_of_square] = piece
+                else:
+                    pieces[side_of_square] = None
+
+            return pieces
+        
+        def vertical(file, rank):
+            pieces = [None, None] # 1-side, 8-side
+            side_of_square = 0
+
+            for r in self.ranks:
+                if r == rank:
+                    side_of_square = 1
+                    continue
+                piece = self.board[file][r]
+                if piece is None:
+                    continue
+                elif piece.name == 'queen' or piece.name == 'rook':
+                    pieces[side_of_square] = piece
+                else:
+                    pieces[side_of_square] = None
+
+            return pieces
+        
+        def back_diagonal(file, rank):
+            pieces = [None, None] # top-left-side, bottom-right-side
+
+            return pieces
+        
+        def forward_diagonal(file, rank):
+            pieces = [None, None] # bottom-left-side, top-right-side
+
+            return pieces
+        
+        def knight(file, rank):
+            pieces = [None, None, # "+2+1; +1+2" (+up+over)
+                      None, None, # "-1+2; -2+1"
+                      None, None, # "-2-1; -1-2"
+                      None, None] # "+1-2; +2-1"
+
+            return pieces
+
+        match direction:
+            case 'horizontal':
+                return horizontal
+            case 'vertical':
+                return vertical
+            case 'back_diagonal':
+                return back_diagonal
+            case 'forward_diagonal':
+                return forward_diagonal
+            case 'knight':
+                return knight
