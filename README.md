@@ -39,7 +39,32 @@ Lox engine is a rudimentary chess engine and game platform where you can play ag
             - [ ] If it is, do recursive search to build out possibility library
             - [ ] If it isn't, delete incompatible positions, and do recursive search
 
-## Parsing Move notation:        
+## Parsing Move notation:
+- Types of move notation:
+    - e5 -> simple pawn move
+    - exf5 -> pawn cature
+    - Bg8 -> minor/major standard move
+    - Bxe3 -> minor/major capture
+    - 0-0 || O-O || o-o -> king-side castle
+    - 0-0-0 || O-O-O || o-o-o -> queen-side castle
+    - e1=Q -> pawn promotion
+    - Rae7 -> file disambiguation
+    - R1e7 -> rank disambiguation
+    - Re2e7 -> full disambiguation
+- First char is 0, o, O:
+    - castling, check castling possibility
+    - look if king is in check
+    - look if king would move through check
+    - if fine, do move
+- if 2 chars: pawn move
+    - look for pawn 1 or 2 ranks before
+- if 3 chars: minor/major piece move
+    - read type of piece
+    - look back from square for relavent piece
+        - look in each direction
+- if 4 chars: 
+    - if contains 'x': Capture
+        - 
 
 
 

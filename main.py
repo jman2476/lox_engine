@@ -10,7 +10,7 @@ def main():
         print(game.board)
         print(game.fen)
         move = input()
-        game.board.parse_move_notation(move)
+        game.parse_move(move)
 
 
 if __name__ == "__main__":
