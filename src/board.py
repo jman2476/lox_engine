@@ -16,7 +16,21 @@ class Board():
         self.ranks = [i for i in range(0,8)]
         self.files = list("abcdefgh")
         self.frame = (self.ranks, self.files)
-        
+
+    _fen_piece = {
+        'p': Pawn,
+        'P': Pawn,
+        'k': King,
+        'K': King,
+        'q': Queen,
+        'Q': Queen,
+        'r': Rook,
+        'R': Rook,
+        'n': Knight,
+        'N': Knight,
+        'b': Bishop,
+        'B': Bishop
+    }    
 
     def __repr__(self, flip = False):
         dark = False
@@ -83,3 +97,65 @@ class Board():
 
     def parse_game_notation(self, string):
         pass
+
+    def setup_by_fen(self, fen_string):
+        fen_arr = fen_string.split()
+        ranks = fen_arr[0].split('/')
+
+        # iterate from rank 8 to 1 to setup board
+        for i in range(7, -1, -1):
+            file_ptr = 0
+            rank_ptr = 7 - i
+            # print('Rank, rankptr', type(ranks[rank_ptr]) , ranks, rank_ptr)
+            rank_arr = list(ranks[rank_ptr])
+            while len(rank_arr) > 0:
+                # print('rank array:', rank_arr)
+                char = rank_arr.pop(0)
+                if ord(char) in range(49, 57):
+                    empties = ord(char) - 48
+                    for j in range(0, empties):
+                        file = self.files[file_ptr+j]
+                        self.board[file][i] = None
+                    file_ptr += empties
+                    continue
+                else:
+                    side = 'white' if char.isupper() else 'black'
+                    file = self.files[file_ptr]
+                    square = f'{file}{i+1}'
+                    piece = Board._fen_piece[char](side, square)
+                    # print(f'Adding {piece} at {file}{i+1}')
+                    self.board[file][i] = piece
+                    file_ptr += 1
+            # print('Construct with FEN\n',self)
+        # set castling rights and pawns' double move rights
+        castle_rights = fen_arr[2]
+        for f in self.files:
+            for r in self.ranks:
+                piece = self.board[f][r]
+                if piece is None:
+                    continue
+                if piece.name not in ['pawn', 'rook']:
+                    #not checking for kings, because we can set the castling rights based on the rooks
+                    continue
+                elif piece.name == 'pawn':
+                    if piece.side == 'white' and piece.rank != 2:
+                        piece.in_start_pos = False
+                    elif piece.side == 'black' and piece.rank != 7:
+                        piece.in_start_pos = False
+                elif piece.name == 'rook':
+                    if piece.side == 'white':
+                        if 'K' in castle_rights and piece.square == 'h1':
+                            continue
+                        elif 'Q' in castle_rights and piece.square == 'a1':
+                            continue
+                        else:
+                            piece.in_start_pos = False
+                    else:
+                        if 'k' in castle_rights and piece.square == 'h8':
+                            continue
+                        elif 'q' in castle_rights and piece.square == 'h1':
+                            continue
+                        else:
+                            piece.in_start_pos = False
+                    
+        return fen_arr, ranks

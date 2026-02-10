@@ -57,6 +57,16 @@ class Game():
         fen += ' ' + self.__read_castling() + f' {self.en_passent} {self.halfmove} {self.fullmove}'
         self.fen = fen
 
+    def read_fen(self, fen_string):
+        fen_arr = fen_string.split()
+        self.fen = fen_string
+        self.turn = 'white' if fen_arr[1] == 'w' else 'black'
+        self.castling = fen_arr[2]
+        self.en_passent = fen_arr[3]
+        self.halfmove = int(fen_arr[4])
+        self.fullmove = int(fen_arr[5])
+        self.board.setup_by_fen(fen_string)
+
 
     def __read_castling(self):
         game_board = self.board.board

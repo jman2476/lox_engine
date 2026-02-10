@@ -26,7 +26,7 @@ class TestKing(unittest.TestCase):
         board.board['e'][0] = w_king
         board.board['f'][4] = b_king
 
-        print(f'King movement\n{board}')
+        # print(f'King movement\n{board}')
 
         self.assertTrue(w_king.move_valid(2, 'e', board))
         self.assertTrue(b_king.move_valid(5, 'g', board))

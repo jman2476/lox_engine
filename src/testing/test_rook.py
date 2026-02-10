@@ -24,7 +24,7 @@ class TestRook(unittest.TestCase):
             f, r = parse_square(p.square)
             board.board[f][r-1] = p
 
-        print(f'Rook Movement\n{board}')
+        # print(f'Rook Movement\n{board}')
         self.assertTrue(rook.move_valid(2, 'd', board))
         self.assertTrue(rook.move_valid(7, 'd', board))
         self.assertTrue(rook.move_valid(4, 'a', board))

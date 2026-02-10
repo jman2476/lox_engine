@@ -23,7 +23,7 @@ class TestKnight(unittest.TestCase):
             f, r = parse_square(p.square)
             board.board[f][r-1] = p
 
-        print(f'Knight Movement\n{board}')
+        # print(f'Knight Movement\n{board}')
         
         self.assertTrue(knight.move_valid(2, 'c', board))
         self.assertTrue(knight.move_valid(3, 'b', board))
