@@ -1,4 +1,5 @@
 from src.board import Board
+from src.functions.parse import parse_square
 
 class Game():
     def __init__(self,  w_player='Human', b_player='Human'):
@@ -122,12 +123,116 @@ class Game():
         last_char = notation_array.pop()
         pieces = self.board.white() if self.turn == 'white' else self.board.black()
         king = next((piece for piece in pieces if piece.name == 'king'))
-        checks = self.board.find_checks(king.sqare, king.side)
+        checks = self.board.find_checks(king.square, king.side)
         print(f"Last character of {string}: {last_char}")
+
         if last_char == '+' or last_char == '#':
             last_char = notation_array.pop()
         if last_char in ['Q','N','R','B']:
             # handle pawn promotion
             # check that there is a pawn in the previous square
-
             pass
+        elif last_char in range(1,9):
+            # Standard move type
+            x = 3
+            pass
+        elif last_char in ['0', 'o', 'O']:
+            rooks = [piece for piece in pieces if piece.name == 'rook']
+            for rook in rooks:
+                print(rook)
+            if string in ['0-0', 'O-O', 'o-o']:
+                h_rook = next((rook for rook in rooks 
+                               if (rook.square == 'h1' or rook.square == 'h8')))
+                print(f'a_rook: {h_rook}, {h_rook.in_start_pos}')
+                if h_rook is None or not h_rook.in_start_pos:
+                    raise ValueError(
+                        'Castling failure: The h rook has been moved off starting square')
+                elif not king.in_start_pos:
+                    raise ValueError(
+                        'Castling failure: King has moved off of starting square'
+                    )
+                elif len(checks) > 0:
+                    print(f'Checks: {checks}')
+                    raise ValueError(
+                        f'Castling failure: King is in check'
+                    )
+                
+                # handle castling
+                # will king move through check on f and g files?
+                (f_sqr, g_sqr) = ('f' + king.square[1],
+                                    'g' + king.square[1])
+                f_file, f_rank = parse_square(f_sqr)
+                g_file, g_rank = parse_square(g_sqr)
+                blocked = (self.board.check_square_filled(f_file,f_rank)[0],
+                            self.board.check_square_filled(g_file,g_rank)[0])
+                if True in blocked:
+                    raise ValueError(
+                        'Castling error: Castling movement is blocked by a piece')
+
+                f_check, g_check = (self.board.find_checks(f_sqr, king.side),
+                                    self.board.find_checks(g_sqr, king.side))
+                if len(f_check) > 0 or len(g_check) > 0:
+                    print(f'Threats on f square: {f_check}')
+                    print(f'Threats on g square: {g_check}')
+                    raise ValueError(
+                        'Castling error: King would move through check to castle')
+
+                self.board.board['g'][g_rank-1] = king
+                self.board.board['f'][f_rank-1] = h_rook
+                self.board.board[king.file][king.rank-1] = None
+                self.board.board[h_rook.file][h_rook.rank-1] = None
+                king.square = g_sqr
+                h_rook.square = f_sqr
+                print(f'Post move board: \n{self.board}')
+            elif string in ['0-0-0', 'o-o-o', 'O-O-O']:
+                a_rook = next((rook for rook in rooks 
+                               if (rook.square == 'a1' or rook.square == 'a8')))
+                if a_rook is None or not a_rook.in_start_pos:
+                    print(f'a_rook: {a_rook}, {a_rook.in_start_pos}')
+                    raise ValueError(
+                        'Castling failure: The a rook has been moved off starting square')
+                elif not king.in_start_pos:
+                    raise ValueError(
+                        'Castling failure: King has moved off of starting square'
+                    )
+                elif len(checks) > 0:
+                    print(f'Checks: {checks}')
+                    raise ValueError(
+                        f'Castling failure: King is in check'
+                    )
+                
+                # handle castling
+                # will king move through check on f and g files?
+                (d_sqr, c_sqr) = ('d' + king.square[1],
+                                    'c' + king.square[1])
+                d_file, d_rank = parse_square(d_sqr)
+                c_file, c_rank = parse_square(c_sqr)
+                blocked = (self.board.check_square_filled(d_file,d_rank)[0],
+                            self.board.check_square_filled(c_file,c_rank)[0])
+                if True in blocked:
+                    raise ValueError(
+                        'Castling error: Castling movement is blocked by a piece')
+
+                d_check, c_check = (self.board.find_checks(d_sqr, king.side),
+                                    self.board.find_checks(c_sqr, king.side))
+                if len(d_check) > 0 or len(c_check) > 0:
+                    print(f'Threats on d square: {d_check}')
+                    print(f'Threats on c square: {c_check}')
+                    raise ValueError(
+                        'Castling error: King would move through check to castle')
+
+                self.board.board['c'][g_rank-1] = king
+                self.board.board['d'][f_rank-1] = a_rook
+                self.board.board[king.file][king.rank-1] = None
+                self.board.board[a_rook.file][a_rook.rank-1] = None
+                king.square = c_sqr
+                a_rook.square = d_sqr
+                print(f'Post move board: \n{self.board}')
+            else:
+                raise ValueError(
+                    'Invalid move syntax. Suspected castling move.')
+            
+        else:
+            pass
+        
+        pass

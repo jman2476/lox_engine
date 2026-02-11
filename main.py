@@ -1,11 +1,17 @@
 from src.board import Board
 from src.game import Game
+import sys
 
 def main():
     print("Starting new game with lox-engine!")
+    fen = sys.argv[1]
     game = Game() 
-    game.board.setup_new()
-    game.set_fen()
+    if fen is None:
+        game.board.setup_new()
+        game.set_fen()
+    else: 
+        game.read_fen(fen)
+        game.set_fen()
     while(game.winner == None):
         print(game.board)
         print(game.fen)

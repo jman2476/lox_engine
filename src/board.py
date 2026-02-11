@@ -81,6 +81,11 @@ class Board():
             file[7] = self.set_back_rank(key)('black', f'{key}8')
             
     def setup_by_fen(self, fen_string):
+        if fen_string is None or len(fen_string) == 0:
+            self.setup_new()
+            return
+            
+
         fen_arr = fen_string.split()
         ranks = fen_arr[0].split('/')
 
@@ -352,7 +357,7 @@ class Board():
             
             board_squares = []
             for square in squares:
-                print(f'Knight square: {square}')
+                # print(f'Knight square: {square}')
                 f, r = square
                 if f not in self.files:
                     continue
@@ -361,7 +366,7 @@ class Board():
                 board_squares.append(square)
 
             for square in board_squares:
-                print(f'Knight culled square: {square}')
+                # print(f'Knight culled square: {square}')
                 f, r = square
                 piece = self.board[f][r-1]
                 if piece is None:
