@@ -263,6 +263,8 @@ class Board():
                     pieces[side_of_square] = piece
                     if side_of_square == 1:
                         break
+                elif side_of_square == 1:
+                    break
                 else:
                     pieces[side_of_square] = None
 
