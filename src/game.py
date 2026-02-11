@@ -161,6 +161,7 @@ class Game():
                 # will king move through check on f and g files?
                 (f_sqr, g_sqr) = ('f' + king.square[1],
                                     'g' + king.square[1])
+                print(f'Squares to check during castling: {f_sqr}{g_sqr}')
                 f_file, f_rank = parse_square(f_sqr)
                 g_file, g_rank = parse_square(g_sqr)
                 blocked = (self.board.check_square_filled(f_file,f_rank)[0],
@@ -205,6 +206,7 @@ class Game():
                 # will king move through check on f and g files?
                 (d_sqr, c_sqr) = ('d' + king.square[1],
                                     'c' + king.square[1])
+                print(f'Squares to check during castling: {d_sqr}{c_sqr}')
                 d_file, d_rank = parse_square(d_sqr)
                 c_file, c_rank = parse_square(c_sqr)
                 blocked = (self.board.check_square_filled(d_file,d_rank)[0],
@@ -221,8 +223,8 @@ class Game():
                     raise ValueError(
                         'Castling error: King would move through check to castle')
 
-                self.board.board['c'][g_rank-1] = king
-                self.board.board['d'][f_rank-1] = a_rook
+                self.board.board['c'][c_rank-1] = king
+                self.board.board['d'][d_rank-1] = a_rook
                 self.board.board[king.file][king.rank-1] = None
                 self.board.board[a_rook.file][a_rook.rank-1] = None
                 king.square = c_sqr
