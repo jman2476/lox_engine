@@ -1,4 +1,4 @@
-
+from src.functions.direction import get_direction
 
 def get_diagonal_edges(direction):
     ranks = [i for i in range(0,8)]
@@ -12,11 +12,11 @@ def get_diagonal_edges(direction):
         edge_right = min([
             7 - file_idx, rank_idx
         ])
-        print(f'edge left: {edge_left}')
-        print(f'edge right: {edge_right}')
 
-        square_left = [files[file_idx-edge_left], ranks[rank_idx+edge_left] + 1]
-        square_right= [files[file_idx+edge_right], ranks[rank_idx-edge_right] + 1]
+        square_left = [files[file_idx-edge_left], 
+                       ranks[rank_idx+edge_left] + 1]
+        square_right= [files[file_idx+edge_right], 
+                       ranks[rank_idx-edge_right] + 1]
 
         return square_left, square_right
     # from bottom left to top right
@@ -40,3 +40,22 @@ def get_diagonal_edges(direction):
             return back_diagonal
         case 'forward':
             return forward_diagonal
+        
+def get_diagonal_squares(left, right):
+    ranks = [i for i in range(0,8)]
+    files = list("abcdefgh")
+    i_file_idx, f_file_idx = (files.index(left[0]), 
+                              files.index(right[0]))
+    i_rank_idx, f_rank_idx = (ranks.index(left[1]-1), 
+                              ranks.index(right[1]-1))
+    direction = get_direction(i_rank_idx, f_rank_idx)
+    if f_rank_idx+direction <0:
+        rank_arr = ranks[i_rank_idx::direction]
+    else:
+        rank_arr = ranks[i_rank_idx:f_rank_idx+direction:direction]
+    file_arr = files[i_file_idx:f_file_idx+1]
+    squares = []
+    for i in range(0, len(rank_arr)):
+        squares.append((file_arr[i], rank_arr[i]+1))
+
+    return squares

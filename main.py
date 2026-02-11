@@ -6,11 +6,11 @@ def main():
     game = Game() 
     game.board.setup_new()
     game.set_fen()
-    # while(game.winner == None):
-    #     print(game.board)
-    #     print(game.fen)
-    #     move = input()
-    #     game.parse_move(move)
+    while(game.winner == None):
+        print(game.board)
+        print(game.fen)
+        move = input()
+        game.parse_move(move)
 
 
 if __name__ == "__main__":

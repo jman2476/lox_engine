@@ -118,4 +118,16 @@ class Game():
         return self.castling
     
     def parse_move(self, string):
-        pass
+        notation_array = list(string)
+        last_char = notation_array.pop()
+        pieces = self.board.white() if self.turn == 'white' else self.board.black()
+        king = next((piece for piece in pieces if piece.name == 'king'))
+        checks = self.board.find_checks(king.sqare, king.side)
+        print(f"Last character of {string}: {last_char}")
+        if last_char == '+' or last_char == '#':
+            last_char = notation_array.pop()
+        if last_char in ['Q','N','R','B']:
+            # handle pawn promotion
+            # check that there is a pawn in the previous square
+
+            pass

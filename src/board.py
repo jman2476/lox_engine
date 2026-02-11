@@ -1,5 +1,13 @@
-from src.piece import Piece, Pawn, King, Queen, Bishop, Knight, Rook
+from src.piece import (
+    Pawn, King, 
+    Queen, Bishop, 
+    Knight, Rook
+    )
 from src.functions.parse import parse_square
+from src.functions.diagonals import (
+    get_diagonal_edges,
+    get_diagonal_squares
+    )
 
 class Board():
     def __init__(self):
@@ -16,6 +24,8 @@ class Board():
         self.ranks = [i for i in range(0,8)]
         self.files = list("abcdefgh")
         self.frame = (self.ranks, self.files)
+        self.white = self.get_white_pieces
+        self.black = self.get_black_pieces
 
     _fen_piece = {
         'p': Pawn,
@@ -226,6 +236,8 @@ class Board():
                     continue
                 elif piece.name == 'queen' or piece.name == 'rook':
                     pieces[side_of_square] = piece
+                    if side_of_square == 1:
+                        break
                 else:
                     pieces[side_of_square] = None
 
@@ -236,7 +248,7 @@ class Board():
             side_of_square = 0
 
             for r in self.ranks:
-                if r == rank:
+                if r == rank-1:
                     side_of_square = 1
                     continue
                 piece = self.board[file][r]
@@ -244,6 +256,8 @@ class Board():
                     continue
                 elif piece.name == 'queen' or piece.name == 'rook':
                     pieces[side_of_square] = piece
+                    if side_of_square == 1:
+                        break
                 else:
                     pieces[side_of_square] = None
 
@@ -251,19 +265,109 @@ class Board():
         
         def back_diagonal(file, rank):
             pieces = [None, None] # top-left-side, bottom-right-side
-
+            side_of_square = 0
+            edges = get_diagonal_edges('back')(file, rank)
+            check_squares = get_diagonal_squares(*edges)
+            
+            for square in check_squares:
+                if square[0] == file:
+                    side_of_square = 1
+                    continue
+                piece = self.board[square[0]][square[1]-1]
+                
+                if piece is None:
+                    continue
+                elif (piece.name == 'queen'
+                      or piece.name == 'bishop'):
+                    pieces[side_of_square] = piece
+                    if side_of_square == 1:
+                        break
+                elif piece.name == 'pawn':
+                    if (piece.side == 'white' 
+                        and side_of_square == 1
+                        and abs(piece.rank-rank) == 1):
+                        pieces[side_of_square] = piece
+                    elif (piece.side == 'black' 
+                        and side_of_square == 0
+                        and abs(piece.rank-rank) == 1):
+                        pieces[side_of_square] = piece
+                    else: 
+                        pieces[side_of_square] = None
+                    if side_of_square == 1:
+                        break
+                else:
+                    pieces[side_of_square] = None
+            
             return pieces
         
         def forward_diagonal(file, rank):
             pieces = [None, None] # bottom-left-side, top-right-side
+            side_of_square = 0
+            edges = get_diagonal_edges('forward')(file, rank)
+            check_squares = get_diagonal_squares(*edges)
+            
+            for square in check_squares:
+                if square[0] == file:
+                    side_of_square = 1
+                    continue
+                piece = self.board[square[0]][square[1]-1]
+                if piece is None:
+                    continue
+                elif (piece.name == 'queen'
+                      or piece.name == 'bishop'):
+                    pieces[side_of_square] = piece
+                    if side_of_square == 1:
+                        break
+                elif piece.name == 'pawn':
+                    if (piece.side == 'white' 
+                        and side_of_square == 0
+                        and abs(piece.rank-rank) == 1):
+                        pieces[side_of_square] = piece
+                    elif (piece.side == 'black' 
+                        and side_of_square == 1
+                        and abs(piece.rank-rank) == 1):
+                        pieces[side_of_square] = piece
+                    else: 
+                        pieces[side_of_square] = None
+                    if side_of_square == 1:
+                        break
+                else:
+                    pieces[side_of_square] = None
 
             return pieces
         
         def knight(file, rank):
-            pieces = [None, None, # "+2+1; +1+2" (+up+over)
-                      None, None, # "-1+2; -2+1"
-                      None, None, # "-2-1; -1-2"
-                      None, None] # "+1-2; +2-1"
+            pieces = [] 
+            file_idx = ord(file)
+            squares = [
+                (chr(file_idx + 1), rank + 2), # "+2+1; +1+2" (+up+over)
+                (chr(file_idx + 2), rank + 1),
+                (chr(file_idx + 2), rank - 1), # "-1+2; -2+1"
+                (chr(file_idx + 1), rank - 2),
+                (chr(file_idx - 1), rank - 2), # "-2-1; -1-2"
+                (chr(file_idx - 2), rank - 1),
+                (chr(file_idx - 2), rank + 1), # "+1-2; +2-1"
+                (chr(file_idx - 1), rank + 2),
+            ]
+            
+            board_squares = []
+            for square in squares:
+                print(f'Knight square: {square}')
+                f, r = square
+                if f not in self.files:
+                    continue
+                if r-1 not in self.ranks:
+                    continue
+                board_squares.append(square)
+
+            for square in board_squares:
+                print(f'Knight culled square: {square}')
+                f, r = square
+                piece = self.board[f][r-1]
+                if piece is None:
+                    continue
+                elif piece.name == 'knight':
+                    pieces.append(piece)
 
             return pieces
 

@@ -24,7 +24,7 @@ class TestBishop(unittest.TestCase):
             f, r = parse_square(p.square)
             board.board[f][r-1] = p
 
-        print(f'Bishop Movemnt\n{board}')
+        # print(f'Bishop Movement\n{board}')
         self.assertTrue(bishop_w.move_valid(7, 'd', board))
         self.assertTrue(bishop_w.move_valid(6, 'c', board))
         self.assertTrue(bishop_b.move_valid(2, 'h', board))

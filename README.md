@@ -11,7 +11,7 @@ Lox engine is a rudimentary chess engine and game platform where you can play ag
     - [ ] export game as PGN
     - [ ] import PGN as game
 - [ ] Build classes for pieces
-    - [ ] Write movement per piece
+    - [X] Write movement per piece
     - [ ] Write special moves:
         - [ ] en-passent
         - [ ] castling
@@ -64,8 +64,15 @@ Lox engine is a rudimentary chess engine and game platform where you can play ag
         - look in each direction
 - if 4 chars: 
     - if contains 'x': Capture
-        - 
+    - Otherwise, disampbiguation or promotion
+    - Promotion indicated by '='
 
+- Better idea:
+    - check for castling first
+    - look at last two characters, they will be the target square
+        - if there is '+' or '#', skip
+        - if there is a 'Q', 'N', 'R', or 'B', parse for pawn promotion
+    - from there, read backward toward first character
 
 
 ### Packages that could be useful:

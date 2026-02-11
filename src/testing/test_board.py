@@ -1,6 +1,10 @@
 import unittest
 from src.board import Board
-from src.piece import King, Queen, Rook
+from src.piece import (
+    Pawn, King, 
+    Queen, Bishop, 
+    Knight, Rook)
+from src.functions.parse import parse_square
 
 class TestBoard(unittest.TestCase):
     def test_setup_new(self):
@@ -94,5 +98,163 @@ class TestBoard(unittest.TestCase):
         board = Board()
         board.setup_new()
         checks = board.find_checks('e1', 'white')
+        print(f'All checks board: {board}')
 
         self.assertEqual(checks, [])
+
+        board.setup_by_fen('4rbk1/2q2ppB/p6p/P1n5/2Q5/1P5P/2Pr1PP1/R3R1K1 b - - 1 27')
+        checks = board.find_checks('g8', 'black')
+
+        bishop = board.board['h'][6]
+        self.assertEqual(checks, [bishop])
+
+    def test_next_piece_hor(self):
+        board = Board()
+        king = King('white', 'd4')
+        queen = Queen('black', 'g4')
+        queen_w = Queen('white', 'h4')
+        rook = Rook('white', 'a4')
+        pawn = Pawn('white', 'b4')
+        pieces = [king, queen, queen_w, rook]
+
+        for p in pieces:
+            f, r = parse_square(p.square)
+            board.board[f][r-1] = p
+
+        sight_arr = board.next_piece('horizontal')('d',4)
+        # print(board)
+        self.assertEqual(
+            sight_arr, [rook, queen]
+        )
+
+        board.board['b'][3] = pawn
+        # print(board)
+        sight_two = board.next_piece('horizontal')('d',4)
+        self.assertEqual(
+            sight_two, [None, queen]
+        )
+
+    def test_next_piece_vert(self):
+        board = Board()
+        king = King('white', 'd4')
+        queen = Queen('black', 'd7')
+        queen_w = Queen('white', 'd8')
+        rook = Rook('white', 'd1')
+        pawn = Pawn('white', 'd2')
+        pieces = [king, queen, queen_w, rook]
+
+        for p in pieces:
+            f, r = parse_square(p.square)
+            board.board[f][r-1] = p
+
+        sight_arr = board.next_piece('vertical')('d',4)
+        # print(board)
+        self.assertEqual(
+            sight_arr, [rook, queen]
+        )
+
+        board.board['d'][1] = pawn
+        # print(board)
+        sight_two = board.next_piece('vertical')('d',4)
+        self.assertEqual(
+            sight_two, [None, queen]
+        )
+
+    def test_next_piece_b_diag(self):
+        board = Board()
+        king = King('white', 'd4')
+        queen = Queen('black', 'a7')
+        queen_w = Queen('white', 'b6')
+        bishop = Bishop('white', 'g1')
+        pawn = Pawn('white', 'f2')
+        pawn_2 = Pawn('white', 'e3')
+        pieces = [king, queen, queen_w, bishop]
+
+        for p in pieces:
+            f, r = parse_square(p.square)
+            board.board[f][r-1] = p
+
+        sight_arr = board.next_piece('back_diagonal')('d',4)
+        # print(board)
+        self.assertEqual(
+            sight_arr, [queen_w, bishop]
+        )
+
+        board.board['f'][1] = pawn
+        # print(board)
+        sight_two = board.next_piece('back_diagonal')('d',4)
+        self.assertEqual(
+            sight_two, [queen_w, None]
+        )
+        board.board['e'][2] = pawn_2
+        # print(board)
+        sight_two = board.next_piece('back_diagonal')('d',4)
+        self.assertEqual(
+            sight_two, [queen_w, pawn_2]
+        )
+
+    def test_next_piece_f_diag(self):
+        board = Board()
+        king = King('white', 'd4')
+        queen = Queen('black', 'h8')
+        queen_w = Queen('white', 'g7')
+        bishop = Bishop('white', 'a1')
+        pawn = Pawn('white', 'b2')
+        pawn_2 = Pawn('black', 'e5')
+        pieces = [king, queen, queen_w, bishop]
+
+        for p in pieces:
+            f, r = parse_square(p.square)
+            board.board[f][r-1] = p
+
+        sight_arr = board.next_piece('forward_diagonal')('d',4)
+        # print(board)
+        self.assertEqual(
+            sight_arr, [bishop, queen_w]
+        )
+
+        board.board['b'][1] = pawn
+        # print(board)
+        sight_two = board.next_piece('forward_diagonal')('d',4)
+        self.assertEqual(
+            sight_two, [None, queen_w]
+        )
+        board.board['e'][4] = pawn_2
+        # print(board)
+        sight_two = board.next_piece('forward_diagonal')('d',4)
+        self.assertEqual(
+            sight_two, [None, pawn_2]
+        )
+
+    def test_next_piece_knight(self):
+        board = Board()
+        king = King('white', 'd4')
+        queen = Queen('black', 'f5')
+        knight = Knight('black', 'e6')
+        knight2 = Knight('black', 'b3')
+        knight3 = Knight('white', 'f3')
+        knight4 = Knight('black', 'e2')
+        knight5 = Knight('black', 'c2')
+        pawn = Pawn('white', 'b5')
+        pawn2 = Pawn('white', 'c6')
+        pieces = [king, queen, knight, knight2, knight3]
+        pieces2 = [knight4, knight5, pawn, pawn2]
+        
+        for p in pieces:
+            f, r = parse_square(p.square)
+            board.board[f][r-1] = p
+        print(board)
+        horses = board.next_piece('knight')('d', 4)
+
+        for p in pieces2:
+            f, r = parse_square(p.square)
+            board.board[f][r-1] = p
+        print(board)
+        horsies = board.next_piece('knight')('d', 4)
+        
+        self.assertEqual(
+            horses, [knight, knight3, knight2]
+        )
+        self.assertEqual(
+            horsies, [knight, knight3, knight4, knight5, knight2]
+        )
