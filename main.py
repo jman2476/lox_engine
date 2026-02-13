@@ -4,7 +4,7 @@ import sys
 
 def main():
     print("Starting new game with lox-engine!")
-    fen = sys.argv[1]
+    fen = sys.argv[1] if len(sys.argv) > 1 else None
     game = Game() 
     if fen is None:
         game.board.setup_new()
@@ -15,7 +15,7 @@ def main():
     while(game.winner == None):
         print(game.board)
         print(game.fen)
-        move = input('Next move>> ')
+        move = input(f'{game.turn}\'s next move>> ')
         game.parse_move(move)
 
 

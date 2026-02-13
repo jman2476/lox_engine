@@ -57,18 +57,19 @@ class Pawn(Piece):
             raise ValueError('Pawns cannot move more than one file over')
         
         distance = rank - self.rank
-        dst_occupied, dst_side = board.check_square_filled(file, rank)
+        dst_occupied, dst_side, piece = board.check_square_filled(file, rank)
         if dst_occupied and dst_side == self.side:
-            raise ValueError(f'Cannot capture own piece at {file}{rank}.')
-        
+            raise ValueError(f'Cannot capture own {piece} at {file}{rank}.')
+        direction = 1 if self.side == 'white' else -1
         if self.file == file:
             if dst_occupied:
                 raise ValueError('Pawns cannot capture forward')
             if abs(distance) == 2:
                 if self.in_start_pos:
-                    dst_occupied, dst_side = board.check_square_filled(file, rank-1)
+                    next_rank = rank + direction
+                    dst_occupied, dst_side, new_piece = board.check_square_filled(file, next_rank-1)
                     if dst_occupied:
-                        raise Exception('Moving two squares blocked by another piece')
+                        raise Exception(f'Moving two squares blocked by {new_piece}')
                     return True
                 raise ValueError('Pawns cannot move two square after leaving starting rank')
             elif abs(distance) == 1:

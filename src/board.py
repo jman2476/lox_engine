@@ -164,9 +164,9 @@ class Board():
     def check_square_filled(self, file, rank):
         piece = self.board[file][rank-1]
         if piece is None:
-            return False, None
+            return False, None, None
         else:
-            return True, piece.side
+            return True, piece.side, piece
     
     def get_white_pieces(self):
         white_pieces = []
