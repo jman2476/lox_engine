@@ -134,7 +134,19 @@ class Game():
             pass
         elif last_char in range(1,9):
             # Standard move type
-            x = 3
+
+            # simple pawn move
+            if len(string) == 2:
+                file, rank = string[0], string[1]
+                pawn_rank = rank - 1 if self.turn == 'white' else rank -1
+                piece = self.board.board[file][pawn_rank-1]
+                if piece is None:
+                    if rank in [4,5]:
+                        piece = self.board.board[file][pawn_rank-1] 
+                    raise ValueError('Pawn move error: no pawn found')
+                elif piece.name != 'pawn':
+                    raise ValueError('Pawn move error: piece in previous square is not a pawn')
+
             pass
         elif last_char in ['0', 'o', 'O']:
             rooks = [piece for piece in pieces if piece.name == 'rook']
@@ -236,5 +248,5 @@ class Game():
             
         else:
             pass
-        
+         
         pass

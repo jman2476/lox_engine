@@ -15,7 +15,7 @@ def main():
     while(game.winner == None):
         print(game.board)
         print(game.fen)
-        move = input()
+        move = input('Next move>> ')
         game.parse_move(move)
 
 

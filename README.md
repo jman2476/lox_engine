@@ -14,7 +14,7 @@ Lox engine is a rudimentary chess engine and game platform where you can play ag
     - [X] Write movement per piece
     - [ ] Write special moves:
         - [ ] en-passent
-        - [ ] castling
+        - [X] castling
         - [ ] promotion
 - [ ] Write game state reader:
     - [ ] Before move is committed:
@@ -36,7 +36,7 @@ Lox engine is a rudimentary chess engine and game platform where you can play ag
             - [ ] Build map of positions to navigate
         - [ ] Make what move has the best outcome at layer 5
         - [ ] After opponent moves, see if this is still within searched positions
-            - [ ] If it is, do recursive search to build out possibility library
+            - [ ] If it is, do revcursive search to build out possibility library
             - [ ] If it isn't, delete incompatible positions, and do recursive search
 
 ## Parsing Move notation:
