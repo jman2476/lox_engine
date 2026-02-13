@@ -1,5 +1,8 @@
 from src.board import Board
-from src.functions.parse import parse_square, parse_pawn_move, parse_castling
+from src.functions.parse import (parse_square, 
+                                 parse_pawn_move, 
+                                 parse_castling, 
+                                 parse_pawn_promotion)
 import copy
 
 class Game():
@@ -126,57 +129,62 @@ class Game():
         pieces = self.board.white() if self.turn == 'white' else self.board.black()
         king = next((piece for piece in pieces if piece.name == 'king'))
         checks = self.board.find_checks(king.square, king.side)
-        move_board = None
+        move_board = self.board
         pawn_move = False
 
         print(f"Last character of {string}: {last_char}")
         print(f'Is {last_char} in range(1,9)? {last_char in range(1,9)}')
 
-
-        if last_char == '+' or last_char == '#':
-            print('We will handle the checks, thank you')
-            last_char = notation_array.pop()
-        if last_char in ['Q','N','R','B']:
-            print('Looks like pawn promotion!')
-            pawn_move = True
-            # handle pawn promotion
-            # check that there is a pawn in the previous square
-            pass
-        elif ord(last_char) - 48 in range(1,9):
-            print('Standard move type')
-            # Standard move type
-
-            # simple pawn move
-            if len(string) == 2:
-                print('Looks like a pawn move')
-                
-                move_board = parse_pawn_move(self, string)
+        try:
+            if last_char == '+' or last_char == '#':
+                print('We will handle the checks, thank you')
+                last_char = notation_array.pop()
+            if last_char in ['Q','N','R','B']:
+                print('Looks like pawn promotion!')
+                move_board = parse_pawn_promotion(self, string)
                 pawn_move = True
-            
-        elif last_char in ['0', 'o', 'O']:
-            print('Looks like castling')
-            move_board = parse_castling(self, pieces, king, checks, string)
-            
-        else:
-            print('Some other move')
-            pass
-        
-        # Post move checks:
-        new_pieces = move_board.white() if self.turn == 'white' else move_board.black()
-        new_king = next((piece for piece in new_pieces if piece.name == 'king'))
-        new_checks = self.board.find_checks(new_king.square, new_king.side)
+                # handle pawn promotion
+                # check that there is a pawn in the previous square
+                pass
+            elif ord(last_char) - 48 in range(1,9):
+                print('Standard move type')
+                # Standard move type
 
-        if new_checks != []:
-            print(f'This move would cause checks at {new_checks}')
-        else:
-            self.board = move_board
-            if self.turn == 'black':
-                self.fullmove += 1
-            self.turn = 'black' if self.turn == 'white' else 'white'
-            if not pawn_move:
-                self.halfmove += 1
+                # simple pawn move
+                if len(string) == 2:
+                    print('Looks like a pawn move')
+                    
+                    move_board = parse_pawn_move(self, string)
+                    pawn_move = True
+                
+            elif last_char in ['0', 'o', 'O']:
+                print('Looks like castling')
+                move_board = parse_castling(self, pieces, king, checks, string)
+                
             else:
-                self.halfmove = 0
+                print('Some other move')
+                pass
+        except Exception as e:
+            print(f'Error found: {e}')
+        finally:   
+            # Post move checks:
+            new_pieces = move_board.white() if self.turn == 'white' else move_board.black()
+            new_king = next((piece for piece in new_pieces if piece.name == 'king'))
+            new_checks = self.board.find_checks(new_king.square, new_king.side)
+            if move_board == self.board:
+                print('No move happened')
+                return
+            if new_checks != []:
+                print(f'This move would cause checks at {new_checks}')
+            else:
+                self.board = move_board
+                if self.turn == 'black':
+                    self.fullmove += 1
+                self.turn = 'black' if self.turn == 'white' else 'white'
+                if not pawn_move:
+                    self.halfmove += 1
+                else:
+                    self.halfmove = 0
 
         pass
 

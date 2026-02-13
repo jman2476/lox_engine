@@ -1,4 +1,5 @@
 import copy
+import re
 
 def parse_square(square_string):
         if len(square_string) > 2:
@@ -41,6 +42,18 @@ def parse_pawn_move(game, string):
     print(f'You did a pawn move: \n', move_board)
     return move_board
 
+def parse_pawn_promotion(game, string):
+    move_board = copy.deepcopy(game.board)
+    # Regex: /[a-h][18]=[QNRB]/g
+    regex = r'[a-h][18]=[QNRB]'
+    match = re.match(regex, string)
+    print(f'Matched {match} from {string} using {regex}')
+    
+    if match is None:
+        raise ValueError(f'Pawn promotion error: Improper move syntax for pawn promotion {string}')
+    elif len(string) == len(match.group(0)):
+        print(f'Looks like simple pawn promotion')
+    return move_board
 
 def parse_castling(game, pieces, king, checks, string):
     move_board = copy.deepcopy(game.board)
