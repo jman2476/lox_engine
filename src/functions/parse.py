@@ -48,6 +48,8 @@ def parse_pawn_promotion(game, string):
     regex = r'[a-h][18]=[QNRB]'
     match = re.match(regex, string)
     print(f'Matched {match} from {string} using {regex}')
+    square_seperator = re.match(r'([a-h][18])(=[QNBR])',string)
+    print(f'Got square {square_seperator.group(1)} and new piece {square_seperator.group(2)} from {string} using {r'([a-h][18])'}')
     
     if match is None:
         raise ValueError(f'Pawn promotion error: Improper move syntax for pawn promotion {string}')

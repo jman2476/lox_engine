@@ -1,8 +1,10 @@
 from src.board import Board
-from src.functions.parse import (parse_square, 
-                                 parse_pawn_move, 
-                                 parse_castling, 
-                                 parse_pawn_promotion)
+from src.functions.parse import (
+    parse_square, 
+    parse_pawn_move, 
+    parse_castling, 
+    parse_pawn_promotion
+    )
 import copy
 
 class Game():
