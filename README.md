@@ -15,7 +15,7 @@ Lox engine is a rudimentary chess engine and game platform where you can play ag
     - [ ] Write special moves:
         - [ ] en-passent
         - [X] castling
-        - [ ] promotion
+        - [X] promotion
 - [ ] Write game state reader:
     - [ ] Before move is committed:
         - [ ] Check if move is valid

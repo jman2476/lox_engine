@@ -23,6 +23,7 @@ class Game():
         self.set_fen()
 
     def __repr__(self):
+        self.set_fen()
         return self.fen
     
     def start_new_game(self):
@@ -133,6 +134,7 @@ class Game():
         checks = self.board.find_checks(king.square, king.side)
         move_board = self.board
         pawn_move = False
+        initial_ep = self.en_passent
 
         print(f"Last character of {string}: {last_char}")
         print(f'Is {last_char} in range(1,9)? {last_char in range(1,9)}')
@@ -147,7 +149,6 @@ class Game():
                 pawn_move = True
                 # handle pawn promotion
                 # check that there is a pawn in the previous square
-                pass
             elif ord(last_char) - 48 in range(1,9):
                 print('Standard move type')
                 # Standard move type
@@ -158,7 +159,12 @@ class Game():
                     
                     move_board = parse_pawn_move(self, string)
                     pawn_move = True
-                
+                elif string[0] in move_board.files:
+                    # parse pawn capture
+                    pass
+                elif string[0] in move_board._fen_piece:
+                    # parse piece move
+                    pass
             elif last_char in ['0', 'o', 'O']:
                 print('Looks like castling')
                 move_board = parse_castling(self, pieces, king, checks, string)
@@ -168,9 +174,6 @@ class Game():
                 pass
         except Exception as e:
             print(f'Error found: {e}')
-            raise e
-            if not isinstance(e, ValueError):
-                raise e
         finally:   
             # Post move checks:
             new_pieces = move_board.white() if self.turn == 'white' else move_board.black()
@@ -178,9 +181,11 @@ class Game():
             new_checks = move_board.find_checks(new_king.square, new_king.side)
             if move_board == self.board:
                 print('No move happened')
+                self.en_passent = initial_ep
                 return
             if new_checks != []:
                 print(f'This move would cause checks at {new_checks}')
+                self.en_passent = initial_ep
             else:
                 self.board = move_board
                 if self.turn == 'black':

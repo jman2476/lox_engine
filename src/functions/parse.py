@@ -25,6 +25,7 @@ def parse_pawn_move(game, string):
             if two_square_piece.name == 'pawn':
                 if two_square_piece.side == game.turn and two_square_piece.in_start_pos:
                     two_square_piece.move(move_board, string)
+                    game.en_passent = f'{file}{rank + direction}'
                 else:        
                     raise ValueError('Pawn move error: You cannot do that')
             else:         
@@ -40,6 +41,21 @@ def parse_pawn_move(game, string):
             raise ValueError(f'Pawn move error: {piece} is not your pawn to move!')
         
     print(f'You did a pawn move: \n', move_board)
+    return move_board
+
+def parse_pawn_capture(game, string):
+    move_board = copy.deepcopy(game.board)
+    regex = r'^([a-h][xX])([a-h][2-7])'
+    match = re.match(regex, string)
+
+    if match is None:
+        raise ValueError(
+            'Pawn capture error: Improper capture syntax. If capturing on ranks 1 or 8, must specify piece to promote to (e.g. "=Q")')
+    else:
+        prev_file = string[0]
+        square = string[-2:]
+        file, rank = parse_square(square)
+        piece_at_target = move_board.check_square_filled(file, rank)
     return move_board
 
 def parse_pawn_promotion(game, string):
