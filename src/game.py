@@ -168,11 +168,14 @@ class Game():
                 pass
         except Exception as e:
             print(f'Error found: {e}')
+            raise e
+            if not isinstance(e, ValueError):
+                raise e
         finally:   
             # Post move checks:
             new_pieces = move_board.white() if self.turn == 'white' else move_board.black()
             new_king = next((piece for piece in new_pieces if piece.name == 'king'))
-            new_checks = self.board.find_checks(new_king.square, new_king.side)
+            new_checks = move_board.find_checks(new_king.square, new_king.side)
             if move_board == self.board:
                 print('No move happened')
                 return

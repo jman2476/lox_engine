@@ -46,15 +46,60 @@ def parse_pawn_promotion(game, string):
     move_board = copy.deepcopy(game.board)
     # Regex: /[a-h][18]=[QNRB]/g
     regex = r'[a-h][18]=[QNRB]'
-    match = re.match(regex, string)
+    match = re.search(regex, string)
     print(f'Matched {match} from {string} using {regex}')
-    square_seperator = re.match(r'([a-h][18])(=[QNBR])',string)
+    square_seperator = re.search(r'([a-h][18])(=[QNBR])',string)
+    # print('Tato', square_seperator)
     print(f'Got square {square_seperator.group(1)} and new piece {square_seperator.group(2)} from {string} using {r'([a-h][18])'}')
+    # print('Scopo')
+    file, rank = parse_square(square_seperator.group(1))
     
     if match is None:
         raise ValueError(f'Pawn promotion error: Improper move syntax for pawn promotion {string}')
     elif len(string) == len(match.group(0)):
         print(f'Looks like simple pawn promotion')
+        if move_board.check_square_filled(file, rank-1)[0]:
+            raise ValueError(f'Promotion error: square {file}{rank} is occupied.')
+        print(f'Rank: {rank}, file: {file}, turn: {game.turn}')
+        if rank == 8 and game.turn == 'white':
+            prv_sq_filled, __, piece = move_board.check_square_filled(file, 7)
+            if prv_sq_filled and piece.name == 'pawn':
+                new_piece = move_board._fen_piece[string[-1]]('white', f'{file}8')
+                move_board.board[file][7] = new_piece
+                move_board.board[file][6] = None
+            else:
+                raise ValueError(f'Promotion Error: No pawn to promote at {file}7')
+        elif rank == 1 and game.turn == 'black':
+            prv_sq_filled, __, piece = move_board.check_square_filled(file, 2)
+            if prv_sq_filled and piece.name == 'pawn':
+                new_piece = move_board._fen_piece[string[-1]]('black', f'{file}1')
+                move_board.board[file][0] = new_piece
+                move_board.board[file][1] = None
+            else:
+                raise ValueError(f'Promotion Error: No pawn to promote at {file}2')
+        else:
+            raise ValueError(f'Promotion error: {game.turn.title()} cannot promote on square {square_seperator.group(1)}')
+    elif 'x' in string or 'X' in string:
+        prev_file = string[0]
+        prev_rank = 7 if game.turn == 'white' else 2
+        capture_square = move_board.check_square_filled(file, rank)
+        if not capture_square[0]:
+            raise ValueError(f'Promotion error: No piece to capture at {file}{rank}')
+        elif capture_square[1] == game.turn:
+            raise ValueError(f'Promotion error: You cannot capture your own piece at {file}{rank}')
+        else: 
+            prv_sq_filled, __, piece = move_board.check_square_filled(prev_file, prev_rank)
+            if not prv_sq_filled or piece.name != 'pawn':
+                raise ValueError(f'Promotion error: No pawn to move at {prev_file}{prev_rank}')
+            if game.turn == 'white':
+                new_piece = move_board._fen_piece[string[-1]]('white', f'{file}8')
+                move_board.board[file][7] = new_piece
+                move_board.board[prev_file][prev_rank-1] = None
+            else:
+                new_piece = move_board._fen_piece[string[-1]]('black', f'{file}1')
+                move_board.board[file][0] = new_piece
+                move_board.board[prev_file][prev_rank-1] = None
+    print('Done parsing pawn promotion\n', move_board)
     return move_board
 
 def parse_castling(game, pieces, king, checks, string):
