@@ -3,7 +3,9 @@ from src.functions.parse import (
     parse_square, 
     parse_pawn_move, 
     parse_castling, 
-    parse_pawn_promotion
+    parse_pawn_promotion,
+    parse_pawn_capture,
+    parse_piece_move
     )
 import copy
 
@@ -137,7 +139,7 @@ class Game():
         initial_ep = self.en_passent
 
         print(f"Last character of {string}: {last_char}")
-        print(f'Is {last_char} in range(1,9)? {last_char in range(1,9)}')
+        print(f'Is {last_char} in range(1,9)? {ord(last_char)-48 in range(1,9)}')
 
         try:
             if last_char == '+' or last_char == '#':
@@ -160,11 +162,13 @@ class Game():
                     move_board = parse_pawn_move(self, string)
                     pawn_move = True
                 elif string[0] in move_board.files:
-                    # parse pawn capture
-                    pass
+                    print('Looks like a pawn capture')
+                    move_board = parse_pawn_capture(self, string)
+                    pawn_move = True
                 elif string[0] in move_board._fen_piece:
+                    print('tato')
                     # parse piece move
-                    pass
+                    move_board = parse_piece_move(self, string)
             elif last_char in ['0', 'o', 'O']:
                 print('Looks like castling')
                 move_board = parse_castling(self, pieces, king, checks, string)

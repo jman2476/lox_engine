@@ -1,0 +1,8 @@
+"filename", "language", "Markdown", "Python", "comment", "blank", "total"
+"/home/jeremy/personal_projects/lox_engine/README.md", "Markdown", 7, 0, 0, 0, 7
+"/home/jeremy/personal_projects/lox_engine/main.py", "Python", 0, 11, -5, 0, 6
+"/home/jeremy/personal_projects/lox_engine/src/board.py", "Python", 0, 5, 2, 2, 9
+"/home/jeremy/personal_projects/lox_engine/src/functions/parse.py", "Python", 0, 187, 7, 14, 208
+"/home/jeremy/personal_projects/lox_engine/src/game.py", "Python", 0, 65, 7, 8, 80
+"/home/jeremy/personal_projects/lox_engine/src/piece.py", "Python", 0, 2, 0, -1, 1
+"Total", "-", 7, 270, 11, 23, 311

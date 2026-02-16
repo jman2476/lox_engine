@@ -47,6 +47,7 @@ def parse_pawn_capture(game, string):
     move_board = copy.deepcopy(game.board)
     regex = r'^([a-h][xX])([a-h][2-7])'
     match = re.match(regex, string)
+    direction = -1 if game.turn == 'white' else 1
 
     if match is None:
         raise ValueError(
@@ -56,6 +57,25 @@ def parse_pawn_capture(game, string):
         square = string[-2:]
         file, rank = parse_square(square)
         piece_at_target = move_board.check_square_filled(file, rank)
+        attack_pawn = move_board.check_square_filled(prev_file, rank + direction)
+
+        if not piece_at_target[0]:
+            raise ValueError(
+                f'Pawn capture error: No piece to capture at {square}'
+            )
+        elif piece_at_target[1] == game.turn:
+            raise ValueError(
+                f'Pawn capture error: You cannot capture your own piece at {square}'
+            )
+        elif (not attack_pawn[0] 
+              or attack_pawn[1] != game.turn
+              or attack_pawn[2].name != 'pawn'):
+            raise ValueError(
+                f'Pawn capture error: You don\'t have a pawn to capture on {square} with at {prev_file}{rank + direction}'
+            )
+        move_board.board[file][rank-1] = attack_pawn[2]
+        move_board.board[prev_file][rank+direction-1] = None
+
     return move_board
 
 def parse_pawn_promotion(game, string):
@@ -216,3 +236,30 @@ def parse_castling(game, pieces, king, checks, string):
     else:
         raise ValueError(
             'Invalid move syntax. Suspected castling move.')
+    
+def parse_piece_move(game, string):
+    print('po')
+    move_board = copy.deepcopy(game.board)
+    piece_type = move_board._fen_piece[string[0]]
+    regex = r'^([BKNRQ])([a-h]*[1-8]*)(x*)([a-h][1-8])$'
+    matches = re.match(regex, string)
+    disambiguation = matches.groups()[1]
+    capture = matches.groups()[2]
+    square = matches.groups()[3]
+    
+    print(f'Match groups {matches.groups()}')
+    print(f'Moving {piece_type} to {square}')
+    print(f'Disambiguation code: {disambiguation}')
+    print(f'Capture? {capture=='x'}')
+    # Check what type of move it is:
+    #   - Basic move: Be5
+    #   - Basic capture: Bxe5
+    #   - Disambiguated moves:
+        #   - Single disambiguated: Ree4/R4e4
+        #   - Single dis capture: Rexe4
+        #   - Double disambiguated: Re1e4
+        #   - Double dis capture: Re1xe4
+
+
+    return move_board
+    
