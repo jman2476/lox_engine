@@ -246,6 +246,7 @@ def parse_piece_move(game, string):
     disambiguation = matches.groups()[1]
     capture = matches.groups()[2]
     square = matches.groups()[3]
+    file, rank = parse_square(square)
     
     print(f'Match groups {matches.groups()}')
     print(f'Moving {piece_type} to {square}')
@@ -259,7 +260,13 @@ def parse_piece_move(game, string):
         #   - Single dis capture: Rexe4
         #   - Double disambiguated: Re1e4
         #   - Double dis capture: Re1xe4
-
+    if square:
+        if len(string) == 3:
+            destination_square = move_board.check_square_filled(file, rank)
+            if destination_square[1] == game.turn:
+                raise ValueError(f'Piece move error: Cannot capture own piece at {square}')
+    else:
+        raise ValueError(f'Piece move error: No destination square found')
 
     return move_board
     
