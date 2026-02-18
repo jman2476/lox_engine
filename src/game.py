@@ -178,6 +178,7 @@ class Game():
                 pass
         except Exception as e:
             print(f'Error found: {e}')
+            raise e
         finally:   
             # Post move checks:
             new_pieces = move_board.white() if self.turn == 'white' else move_board.black()
@@ -200,6 +201,5 @@ class Game():
                 else:
                     self.halfmove = 0
 
-        pass
 
     

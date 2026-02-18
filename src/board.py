@@ -162,11 +162,14 @@ class Board():
     
     # Takes a pre-parsed square rank and file
     def check_square_filled(self, file, rank):
-        piece = self.board[file][rank-1]
-        if piece is None:
-            return False, None, None
-        else:
-            return True, piece.side, piece
+        try:
+            piece = self.board[file][rank-1]
+            if piece is None:
+                return False, None, None
+            else:
+                return True, piece.side, piece
+        except Exception as e:
+            print(f'Check square filled error: {e}')
     
     def get_white_pieces(self):
         white_pieces = []
@@ -378,6 +381,37 @@ class Board():
 
             return pieces
 
+        def king(file, rank):
+            pieces = []
+            file_idx = ord(file)
+            squares = [
+                (chr(file_idx + 1), rank + 1),
+                (chr(file_idx + 1), rank),
+                (chr(file_idx + 1), rank - 1),
+                (chr(file_idx), rank - 1),
+                (chr(file_idx - 1), rank - 1),
+                (chr(file_idx - 1), rank),
+                (chr(file_idx - 1), rank + 1),
+                (chr(file_idx), rank + 1),
+            ]
+            board_squares = []
+            for square in squares:
+                f, r = square
+                if f not in self.files:
+                    continue
+                if r-1 not in self.ranks:
+                    continue
+                board_squares.append(square)
+
+            for square in board_squares:
+                f, r = square
+                piece = self.board[f][r-1]
+                if piece is None:
+                    continue
+                elif piece.name == 'king':
+                    pieces.append(piece)
+
+
         match direction:
             case 'horizontal':
                 return horizontal
@@ -389,3 +423,5 @@ class Board():
                 return forward_diagonal
             case 'knight':
                 return knight
+            case 'king':
+                return king

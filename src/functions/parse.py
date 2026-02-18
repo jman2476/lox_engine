@@ -9,7 +9,7 @@ def parse_square(square_string):
             raise ValueError('parse_square: rank not between 1 and 8')
         if ord(file) not in range(97, 105) and ord(file) not in range(65, 72):
             raise ValueError('parse_square: file not between a and h, or A and H')
-        # print(f'Good square: {file}{ord(rank) - 48}')
+        print(f'Good square: {file}{ord(rank) - 48}')
         return file.lower(), ord(rank) - 48
 
 def parse_pawn_move(game, string):
@@ -250,7 +250,7 @@ def parse_piece_move(game, string):
     
     print(f'Match groups {matches.groups()}')
     print(f'Moving {piece_type} to {square}')
-    print(f'Disambiguation code: {disambiguation}')
+    print(f'Disambiguation code: {disambiguation or 'None'}')
     print(f'Capture? {capture=='x'}')
     # Check what type of move it is:
     #   - Basic move: Be5
@@ -263,10 +263,52 @@ def parse_piece_move(game, string):
     if square:
         if len(string) == 3:
             destination_square = move_board.check_square_filled(file, rank)
-            if destination_square[1] == game.turn:
-                raise ValueError(f'Piece move error: Cannot capture own piece at {square}')
+            if not destination_square[0]:
+                # handle lookback, move
+                pieces = piece_lookback(move_board, string[0], square)
+                piece = None
+
+                for p in pieces:
+                    if p is None:
+                        continue
+                    if p.side == game.turn and isinstance(p, piece_type):
+                        if piece:
+                            raise ValueError(f'Piece move error: Multiple {piece_type}s can move to {square}: at least {piece} and {p}. Please disambiguate the move')
+                        else:
+                            piece = p
+                if piece:
+                    print(f'Moving {piece} on board to {square}')
+                    piece.move(move_board, square)
+                else:
+                    raise ValueError(f'Piece move error: No {piece_type} found that can move to {square}')
+            else:
+                raise ValueError(f'Piece move error: Destination square {square} is occupied; incorrect move syntax')
+            
     else:
         raise ValueError(f'Piece move error: No destination square found')
 
     return move_board
-    
+
+def piece_lookback(board, piece_letter, square):
+    directions = {
+        'B': ['back_diagonal',
+            'forward_diagonal'],
+        'N': ['knight'],
+        'Q': ['horizontal',
+            'vertical',
+            'back_diagonal',
+            'forward_diagonal'],
+        'R': ['horizontal',
+            'vertical'],
+        'K': ['king']
+    }
+    pieces = []
+    f, r = parse_square(square)
+
+    for dir in directions[piece_letter]:
+        next_pieces = board.next_piece(dir)(f, r)
+        for piece in next_pieces:
+            if piece:
+                pieces.append(piece)
+
+    return pieces
