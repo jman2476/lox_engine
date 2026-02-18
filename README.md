@@ -24,8 +24,8 @@ Lox engine is a rudimentary chess engine and game platform where you can play ag
             - [ ] Are you trying to capture your own piece?
         - [ ] If not valid, revert
     - [ ] After move is committed:
-        - [ ] Check for promotion
-        - [ ] Check for check
+        - [X] Check for promotion
+        - [X] Check for check
         - [ ] Check for stalemate
         - [ ] Check for checkmate
 - [ ] Lox:
@@ -73,6 +73,7 @@ Lox engine is a rudimentary chess engine and game platform where you can play ag
         - if there is '+' or '#', skip
         - if there is a 'Q', 'N', 'R', or 'B', parse for pawn promotion
     - from there, read backward toward first character
+        - LMAO, fuck that -> Just use a regex, buddy
 
 
 ### Packages that could be useful:

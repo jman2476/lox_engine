@@ -6,6 +6,10 @@ def get_diagonal_edges(direction):
 
     # from top left to bottom right
     def back_diagonal(file, rank):
+        # New plan for refactor:
+        #   - if file_idx == rank_idx: a8, h1
+        #   - if file_idx > 7- rank_idx: left at top, right on right
+        #   - if file_idx < 7- rank_idx: left on left, right at bottom 
         file_idx = files.index(file)
         rank_idx = ranks.index(rank - 1)
         edge_left = min([file_idx, 7- rank_idx])
@@ -24,6 +28,10 @@ def get_diagonal_edges(direction):
         return square_left, square_right
     # from bottom left to top right
     def forward_diagonal(file, rank):
+        # New plan for refactor:
+        #   - if file_idx == rank_idx: a1, h8
+        #   - if file_idx > rank_idx: left at bottom, right on right
+        #   - if file_idx < rank_idx: left on left, right at top 
         file_idx = files.index(file)
         rank_idx = ranks.index(rank - 1)
         edge_left = min([file_idx, rank_idx])
