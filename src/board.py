@@ -99,7 +99,7 @@ class Board():
                 # print('rank array:', rank_arr)
                 char = rank_arr.pop(0)
                 if ord(char) in range(49, 57):
-                    empties = ord(char) - 48
+                    empties = int(char)
                     for j in range(0, empties):
                         file = self.files[file_ptr+j]
                         self.board[file][i] = None

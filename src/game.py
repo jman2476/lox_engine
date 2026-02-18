@@ -139,7 +139,7 @@ class Game():
         initial_ep = self.en_passent
 
         print(f"Last character of {string}: {last_char}")
-        print(f'Is {last_char} in range(1,9)? {ord(last_char)-48 in range(1,9)}')
+        print(f'Is {last_char} in range(1,9)? {int(last_char) in range(1,9)}')
 
         try:
             if last_char == '+' or last_char == '#':
@@ -151,7 +151,7 @@ class Game():
                 pawn_move = True
                 # handle pawn promotion
                 # check that there is a pawn in the previous square
-            elif ord(last_char) - 48 in range(1,9):
+            elif int(last_char) in range(1,9):
                 print('Standard move type')
                 # Standard move type
 
@@ -166,7 +166,6 @@ class Game():
                     move_board = parse_pawn_capture(self, string)
                     pawn_move = True
                 elif string[0] in move_board._fen_piece:
-                    print('tato')
                     # parse piece move
                     move_board = parse_piece_move(self, string)
             elif last_char in ['0', 'o', 'O']:
@@ -198,7 +197,7 @@ class Game():
                 self.turn = 'black' if self.turn == 'white' else 'white'
                 if not pawn_move:
                     self.halfmove += 1
-                else:
+                else: 
                     self.halfmove = 0
 
 

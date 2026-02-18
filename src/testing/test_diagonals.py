@@ -22,6 +22,27 @@ class TestDiagonals(unittest.TestCase):
             right_edge, ['g',1]
         )
         
+        left_edge, right_edge = get_diagonal_edges('back')('h', 8)
+
+        self.assertEqual(
+            left_edge, ['a', 1]
+        )
+
+        self.assertEqual(
+            right_edge, ['h', 8]
+        )
+
+        left_edge, right_edge = get_diagonal_edges('back')('a', 1)
+
+        self.assertEqual(
+            left_edge, ['a', 1]
+        )
+
+        self.assertEqual(
+            right_edge, ['h', 8]
+        )
+        
+        
     def test_get_forward_diagonal(self):
         left_edge, right_edge = get_diagonal_edges('forward')('e', 2)
 
@@ -39,6 +60,26 @@ class TestDiagonals(unittest.TestCase):
         )
         self.assertEqual(
             right_edge, ['f',8]
+        )
+        
+        left_edge, right_edge = get_diagonal_edges('forward')('a', 8)
+
+        self.assertEqual(
+            left_edge, ['a', 8]
+        )
+
+        self.assertEqual(
+            right_edge, ['h', 1]
+        )
+
+        left_edge, right_edge = get_diagonal_edges('forward')('h', 1)
+
+        self.assertEqual(
+            left_edge, ['a', 8]
+        )
+
+        self.assertEqual(
+            right_edge, ['h', 1]
         )
         
 

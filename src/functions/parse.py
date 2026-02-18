@@ -9,8 +9,8 @@ def parse_square(square_string):
             raise ValueError('parse_square: rank not between 1 and 8')
         if ord(file) not in range(97, 105) and ord(file) not in range(65, 72):
             raise ValueError('parse_square: file not between a and h, or A and H')
-        print(f'Good square: {file}{ord(rank) - 48}')
-        return file.lower(), ord(rank) - 48
+        # print(f'Good square: {file}{ord(rank) - 48}')
+        return file.lower(), int(rank)
 
 def parse_pawn_move(game, string):
     move_board = copy.deepcopy(game.board)
@@ -238,7 +238,7 @@ def parse_castling(game, pieces, king, checks, string):
             'Invalid move syntax. Suspected castling move.')
     
 def parse_piece_move(game, string):
-    print('po')
+    # print('po')
     move_board = copy.deepcopy(game.board)
     piece_type = move_board._fen_piece[string[0]]
     regex = r'^([BKNRQ])([a-h]*[1-8]*)(x*)([a-h][1-8])$'
@@ -251,7 +251,7 @@ def parse_piece_move(game, string):
     print(f'Match groups {matches.groups()}')
     print(f'Moving {piece_type} to {square}')
     print(f'Disambiguation code: {disambiguation or 'None'}')
-    print(f'Capture? {capture=='x'}')
+    # print(f'Capture? {capture=='x'}')
     # Check what type of move it is:
     #   - Basic move: Be5
     #   - Basic capture: Bxe5
@@ -261,28 +261,44 @@ def parse_piece_move(game, string):
         #   - Double disambiguated: Re1e4
         #   - Double dis capture: Re1xe4
     if square:
-        if len(string) == 3:
-            destination_square = move_board.check_square_filled(file, rank)
-            if not destination_square[0]:
-                # handle lookback, move
-                pieces = piece_lookback(move_board, string[0], square)
-                piece = None
-
-                for p in pieces:
-                    if p is None:
-                        continue
-                    if p.side == game.turn and isinstance(p, piece_type):
-                        if piece:
-                            raise ValueError(f'Piece move error: Multiple {piece_type}s can move to {square}: at least {piece} and {p}. Please disambiguate the move')
-                        else:
+        destination_square = move_board.check_square_filled(file, rank)
+        pieces = piece_lookback(move_board, string[0], square)
+        piece = None
+        print('Pieces found',pieces)
+        for p in pieces:
+            if p is None:
+                continue
+            if p.side == game.turn and isinstance(p, piece_type):
+                if piece and disambiguation == '':
+                    raise ValueError(f'Piece move error: Multiple {piece_type}s can move to {square}: at least {piece} and {p}. Please disambiguate the move')
+                elif disambiguation != '':
+                    print(f'{p}: file {p.file}, rank {p.rank}')
+                    if disambiguation in move_board.files:
+                        if p.file == disambiguation:
                             piece = p
-                if piece:
-                    print(f'Moving {piece} on board to {square}')
-                    piece.move(move_board, square)
+                        else: continue
+                    elif int(disambiguation) in move_board.ranks:
+                        print(f'disambigs: {int(disambiguation)}')
+                        if p.rank ==int(disambiguation):
+                            piece = p
+                        else: continue
+                    else:
+                        if p.square == disambiguation:
+                            piece = p
                 else:
-                    raise ValueError(f'Piece move error: No {piece_type} found that can move to {square}')
-            else:
+                    print(f'Piece found: {p}')
+                    piece = p
+        if piece:
+            print('Piece', piece)
+            if destination_square[0] and destination_square[1] == game.turn:
+                raise ValueError(f'Piece move error: Cannot capture own {destination_square[2]}')
+            elif destination_square[0] and capture != 'x':
                 raise ValueError(f'Piece move error: Destination square {square} is occupied; incorrect move syntax')
+            else:
+                print(f'Moving {piece} to {square}')
+                piece.move(move_board, square)
+        else:
+            raise ValueError(f'Piece move error: No {piece_type} found that can move to {square}')
             
     else:
         raise ValueError(f'Piece move error: No destination square found')
