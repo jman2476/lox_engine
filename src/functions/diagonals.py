@@ -17,12 +17,12 @@ def get_diagonal_edges(direction):
             7 - file_idx, rank_idx
         ])
            
-        if file_idx > 7 - rank_idx:
+        if file_idx > 7 - rank_idx: # over diagonal
             edge = 7 - rank_idx
             square_left = [files[edge], 8]
             square_right = ['h', ranks[edge] + 1]
-        elif file_idx < 7 - rank_idx:
-            square_left = ['a', ranks[rank_idx]]
+        elif file_idx < 7 - rank_idx: # under diagonal
+            square_left = ['a', ranks[rank_idx] + 1]
             square_right = [files[rank_idx] , 1]
         else:
             square_left = ['a', 8]
@@ -49,20 +49,23 @@ def get_diagonal_edges(direction):
             7 - file_idx, 7 - rank_idx
         ])
 
-        if file_idx > rank_idx:
-            square_left = [, 1]
-            square_right = ['']
-        elif file_idx < rank_idx:
-            square_left = []
-            square_right = []
+        if file_idx > rank_idx: # over diagonal
+            edge = file_idx - rank_idx
+            square_left = [file[edge], 1]
+            square_right = ['h', rank[7 - edge] + 1]
+        elif file_idx < rank_idx: # under diagonal
+
+            edge = rank_idx - file_idx
+            square_left = ['a', rank[edge] + 1]
+            square_right = [file[7 - edge], 8]
         else:
             square_left = ['a', 1]
             square_right = ['h', 8]
 
-        square_left = [files[file_idx-edge_left],
-                       ranks[rank_idx-edge_left] + 1]
-        square_right= [files[file_idx+edge_right], 
-                       ranks[rank_idx+edge_right] + 1]
+        # square_left = [files[file_idx-edge_left],
+        #                ranks[rank_idx-edge_left] + 1]
+        # square_right= [files[file_idx+edge_right], 
+        #                ranks[rank_idx+edge_right] + 1]
 
         return square_left, square_right
     
