@@ -42,31 +42,55 @@ def get_diagonal_edges(direction):
         #   - if file_idx == rank_idx: a1, h8
         #   - if file_idx > rank_idx: left at bottom, right on right
         #   - if file_idx < rank_idx: left on left, right at top 
-        file_idx = files.index(file)
-        rank_idx = ranks.index(rank - 1)
-        edge_left = min([file_idx, rank_idx])
-        edge_right = min([
-            7 - file_idx, 7 - rank_idx
-        ])
+        file_right = files.index(file)
+        rank_right = ranks.index(rank - 1)
+        file_left = files.index(file)
+        rank_left = ranks.index(rank - 1) 
+        print(f'file left: {file_left}; rank left: {rank_left}')
+        print(f'file right: {file_right}; rank right: {rank_right}')
 
-        if file_idx > rank_idx: # over diagonal
-            edge = file_idx - rank_idx
-            square_left = [file[edge], 1]
-            square_right = ['h', rank[7 - edge] + 1]
-        elif file_idx < rank_idx: # under diagonal
+        while file_left > 0 and rank_left > 0:
+            file_left -= 1
+            rank_left -= 1
+            print(f'file left: {file_left}; rank left: {rank_left}')
+        print(f'file left: {file_left}; rank left: {rank_left}')
+         
+        square_left = [
+            files[file_left],
+            ranks[rank_left] + 1
+        ]
+        
 
-            edge = rank_idx - file_idx
-            square_left = ['a', rank[edge] + 1]
-            square_right = [file[7 - edge], 8]
-        else:
-            square_left = ['a', 1]
-            square_right = ['h', 8]
+        while file_right < 7 and rank_right < 7:
+            file_right += 1
+            rank_right += 1
+            print(f'file right: {file_right}; rank right: {rank_right}')
+        print(f'file right: {file_right}; rank right: {rank_right}')
+        
+        square_right = [
+            files[file_right],
+            ranks[rank_right] + 1
+        ]
+
+
+        # if file_idx > rank_idx: # over diagonal
+        #     edge = file_idx - rank_idx
+        #     square_left = [file[edge], 1]
+        #     square_right = ['h', rank[7 - edge] + 1]
+        # elif file_idx < rank_idx: # under diagonal
+
+        #     edge = rank_idx - file_idx
+        #     square_left = ['a', rank[edge] + 1]
+        #     square_right = [file[7 - edge], 8]
+        # else:
+        #     square_left = ['a', 1]
+        #     square_right = ['h', 8]
 
         # square_left = [files[file_idx-edge_left],
         #                ranks[rank_idx-edge_left] + 1]
         # square_right= [files[file_idx+edge_right], 
         #                ranks[rank_idx+edge_right] + 1]
-
+        print(f'Left sqr: {square_left}; Right sqr: {square_right}')
         return square_left, square_right
     
     match direction:
