@@ -50,6 +50,7 @@ def parse_pawn_capture(game, string):
     direction = -1 if game.turn == 'white' else 1
 
     if match is None:
+        # check for en passent
         raise ValueError(
             'Pawn capture error: Improper capture syntax. If capturing on ranks 1 or 8, must specify piece to promote to (e.g. "=Q")')
     else:

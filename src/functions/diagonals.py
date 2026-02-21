@@ -36,29 +36,6 @@ def get_diagonal_edges(direction):
             ranks[file_left] + 1
         ]
 
-        # edge_left = min([file_idx, 7- rank_idx])
-        # edge_right = min([
-        #     7 - file_idx, rank_idx
-        # ])
-           
-        # if file_idx > 7 - rank_idx: # over diagonal
-        #     edge = 7 - rank_idx
-        #     square_left = [files[edge], 8]
-        #     square_right = ['h', ranks[edge] + 1]
-        # elif file_idx < 7 - rank_idx: # under diagonal
-        #     square_left = ['a', ranks[rank_idx] + 1]
-        #     square_right = [files[rank_idx] , 1]
-        # else:
-        #     square_left = ['a', 8]
-        #     square_right = ['h', 1]
-
-        # square_left = [files[file_idx-edge_left], 
-        #                ranks[rank_idx+edge_left] + 1]
-        # square_right= [files[file_idx+edge_right], 
-        #                ranks[rank_idx-edge_right] + 1]
-        # print(f'Back diag edge image: \n{file_idx}, {rank_idx}\n{edge_left}, {edge_right}\n{square_left}\n{square_right}')
-
-        print(f'Back diagonal: {square_left}, {square_right}')
         return square_left, square_right
 
     # from bottom left to top right

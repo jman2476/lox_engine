@@ -44,7 +44,6 @@ class TestDiagonals(unittest.TestCase):
         
         
     def test_get_forward_diagonal(self):
-        print('Test Get fore diagonal')
         left_edge, right_edge = get_diagonal_edges('forward')('e', 2)
 
         self.assertEqual(
