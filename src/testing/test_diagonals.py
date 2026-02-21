@@ -25,7 +25,7 @@ class TestDiagonals(unittest.TestCase):
         left_edge, right_edge = get_diagonal_edges('back')('h', 8)
 
         self.assertEqual(
-            left_edge, ['a', 1]
+            left_edge, ['h', 8]
         )
 
         self.assertEqual(
@@ -39,7 +39,7 @@ class TestDiagonals(unittest.TestCase):
         )
 
         self.assertEqual(
-            right_edge, ['h', 8]
+            right_edge, ['a', 1]
         )
         
         
