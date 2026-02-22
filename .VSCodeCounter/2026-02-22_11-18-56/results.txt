@@ -1,0 +1,55 @@
+Date : 2026-02-22 11:18:56
+Directory : /home/jeremy/personal_projects/lox_engine
+Total : 23 files,  1887 codes, 112 comments, 310 blanks, all 2309 lines
+
+Languages
++--------------+------------+------------+------------+------------+------------+
+| language     | files      | code       | comment    | blank      | total      |
++--------------+------------+------------+------------+------------+------------+
+| Python       |         20 |      1,793 |        112 |        292 |      2,197 |
+| Markdown     |          1 |         86 |          0 |         15 |        101 |
+| toml         |          1 |          7 |          0 |          2 |          9 |
+| Shell Script |          1 |          1 |          0 |          1 |          2 |
++--------------+------------+------------+------------+------------+------------+
+
+Directories
++-------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                    | files      | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                       |         23 |      1,887 |        112 |        310 |      2,309 |
+| . (Files)                                                               |          4 |        114 |          0 |         24 |        138 |
+| src                                                                     |         19 |      1,773 |        112 |        286 |      2,171 |
+| src (Files)                                                             |          4 |        780 |         59 |        109 |        948 |
+| src/functions                                                           |          4 |        371 |         33 |         42 |        446 |
+| src/testing                                                             |         11 |        622 |         20 |        135 |        777 |
++-------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-------------------------------------------------------------------------+--------------+------------+------------+------------+------------+
+| filename                                                                | language     | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------+--------------+------------+------------+------------+------------+
+| /home/jeremy/personal_projects/lox_engine/README.md                     | Markdown     |         86 |          0 |         15 |        101 |
+| /home/jeremy/personal_projects/lox_engine/main.py                       | Python       |         20 |          0 |          6 |         26 |
+| /home/jeremy/personal_projects/lox_engine/src/__init__.py               | Python       |          0 |          0 |          1 |          1 |
+| /home/jeremy/personal_projects/lox_engine/src/board.py                  | Python       |        360 |         23 |         44 |        427 |
+| /home/jeremy/personal_projects/lox_engine/src/functions/__init__.py     | Python       |          0 |          0 |          1 |          1 |
+| /home/jeremy/personal_projects/lox_engine/src/functions/diagonals.py    | Python       |         70 |         12 |         14 |         96 |
+| /home/jeremy/personal_projects/lox_engine/src/functions/direction.py    | Python       |          2 |          0 |          2 |          4 |
+| /home/jeremy/personal_projects/lox_engine/src/functions/parse.py        | Python       |        299 |         21 |         25 |        345 |
+| /home/jeremy/personal_projects/lox_engine/src/game.py                   | Python       |        164 |         16 |         25 |        205 |
+| /home/jeremy/personal_projects/lox_engine/src/piece.py                  | Python       |        256 |         20 |         39 |        315 |
+| /home/jeremy/personal_projects/lox_engine/src/testing/__init__.py       | Python       |          0 |          0 |          1 |          1 |
+| /home/jeremy/personal_projects/lox_engine/src/testing/test_bishop.py    | Python       |         34 |          1 |          6 |         41 |
+| /home/jeremy/personal_projects/lox_engine/src/testing/test_board.py     | Python       |        213 |         13 |         34 |        260 |
+| /home/jeremy/personal_projects/lox_engine/src/testing/test_diagonals.py | Python       |         91 |          0 |         24 |        115 |
+| /home/jeremy/personal_projects/lox_engine/src/testing/test_game.py      | Python       |         64 |          0 |         20 |         84 |
+| /home/jeremy/personal_projects/lox_engine/src/testing/test_king.py      | Python       |         46 |          3 |         11 |         60 |
+| /home/jeremy/personal_projects/lox_engine/src/testing/test_knight.py    | Python       |         30 |          1 |          7 |         38 |
+| /home/jeremy/personal_projects/lox_engine/src/testing/test_parse.py     | Python       |         31 |          0 |         10 |         41 |
+| /home/jeremy/personal_projects/lox_engine/src/testing/test_pawn.py      | Python       |         51 |          0 |          9 |         60 |
+| /home/jeremy/personal_projects/lox_engine/src/testing/test_queen.py     | Python       |         30 |          1 |          6 |         37 |
+| /home/jeremy/personal_projects/lox_engine/src/testing/test_rook.py      | Python       |         32 |          1 |          7 |         40 |
+| /home/jeremy/personal_projects/lox_engine/test.sh                       | Shell Script |          1 |          0 |          1 |          2 |
+| /home/jeremy/personal_projects/lox_engine/uv.lock                       | toml         |          7 |          0 |          2 |          9 |
+| Total                                                                   |              |      1,887 |        112 |        310 |      2,309 |
++-------------------------------------------------------------------------+--------------+------------+------------+------------+------------+

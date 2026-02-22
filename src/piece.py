@@ -33,11 +33,11 @@ class Pawn(Piece):
         self.icon = '\u2659' if self.side == 'white' else '\u265F'
         self.name = 'pawn'
     
-    def move(self, board, destination): 
+    def move(self, board, destination, ep = False): 
         (file, rank) = parse_square(destination)
         try:
             self.check_nil_move(rank, file)
-            self.move_valid(rank, file, board)
+            self.move_valid(rank, file, board, ep)
             board.board[file][rank-1] = self
             board.board[self.file][self.rank-1] = None
             self.rank, self.file = rank, file 
@@ -46,7 +46,7 @@ class Pawn(Piece):
             print('Pawn move error:', e)
             raise Exception('Pawn move error')
 
-    def move_valid(self, rank, file, board):
+    def move_valid(self, rank, file, board, ep):
         if self.rank == rank:
             raise ValueError('Pawns cannot move laterally')
         elif (self.rank > rank and self.side == 'white'):
@@ -79,7 +79,7 @@ class Pawn(Piece):
         else:
             if distance != 1:
                 raise ValueError('Too far for pawn to capture')
-            elif not dst_occupied:
+            elif not dst_occupied and not ep:
                 raise ValueError('No piece for pawn to capture')
             else:
                 return True

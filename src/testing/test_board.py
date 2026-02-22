@@ -98,7 +98,7 @@ class TestBoard(unittest.TestCase):
         board = Board()
         board.setup_new()
         checks = board.find_checks('e1', 'white')
-        print(f'All checks board: {board}')
+        # print(f'All checks board: {board}')
 
         self.assertEqual(checks, [])
 
@@ -243,13 +243,13 @@ class TestBoard(unittest.TestCase):
         for p in pieces:
             f, r = parse_square(p.square)
             board.board[f][r-1] = p
-        print(board)
+        # print(board)
         horses = board.next_piece('knight')('d', 4)
 
         for p in pieces2:
             f, r = parse_square(p.square)
             board.board[f][r-1] = p
-        print(board)
+        # print(board)
         horsies = board.next_piece('knight')('d', 4)
         
         self.assertEqual(

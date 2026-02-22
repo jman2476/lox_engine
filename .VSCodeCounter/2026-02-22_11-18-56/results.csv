@@ -1,0 +1,25 @@
+"filename", "language", "Python", "toml", "Shell Script", "Markdown", "comment", "blank", "total"
+"/home/jeremy/personal_projects/lox_engine/README.md", "Markdown", 0, 0, 0, 86, 0, 15, 101
+"/home/jeremy/personal_projects/lox_engine/main.py", "Python", 20, 0, 0, 0, 0, 6, 26
+"/home/jeremy/personal_projects/lox_engine/src/__init__.py", "Python", 0, 0, 0, 0, 0, 1, 1
+"/home/jeremy/personal_projects/lox_engine/src/board.py", "Python", 360, 0, 0, 0, 23, 44, 427
+"/home/jeremy/personal_projects/lox_engine/src/functions/__init__.py", "Python", 0, 0, 0, 0, 0, 1, 1
+"/home/jeremy/personal_projects/lox_engine/src/functions/diagonals.py", "Python", 70, 0, 0, 0, 12, 14, 96
+"/home/jeremy/personal_projects/lox_engine/src/functions/direction.py", "Python", 2, 0, 0, 0, 0, 2, 4
+"/home/jeremy/personal_projects/lox_engine/src/functions/parse.py", "Python", 299, 0, 0, 0, 21, 25, 345
+"/home/jeremy/personal_projects/lox_engine/src/game.py", "Python", 164, 0, 0, 0, 16, 25, 205
+"/home/jeremy/personal_projects/lox_engine/src/piece.py", "Python", 256, 0, 0, 0, 20, 39, 315
+"/home/jeremy/personal_projects/lox_engine/src/testing/__init__.py", "Python", 0, 0, 0, 0, 0, 1, 1
+"/home/jeremy/personal_projects/lox_engine/src/testing/test_bishop.py", "Python", 34, 0, 0, 0, 1, 6, 41
+"/home/jeremy/personal_projects/lox_engine/src/testing/test_board.py", "Python", 213, 0, 0, 0, 13, 34, 260
+"/home/jeremy/personal_projects/lox_engine/src/testing/test_diagonals.py", "Python", 91, 0, 0, 0, 0, 24, 115
+"/home/jeremy/personal_projects/lox_engine/src/testing/test_game.py", "Python", 64, 0, 0, 0, 0, 20, 84
+"/home/jeremy/personal_projects/lox_engine/src/testing/test_king.py", "Python", 46, 0, 0, 0, 3, 11, 60
+"/home/jeremy/personal_projects/lox_engine/src/testing/test_knight.py", "Python", 30, 0, 0, 0, 1, 7, 38
+"/home/jeremy/personal_projects/lox_engine/src/testing/test_parse.py", "Python", 31, 0, 0, 0, 0, 10, 41
+"/home/jeremy/personal_projects/lox_engine/src/testing/test_pawn.py", "Python", 51, 0, 0, 0, 0, 9, 60
+"/home/jeremy/personal_projects/lox_engine/src/testing/test_queen.py", "Python", 30, 0, 0, 0, 1, 6, 37
+"/home/jeremy/personal_projects/lox_engine/src/testing/test_rook.py", "Python", 32, 0, 0, 0, 1, 7, 40
+"/home/jeremy/personal_projects/lox_engine/test.sh", "Shell Script", 0, 0, 1, 0, 0, 1, 2
+"/home/jeremy/personal_projects/lox_engine/uv.lock", "toml", 0, 7, 0, 0, 0, 2, 9
+"Total", "-", 1793, 7, 1, 86, 112, 310, 2309

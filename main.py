@@ -4,6 +4,7 @@ import sys
 
 def main():
     print("Starting new game with lox-engine!")
+    print("Please input moves with proper algebraic notation")
     fen = sys.argv[1] if len(sys.argv) > 1 else None
     game = Game() 
     if fen is None:

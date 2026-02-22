@@ -40,7 +40,7 @@ def parse_pawn_move(game, string):
         else:
             raise ValueError(f'Pawn move error: {piece} is not your pawn to move!')
         
-    print(f'You did a pawn move: \n', move_board)
+    # print(f'You did a pawn move: \n', move_board)
     return move_board
 
 def parse_pawn_capture(game, string):
@@ -61,6 +61,19 @@ def parse_pawn_capture(game, string):
         attack_pawn = move_board.check_square_filled(prev_file, rank + direction)
 
         if not piece_at_target[0]:
+            if game.en_passent == match[2]:
+                print('Google en passent\nHoly hell!')
+                piece_at_target = move_board.check_square_filled(file, rank + direction)
+                if not piece_at_target[0]:
+                    raise ValueError(
+                        f'En passent error: En passent logged in game FEN, but no opposing pawn at corresponding square'
+                    )
+                # print(f'En passent: remove piece at {file}{rank+direction}')
+                
+                attack_pawn[2].move(move_board, square, True)
+                move_board.board[file][rank + direction-1] = None
+                return move_board
+
             raise ValueError(
                 f'Pawn capture error: No piece to capture at {square}'
             )
@@ -74,8 +87,9 @@ def parse_pawn_capture(game, string):
             raise ValueError(
                 f'Pawn capture error: You don\'t have a pawn to capture on {square} with at {prev_file}{rank + direction}'
             )
-        move_board.board[file][rank-1] = attack_pawn[2]
-        move_board.board[prev_file][rank+direction-1] = None
+        # move_board.board[file][rank-1] = attack_pawn[2]
+        # move_board.board[prev_file][rank+direction-1] = None
+        attack_pawn[2].move(move_board, square)
 
     return move_board
 
@@ -84,20 +98,19 @@ def parse_pawn_promotion(game, string):
     # Regex: /[a-h][18]=[QNRB]/g
     regex = r'[a-h][18]=[QNRB]'
     match = re.search(regex, string)
-    print(f'Matched {match} from {string} using {regex}')
+    # print(f'Matched {match} from {string} using {regex}')
     square_seperator = re.search(r'([a-h][18])(=[QNBR])',string)
     # print('Tato', square_seperator)
-    print(f'Got square {square_seperator.group(1)} and new piece {square_seperator.group(2)} from {string} using {r'([a-h][18])'}')
-    # print('Scopo')
+    # print(f'Got square {square_seperator.group(1)} and new piece {square_seperator.group(2)} from {string} using {r'([a-h][18])'}')
     file, rank = parse_square(square_seperator.group(1))
     
     if match is None:
         raise ValueError(f'Pawn promotion error: Improper move syntax for pawn promotion {string}')
     elif len(string) == len(match.group(0)):
-        print(f'Looks like simple pawn promotion')
+        # print(f'Looks like simple pawn promotion')
         if move_board.check_square_filled(file, rank-1)[0]:
             raise ValueError(f'Promotion error: square {file}{rank} is occupied.')
-        print(f'Rank: {rank}, file: {file}, turn: {game.turn}')
+        # print(f'Rank: {rank}, file: {file}, turn: {game.turn}')
         if rank == 8 and game.turn == 'white':
             prv_sq_filled, __, piece = move_board.check_square_filled(file, 7)
             if prv_sq_filled and piece.name == 'pawn':
@@ -136,18 +149,18 @@ def parse_pawn_promotion(game, string):
                 new_piece = move_board._fen_piece[string[-1]]('black', f'{file}1')
                 move_board.board[file][0] = new_piece
                 move_board.board[prev_file][prev_rank-1] = None
-    print('Done parsing pawn promotion\n', move_board)
+    # print('Done parsing pawn promotion\n', move_board)
     return move_board
 
 def parse_castling(game, pieces, king, checks, string):
     move_board = copy.deepcopy(game.board)
     rooks = [piece for piece in pieces if piece.name == 'rook']
-    for rook in rooks:
-        print(rook)
+    # for rook in rooks:
+    #     print(rook)
     if string in ['0-0', 'O-O', 'o-o']:
         h_rook = next((rook for rook in rooks 
                         if (rook.square == 'h1' or rook.square == 'h8')))
-        print(f'a_rook: {h_rook}, {h_rook.in_start_pos}')
+        # print(f'a_rook: {h_rook}, {h_rook.in_start_pos}')
         if h_rook is None or not h_rook.in_start_pos:
             raise ValueError(
                 'Castling failure: The h rook has been moved off starting square')
@@ -165,7 +178,7 @@ def parse_castling(game, pieces, king, checks, string):
         # will king move through check on f and g files?
         (f_sqr, g_sqr) = ('f' + king.square[1],
                             'g' + king.square[1])
-        print(f'Squares to check during castling: {f_sqr}{g_sqr}')
+        # print(f'Squares to check during castling: {f_sqr}{g_sqr}')
         f_file, f_rank = parse_square(f_sqr)
         g_file, g_rank = parse_square(g_sqr)
         blocked = (move_board.check_square_filled(f_file,f_rank)[0],
@@ -210,7 +223,7 @@ def parse_castling(game, pieces, king, checks, string):
         # will king move through check on f and g files?
         (d_sqr, c_sqr) = ('d' + king.square[1],
                             'c' + king.square[1])
-        print(f'Squares to check during castling: {d_sqr}{c_sqr}')
+        # print(f'Squares to check during castling: {d_sqr}{c_sqr}')
         d_file, d_rank = parse_square(d_sqr)
         c_file, c_rank = parse_square(c_sqr)
         blocked = (move_board.check_square_filled(d_file,d_rank)[0],
@@ -233,7 +246,7 @@ def parse_castling(game, pieces, king, checks, string):
         move_board.board[a_rook.file][a_rook.rank-1] = None
         king.square = c_sqr
         a_rook.square = d_sqr
-        print(f'Post move board: \n{move_board}')
+        # print(f'Post move board: \n{move_board}')
     else:
         raise ValueError(
             'Invalid move syntax. Suspected castling move.')
@@ -249,9 +262,9 @@ def parse_piece_move(game, string):
     square = matches.groups()[3]
     file, rank = parse_square(square)
     
-    print(f'Match groups {matches.groups()}')
-    print(f'Moving {piece_type} to {square}')
-    print(f'Disambiguation code: {disambiguation or 'None'}')
+    # print(f'Match groups {matches.groups()}')
+    # print(f'Moving {piece_type} to {square}')
+    # print(f'Disambiguation code: {disambiguation or 'None'}')
     # print(f'Capture? {capture=='x'}')
     # Check what type of move it is:
     #   - Basic move: Be5
@@ -265,7 +278,7 @@ def parse_piece_move(game, string):
         destination_square = move_board.check_square_filled(file, rank)
         pieces = piece_lookback(move_board, string[0], square)
         piece = None
-        print('Pieces found',pieces)
+        # print('Pieces found',pieces)
         for p in pieces:
             if p is None:
                 continue
@@ -273,13 +286,13 @@ def parse_piece_move(game, string):
                 if piece and disambiguation == '':
                     raise ValueError(f'Piece move error: Multiple {piece_type}s can move to {square}: at least {piece} and {p}. Please disambiguate the move')
                 elif disambiguation != '':
-                    print(f'{p}: file {p.file}, rank {p.rank}')
+                    # print(f'{p}: file {p.file}, rank {p.rank}')
                     if disambiguation in move_board.files:
                         if p.file == disambiguation:
                             piece = p
                         else: continue
                     elif (disambiguation) in move_board.ranks:
-                        print(f'disambigs: {int(disambiguation)}')
+                        # print(f'disambigs: {int(disambiguation)}')
                         if p.rank ==int(disambiguation):
                             piece = p
                         else: continue
@@ -287,16 +300,16 @@ def parse_piece_move(game, string):
                         if p.square == disambiguation:
                             piece = p
                 else:
-                    print(f'Piece found: {p}')
+                    # print(f'Piece found: {p}')
                     piece = p
         if piece:
-            print('Piece', piece)
+            # print('Piece', piece)
             if destination_square[0] and destination_square[1] == game.turn:
                 raise ValueError(f'Piece move error: Cannot capture own {destination_square[2]}')
             elif destination_square[0] and capture != 'x':
                 raise ValueError(f'Piece move error: Destination square {square} is occupied; incorrect move syntax')
             else:
-                print(f'Moving {piece} to {square}')
+                # print(f'Moving {piece} to {square}')
                 piece.move(move_board, square)
         else:
             raise ValueError(f'Piece move error: No {piece_type} found that can move to {square}')

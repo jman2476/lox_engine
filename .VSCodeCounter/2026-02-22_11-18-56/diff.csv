@@ -1,0 +1,9 @@
+"filename", "language", "Python", "Markdown", "comment", "blank", "total"
+"/home/jeremy/personal_projects/lox_engine/README.md", "Markdown", 0, 1, 0, 0, 1
+"/home/jeremy/personal_projects/lox_engine/src/board.py", "Python", 33, 0, 0, 3, 36
+"/home/jeremy/personal_projects/lox_engine/src/functions/diagonals.py", "Python", 20, 0, 10, 5, 35
+"/home/jeremy/personal_projects/lox_engine/src/functions/parse.py", "Python", 103, 0, 13, 11, 127
+"/home/jeremy/personal_projects/lox_engine/src/game.py", "Python", 5, 0, -1, 0, 4
+"/home/jeremy/personal_projects/lox_engine/src/piece.py", "Python", 0, 0, -1, 0, -1
+"/home/jeremy/personal_projects/lox_engine/src/testing/test_diagonals.py", "Python", 28, 0, 0, 13, 41
+"Total", "-", 189, 1, 21, 32, 243
