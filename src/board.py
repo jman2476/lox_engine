@@ -8,6 +8,7 @@ from src.functions.diagonals import (
     get_diagonal_edges,
     get_diagonal_squares
     )
+from colorama import Back, Style, Fore
 
 class Board():
     def __init__(self):
@@ -61,12 +62,14 @@ class Board():
             for key, file in self.board.items():
                 piece = file[r]
                 if piece is None: 
-                    piece = '\u25A0' if dark else '\u2610'
+                    # piece = Back.YELLOW + '\u25A0' if dark else Back.WHITE + '\u2610'
+                    piece = Back.RED + ' ' if dark else Back.YELLOW + ' '
+                    piece = Fore.BLACK + Style.BRIGHT + piece
                 else: 
-                    piece = piece.icon
+                    piece = (Back.RED if dark else Back.YELLOW) + piece.icon  
                 dark = not dark if key != 'h' else dark
                 rank += f' {piece}'
-            rank += f' {r+1}'
+            rank += f' {Style.RESET_ALL}{r+1}'
             board += rank + '\n'
         
         board += files + '\n'

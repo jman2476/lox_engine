@@ -201,7 +201,8 @@ def parse_castling(game, pieces, king, checks, string):
         move_board.board[h_rook.file][h_rook.rank-1] = None
         king.square = g_sqr
         h_rook.square = f_sqr
-        print(f'Post move board: \n{move_board}')
+        # print(f'Post move board: \n{move_board}')
+        return move_board
     elif string in ['0-0-0', 'o-o-o', 'O-O-O']:
         a_rook = next((rook for rook in rooks 
                         if (rook.square == 'a1' or rook.square == 'a8')))
@@ -247,6 +248,7 @@ def parse_castling(game, pieces, king, checks, string):
         king.square = c_sqr
         a_rook.square = d_sqr
         # print(f'Post move board: \n{move_board}')
+        return move_board
     else:
         raise ValueError(
             'Invalid move syntax. Suspected castling move.')

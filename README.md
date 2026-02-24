@@ -1,84 +1,20 @@
 # lox_engine
 Lox engine is a rudimentary chess engine and game platform where you can play against Lox, a basic chess engine, or against your friends in timed or untimed games.
 
-## Brainstorming:
-- [ ] Write board representation
-    - [X] Should just show the board in the terminal for now
-    - [ ] Input chess notation to CLI to move pieces, no logic for now
-- [ ] Write FEN or PGN parser
-    - [X] board to FEN
-    - [X] FEN to board setup
-    - [ ] export game as PGN
-    - [ ] import PGN as game
-- [ ] Build classes for pieces
-    - [X] Write movement per piece
-    - [ ] Write special moves:
-        - [ ] en-passent
-        - [X] castling
-        - [X] promotion
-- [ ] Write game state reader:
-    - [ ] Before move is committed:
-        - [ ] Check if move is valid
-            - [ ] Can this piece make this move?
-            - [ ] Will this move result in putting self in check?
-            - [ ] Are you trying to capture your own piece?
-        - [ ] If not valid, revert
-    - [ ] After move is committed:
-        - [X] Check for promotion
-        - [X] Check for check
-        - [ ] Check for stalemate
-        - [ ] Check for checkmate
-- [ ] Lox:
-    - [ ] Write board-to-evaluation reader
-    - [ ] Write search algorithm:
-        - [ ] Look at first 20 moves found:
-            - [ ] Best 5 get recursively searched to depth of 5 layers
-            - [ ] Build map of positions to navigate
-        - [ ] Make what move has the best outcome at layer 5
-        - [ ] After opponent moves, see if this is still within searched positions
-            - [ ] If it is, do revcursive search to build out possibility library
-            - [ ] If it isn't, delete incompatible positions, and do recursive search
 
-## Parsing Move notation:
-- Types of move notation:
-    - e5 -> simple pawn move
-    - exf5 -> pawn cature
-    - Bg8 -> minor/major standard move
-    - Bxe3 -> minor/major capture
-    - 0-0 || O-O || o-o -> king-side castle
-    - 0-0-0 || O-O-O || o-o-o -> queen-side castle
-    - e1=Q -> pawn promotion
-    - Rae7 -> file disambiguation
-    - R1e7 -> rank disambiguation
-    - Re2e7 -> full disambiguation
-- First char is 0, o, O:
-    - castling, check castling possibility
-    - look if king is in check
-    - look if king would move through check
-    - if fine, do move
-- if 2 chars: pawn move
-    - look for pawn 1 or 2 ranks before
-- if 3 chars: minor/major piece move
-    - read type of piece
-    - look back from square for relavent piece
-        - look in each direction
-- if 4 chars: 
-    - if contains 'x': Capture
-    - Otherwise, disampbiguation or promotion
-    - Promotion indicated by '='
+## What is lox_engine?
+Currently, lox_engine is a terminal based chess game that parses algebraic notation to make moves on the board. After each move, lox_engine will display the game board and the FEN string representing the game, so you can save or transport the game to another instance of lox_engine or any other chess platform.
 
-- Better idea:
-    - check for castling first
-    - look at last two characters, they will be the target square
-        - if there is '+' or '#', skip
-        - if there is a 'Q', 'N', 'R', or 'B', parse for pawn promotion
-    - from there, read backward toward first character
-        - LMAO, fuck that -> Just use a regex, buddy
+### What are the limitations?
+As of the current version, lox_engine lacks these key features that many a complete chess engine would have:
+    
+    - Detecting stalemate
+    - Detecting checkmate
+    - Exporting game to PGN
+    - Graphic user interface for games
+    - Ability to play against you
 
-
-### Packages that could be useful:
-- uv virtual machine: I've always been running a vm when building in python, so this seems natural
-- pygame: good for running the visual side of the game
+**That last point is key:** the whole idea of lox_engine is to play against you. It might never be a challenger to the likes of Stockfish or Leela Chess Zero, in fact it would probably get smoked, but I plan to write an engine that can play to at least a 2000 Elo level.
 
 ## Table of Contents:
  - [Installation](#installation)
@@ -93,7 +29,11 @@ Frankly, I don't know yet. I haven't built it yet.
 
 
 ## How to Use
-There isn't anything to use yet.
+To start lox_engine, navigate to its directory in your terminal. and run `uv run main.py` to start a new game.
+
+> To start a game from a position with a FEN string, run: `uv run main.py "[FEN string]"`
+
+![game start](imgs/game_startup.png)
 
 ## About
 

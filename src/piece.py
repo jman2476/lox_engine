@@ -60,14 +60,17 @@ class Pawn(Piece):
         dst_occupied, dst_side, piece = board.check_square_filled(file, rank)
         if dst_occupied and dst_side == self.side:
             raise ValueError(f'Cannot capture own {piece} at {file}{rank}.')
-        direction = 1 if self.side == 'white' else -1
+        direction = 1 if self.side == 'black' else -1
         if self.file == file:
             if dst_occupied:
                 raise ValueError('Pawns cannot capture forward')
             if abs(distance) == 2:
                 if self.in_start_pos:
+                    print('Moving two squares')
                     next_rank = rank + direction
-                    dst_occupied, dst_side, new_piece = board.check_square_filled(file, next_rank-1)
+                    print(f'Rank {rank}, direction {direction}, next rank {next_rank}')
+                    print(f'Board rank: {board.board[file][next_rank]}, {board.board[file][next_rank - 1]},next rank {next_rank}')
+                    dst_occupied, dst_side, new_piece = board.check_square_filled(file, next_rank)
                     if dst_occupied:
                         raise Exception(f'Moving two squares blocked by {new_piece}')
                     return True
