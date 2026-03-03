@@ -11,14 +11,15 @@ class Piece():
         return f'{self.side} {self.name} at {self.file}{self.rank}'
 
     def move(self, board, destination):
-        # must overide
+        # must override
         pass
 
     def is_captured(self, board):
-        #must override
+        # must override
         pass
     
     def move_valid(self, rank, file):
+        # must override
         pass
 
     def check_nil_move(self, rank, file):

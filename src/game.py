@@ -40,13 +40,8 @@ class Game():
             count = 0
             for key in game_board:
                 piece = game_board[key][i]
-                # if piece is None:
-                #     print(piece, f'at {key}{i}')
-                # else:
-                #     print(piece)
                 if piece is None:
                     count += 1
-                    # print(count)
                 else:
                     char = piece.name[0]
                     if piece.name == 'knight':
@@ -59,7 +54,6 @@ class Game():
                         count = 0
                     fen += char
             if count > 0:
-                # print(count, fen)
                 fen += f'{count}'
             fen += '/'
         
@@ -129,7 +123,6 @@ class Game():
     
     def parse_move(self, string):
         notation_array = list(string)
-        # print(f'Size of string: {len(string)}')
         last_char = notation_array.pop()
         pieces = self.board.white() if self.turn == 'white' else self.board.black()
         king = next((piece for piece in pieces if piece.name == 'king'))
@@ -138,8 +131,6 @@ class Game():
         pawn_move = False
         initial_ep = self.en_passent
 
-        # print(f"Last character of {string}: {last_char}")
-        # print(f'Is {last_char} in range(1,9)? {int(last_char) in range(1,9)}')
 
         try:
             if last_char == '+' or last_char == '#':

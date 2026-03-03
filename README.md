@@ -28,11 +28,12 @@ As of the current version, lox_engine lacks these key features that many a compl
 
 
 ## Installation
-> lox_engine uses the Astral uv package manager, which can be downloaded and installed by going to [this installation page](https://docs.astral.sh/uv/getting-started/installation/) and following to the instructions for your platform.
+> lox_engine uses the *Astral uv package manager*, which can be downloaded and installed by going to [this installation page](https://docs.astral.sh/uv/getting-started/installation/) and following to the instructions for your platform.
 
 Download and install lox_engine from the [GitHub page](https://github.com/jman2476/lox_engine), then (*after installing uv package*) open your terminal emulator of choice and navigate inside the lox_engine repository.
 
-Run `uv` in the terminal to confirm that the package manager is installed properly, then run:
+Run `uv` in the terminal to confirm that the package manager is installed properly, then run `uv venv` to create a virtual environment, followed by the appropriate script to activate the virtual environment: 
+
 > For Apple/Linux: `source .venv/bin/activate`
 
 > For Windows: `source .venv/Scripts/activate`
@@ -75,8 +76,11 @@ Because lox_engine currently cannot detect if there is checkmate or stalemate on
 
 Written by Jeremy McKeegan
 
-### Packages
-colorama 0.4.6
+### Packages and Extras
+[colorama 0.4.6](https://pypi.org/project/colorama/)
+
+### Fonts
+[Nishiki Teki](https://font.download/font/nishiki-teki)
 
 ### Contributing
 I'm writing this on my own, so I am not interested in merging any updates you write. However, if you find any errors, or have any suggestions, you are more than welcome to write an issue on the [GitHub repo](https://github.com/jman2476/lox_engine).

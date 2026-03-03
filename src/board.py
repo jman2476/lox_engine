@@ -96,10 +96,8 @@ class Board():
         for i in range(7, -1, -1):
             file_ptr = 0
             rank_ptr = 7 - i
-            # print('Rank, rankptr', type(ranks[rank_ptr]) , ranks, rank_ptr)
             rank_arr = list(ranks[rank_ptr])
             while len(rank_arr) > 0:
-                # print('rank array:', rank_arr)
                 char = rank_arr.pop(0)
                 if ord(char) in range(49, 57):
                     empties = int(char)
@@ -113,10 +111,8 @@ class Board():
                     file = self.files[file_ptr]
                     square = f'{file}{i+1}'
                     piece = Board._fen_piece[char](side, square)
-                    # print(f'Adding {piece} at {file}{i+1}')
                     self.board[file][i] = piece
                     file_ptr += 1
-            # print('Construct with FEN\n',self)
         # set castling rights and pawns' double move rights
         castle_rights = fen_arr[2]
         for f in self.files:
@@ -365,7 +361,6 @@ class Board():
             
             board_squares = []
             for square in squares:
-                # print(f'Knight square: {square}')
                 f, r = square
                 if f not in self.files:
                     continue
@@ -374,7 +369,6 @@ class Board():
                 board_squares.append(square)
 
             for square in board_squares:
-                # print(f'Knight culled square: {square}')
                 f, r = square
                 piece = self.board[f][r-1]
                 if piece is None:
