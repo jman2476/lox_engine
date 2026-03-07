@@ -1,0 +1,35 @@
+[Event "Live Chess"]
+[Site "Chess.com"]
+[Date "2026.03.06"]
+[Round "-"]
+[White "IMRosen"]
+[Black "GothamChess"]
+[Result "1-0"]
+[Tournament "https://www.chess.com/tournament/live/third-3-0-thursday-march-05-2026-6262453"]
+[CurrentPosition "4k2r/4N1P1/2bp1p1P/p1rP4/Pp2P3/1Pp4p/2P4K/4R3 b - - 0 38"]
+[Timezone "UTC"]
+[ECO "B06"]
+[ECOUrl "https://www.chess.com/openings/Modern-Defense-with-1-e4-2.d4"]
+[UTCDate "2026.03.06"]
+[UTCTime "02:20:19"]
+[WhiteElo "2775"]
+[BlackElo "2945"]
+[TimeControl "180"]
+[Termination "IMRosen won by resignation"]
+[StartTime "02:20:19"]
+[EndDate "2026.03.06"]
+[EndTime "02:25:22"]
+[Link "https://www.chess.com/analysis/game/live/167077212527/games?flip=true"]
+[WhiteUrl "https://images.chesscomfiles.com/uploads/v1/user/6555034.daa84342.50x50o.c3f2eac5bb52.jpg"]
+[WhiteCountry "2"]
+[WhiteTitle "IM"]
+[BlackUrl "https://images.chesscomfiles.com/uploads/v1/user/33945736.eb0c3771.50x50o.821f23bdd9b5.png"]
+[BlackCountry "163"]
+[BlackTitle "IM"]
+
+1. d4 g6 2. e4 Bg7 3. Nc3 a6 4. Be3 d6 5. g4 b5 6. Bg2 Bb7 7. h4 h6 8. Qd2 Nd7
+9. Nge2 Rc8 10. Ng3 Ngf6 11. f3 h5 12. g5 Nh7 13. a4 b4 14. Nce2 a5 15. O-O c5
+16. d5 Ne5 17. b3 Ba6 18. Rae1 c4 19. f4 c3 20. Qd1 Ng4 21. Bd4 Bxd4+ 22. Qxd4
+Rg8 23. Bf3 Qc7 24. Bxg4 hxg4 25. f5 Nf8 26. Rf2 Qc5 27. Qxc5 Rxc5 28. Nd4 Rh8
+29. Rh2 gxf5 30. Ngxf5 Ng6 31. Nc6 Bc8 32. h5 Nf4 33. Nfxe7 Bd7 34. h6 Nh3+ 35.
+Rxh3 gxh3 36. Kh2 f6 37. g6 Bxc6 38. g7 1-0

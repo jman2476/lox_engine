@@ -87,7 +87,6 @@ class Board():
         if fen_string is None or len(fen_string) == 0:
             self.setup_new()
             return
-            
 
         fen_arr = fen_string.split()
         ranks = fen_arr[0].split('/')
