@@ -148,7 +148,7 @@ def parse_castling(game, pieces, king, checks, string):
     rooks = [piece for piece in pieces if piece.name == 'rook']
     if string in ['0-0', 'O-O', 'o-o']:
         h_rook = next((rook for rook in rooks 
-                        if (rook.square == 'h1' or rook.square == 'h8')))
+                        if (rook.square() == 'h1' or rook.square() == 'h8')))
         if h_rook is None or not h_rook.in_start_pos:
             raise ValueError(
                 'Castling failure: The h rook has been moved off starting square')
@@ -164,8 +164,8 @@ def parse_castling(game, pieces, king, checks, string):
         
         # handle castling
         # will king move through check on f and g files?
-        (f_sqr, g_sqr) = ('f' + king.square[1],
-                            'g' + king.square[1])
+        (f_sqr, g_sqr) = ('f' + king.square()[1],
+                            'g' + king.square()[1])
         f_file, f_rank = parse_square(f_sqr)
         g_file, g_rank = parse_square(g_sqr)
         blocked = (move_board.check_square_filled(f_file,f_rank)[0],
@@ -192,7 +192,7 @@ def parse_castling(game, pieces, king, checks, string):
         return move_board
     elif string in ['0-0-0', 'o-o-o', 'O-O-O']:
         a_rook = next((rook for rook in rooks 
-                        if (rook.square == 'a1' or rook.square == 'a8')))
+                        if (rook.square() == 'a1' or rook.square() == 'a8')))
         if a_rook is None or not a_rook.in_start_pos:
             print(f'a_rook: {a_rook}, {a_rook.in_start_pos}')
             raise ValueError(
@@ -209,8 +209,8 @@ def parse_castling(game, pieces, king, checks, string):
         
         # handle castling
         # will king move through check on f and g files?
-        (d_sqr, c_sqr) = ('d' + king.square[1],
-                            'c' + king.square[1])
+        (d_sqr, c_sqr) = ('d' + king.square()[1],
+                            'c' + king.square()[1])
         d_file, d_rank = parse_square(d_sqr)
         c_file, c_rank = parse_square(c_sqr)
         blocked = (move_board.check_square_filled(d_file,d_rank)[0],
@@ -276,7 +276,7 @@ def parse_piece_move(game, string):
                             piece = p
                         else: continue
                     else:
-                        if p.square == disambiguation:
+                        if p.square() == disambiguation:
                             piece = p
                 else:
                     piece = p

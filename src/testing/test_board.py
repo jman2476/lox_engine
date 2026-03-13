@@ -118,7 +118,7 @@ class TestBoard(unittest.TestCase):
         pieces = [king, queen, queen_w, rook]
 
         for p in pieces:
-            f, r = parse_square(p.square)
+            f, r = parse_square(p.square())
             board.board[f][r-1] = p
 
         sight_arr = board.next_piece('horizontal')('d',4)
@@ -144,7 +144,7 @@ class TestBoard(unittest.TestCase):
         pieces = [king, queen, queen_w, rook]
 
         for p in pieces:
-            f, r = parse_square(p.square)
+            f, r = parse_square(p.square())
             board.board[f][r-1] = p
 
         sight_arr = board.next_piece('vertical')('d',4)
@@ -171,7 +171,7 @@ class TestBoard(unittest.TestCase):
         pieces = [king, queen, queen_w, bishop]
 
         for p in pieces:
-            f, r = parse_square(p.square)
+            f, r = parse_square(p.square())
             board.board[f][r-1] = p
 
         sight_arr = board.next_piece('back_diagonal')('d',4)
@@ -204,7 +204,7 @@ class TestBoard(unittest.TestCase):
         pieces = [king, queen, queen_w, bishop]
 
         for p in pieces:
-            f, r = parse_square(p.square)
+            f, r = parse_square(p.square())
             board.board[f][r-1] = p
 
         sight_arr = board.next_piece('forward_diagonal')('d',4)
@@ -241,13 +241,13 @@ class TestBoard(unittest.TestCase):
         pieces2 = [knight4, knight5, pawn, pawn2]
         
         for p in pieces:
-            f, r = parse_square(p.square)
+            f, r = parse_square(p.square())
             board.board[f][r-1] = p
         # print(board)
         horses = board.next_piece('knight')('d', 4)
 
         for p in pieces2:
-            f, r = parse_square(p.square)
+            f, r = parse_square(p.square())
             board.board[f][r-1] = p
         # print(board)
         horsies = board.next_piece('knight')('d', 4)

@@ -18,6 +18,7 @@ def game_replay(pgn_file, dir='.'):
         print(f'{'white'if ply == 0 else 'black'}\'s move: {move}')
         game.parse_move(move)
         print(game.board)
+        print(game.fen)
         move_num += 1 if ply == 1 else 0
         ply += 1
         ply %= 2

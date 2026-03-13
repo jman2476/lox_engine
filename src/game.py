@@ -126,7 +126,7 @@ class Game():
         last_char = notation_array.pop()
         pieces = self.board.white() if self.turn == 'white' else self.board.black()
         king = next((piece for piece in pieces if piece.name == 'king'))
-        checks = self.board.find_checks(king.square, king.side)
+        checks = self.board.find_checks(king.square(), king.side)
         move_board = self.board
         pawn_move = False
         initial_ep = self.en_passent
@@ -136,6 +136,7 @@ class Game():
             if last_char == '+' or last_char == '#':
                 print('We will handle the checks, thank you')
                 last_char = notation_array.pop()
+                print(f'new last_char: {last_char}')
             if last_char in ['Q','N','R','B']:
                 # print('Looks like pawn promotion!')
                 move_board = parse_pawn_promotion(self, string)
@@ -172,12 +173,13 @@ class Game():
             # Post move checks:
             new_pieces = move_board.white() if self.turn == 'white' else move_board.black()
             new_king = next((piece for piece in new_pieces if piece.name == 'king'))
-            new_checks = move_board.find_checks(new_king.square, new_king.side)
+            new_checks = move_board.find_checks(new_king.square(), new_king.side)
             if move_board == self.board:
                 print('No move happened')
                 self.en_passent = initial_ep
                 return
             if new_checks != []:
+                print(f'New king: {new_king}, {new_king.square()}')
                 print(f'This move would cause checks at {new_checks}. Undoing move')
                 self.en_passent = initial_ep
             else:

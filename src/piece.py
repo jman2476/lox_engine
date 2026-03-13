@@ -3,12 +3,15 @@ from src.functions.parse import parse_square
 class Piece():
     def __init__(self, side, square):
         self.side = side.lower()
-        self.square = square
-        self.file, self.rank = parse_square(self.square)
+        self.file, self.rank = parse_square(square)
+        self.square = self.set_piece_square
         self.name = None
 
     def __repr__(self):
-        return f'{self.side} {self.name} at {self.file}{self.rank}'
+        return f'{self.side} {self.name} at {self.file}{self.rank}, {self.square()}'
+    
+    def set_piece_square(self):
+        return f'{self.file}{self.rank}'
 
     def move(self, board, destination):
         # must override

@@ -21,7 +21,7 @@ class TestRook(unittest.TestCase):
         pieces = [rook, w_pawn, b_pawn, king]
 
         for p in pieces:
-            f, r = parse_square(p.square)
+            f, r = parse_square(p.square())
             board.board[f][r-1] = p
 
         # print(f'Rook Movement\n{board}')

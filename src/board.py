@@ -129,16 +129,16 @@ class Board():
                         piece.in_start_pos = False
                 elif piece.name == 'rook':
                     if piece.side == 'white':
-                        if 'K' in castle_rights and piece.square == 'h1':
+                        if 'K' in castle_rights and piece.square() == 'h1':
                             continue
-                        elif 'Q' in castle_rights and piece.square == 'a1':
+                        elif 'Q' in castle_rights and piece.square() == 'a1':
                             continue
                         else:
                             piece.in_start_pos = False
                     else:
-                        if 'k' in castle_rights and piece.square == 'h8':
+                        if 'k' in castle_rights and piece.square() == 'h8':
                             continue
-                        elif 'q' in castle_rights and piece.square == 'h1':
+                        elif 'q' in castle_rights and piece.square() == 'h1':
                             continue
                         else:
                             piece.in_start_pos = False
@@ -219,6 +219,7 @@ class Board():
         # Iterate through all directions
         for dir in directions:
             pieces = self.next_piece(dir)(king_file, king_rank)
+            print(f'Pieces with vision on {king_square}', pieces)
             for piece in pieces:
                 if piece is not None and piece.side != side:
                     checks.append(piece)

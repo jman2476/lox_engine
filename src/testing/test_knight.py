@@ -20,7 +20,7 @@ class TestKnight(unittest.TestCase):
         pieces = [knight, pawn_b, pawn_w]
 
         for p in pieces:
-            f, r = parse_square(p.square)
+            f, r = parse_square(p.square())
             board.board[f][r-1] = p
 
         # print(f'Knight Movement\n{board}')

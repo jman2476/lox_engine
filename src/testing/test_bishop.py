@@ -21,7 +21,7 @@ class TestBishop(unittest.TestCase):
         pieces = [bishop_w, bishop_b, pawn_b, pawn_w]
         
         for p in pieces:
-            f, r = parse_square(p.square)
+            f, r = parse_square(p.square())
             board.board[f][r-1] = p
 
         # print(f'Bishop Movement\n{board}')
