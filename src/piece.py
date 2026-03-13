@@ -37,7 +37,7 @@ class Pawn(Piece):
         self.in_start_pos = True
         self.icon = '\u2659' if self.side == 'white' else '\u265F'
         self.name = 'pawn'
-        self.value = 1
+        self._value = 1
     
 
     def move(self, board, destination, ep = False): 
@@ -101,7 +101,7 @@ class King(Piece):
         self.in_check = False
         self.icon = '\u2654' if self.side == 'white' else '\u265A'
         self.name = 'king'
-        self.value = 1000
+        self._value = 1000
 
 
     def move(self, board, destination):

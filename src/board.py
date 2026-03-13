@@ -9,6 +9,7 @@ from src.functions.diagonals import (
     get_diagonal_squares
     )
 from colorama import Back, Style, Fore
+from src.functions.evaluation import get_evaluation
 
 class Board():
     def __init__(self):
@@ -74,7 +75,7 @@ class Board():
         
         board += files + '\n'
 
-        return board
+        return board + f'\nEvaluation: {get_evaluation(self)}'
 
     def setup_new(self):
         for key, file in self.board.items():

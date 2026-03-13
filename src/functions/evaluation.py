@@ -1,5 +1,5 @@
-from src.game import Game
-from src.board import Board
+# from src.game import Game
+# from src.board import Board
 from src.piece import (
     Pawn, King, 
     Queen, Bishop, 
@@ -14,20 +14,23 @@ from src.functions.parse import parse_square
 #   4. Pawn structure
 #   5. Space controlled
 
-def count_material(game):
-    w_pieces = game.board.white()
-    b_pieces = game.board.black()
+def get_evaluation(board):
+    w_pieces = board.white()
+    b_pieces = board.black()
+    eval = count_material(w_pieces, b_pieces)
+    
+    return eval
+
+def count_material(w_pieces, b_pieces):
     w_material, b_material = 0,0
 
     for piece in w_pieces:
-        if piece is King:
-            continue
-        w_material += piece._value
+        if type(piece) is not King:
+            w_material += piece._value
 
     for piece in b_pieces:
-        if piece is King:
-            continue
-        b_material += piece._value
+        if type(piece) is not King:
+            b_material += piece._value
 
     return w_material - b_material
      
