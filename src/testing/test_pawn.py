@@ -30,16 +30,16 @@ class TestPawn(unittest.TestCase):
         board.board['g'][6] = b_pawnA
         board.board['g'][5] = b_pawnB
 
-        self.assertTrue(w_pawnA.move_valid(4, 'a', board))
-        self.assertTrue(b_pawnB.move_valid(5, 'g', board))
-        self.assertTrue(w_pawnB.move_valid(6, 'g', board))
+        self.assertTrue(w_pawnA.move_valid(4, 'a', board, False))
+        self.assertTrue(b_pawnB.move_valid(5, 'g', board, False))
+        self.assertTrue(w_pawnB.move_valid(6, 'g', board, False))
 
         with self.assertRaises(ValueError):
-            b_pawnA.move_valid(6, 'g', board)
+            b_pawnA.move_valid(6, 'g', board, False)
         with self.assertRaises(ValueError):
-            b_pawnB.move_valid(4, 'g', board)
+            b_pawnB.move_valid(4, 'g', board, False)
         with self.assertRaises(ValueError):
-            w_pawnA.move_valid(2, 'b', board)
+            w_pawnA.move_valid(2, 'b', board, False)
             
     def test_move(self):
         board = Board()
