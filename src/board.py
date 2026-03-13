@@ -219,7 +219,7 @@ class Board():
         # Iterate through all directions
         for dir in directions:
             pieces = self.next_piece(dir)(king_file, king_rank)
-            print(f'Pieces with vision on {king_square}', pieces)
+            # print(f'Pieces with vision on {king_square}', pieces)
             for piece in pieces:
                 if piece is not None and piece.side != side:
                     checks.append(piece)
@@ -407,7 +407,6 @@ class Board():
                 if r-1 not in self.ranks:
                     continue
                 board_squares.append(square)
-
             for square in board_squares:
                 f, r = square
                 piece = self.board[f][r-1]
@@ -415,7 +414,7 @@ class Board():
                     continue
                 elif piece.name == 'king':
                     pieces.append(piece)
-
+            return pieces
 
         match direction:
             case 'horizontal':

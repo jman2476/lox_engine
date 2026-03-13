@@ -239,6 +239,7 @@ def parse_castling(game, pieces, king, checks, string):
             'Invalid move syntax. Suspected castling move.')
     
 def parse_piece_move(game, string):
+    print('Parse piece move')
     move_board = copy.deepcopy(game.board)
     piece_type = move_board._fen_piece[string[0]]
     regex = r'^([BKNRQ])([a-h]*[1-8]*)(x*)([a-h][1-8])$'
@@ -271,7 +272,7 @@ def parse_piece_move(game, string):
                         if p.file == disambiguation:
                             piece = p
                         else: continue
-                    elif (disambiguation) in move_board.ranks:
+                    elif int(disambiguation) in move_board.ranks:
                         if p.rank == int(disambiguation):
                             piece = p
                         else: continue

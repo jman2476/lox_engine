@@ -131,14 +131,13 @@ class Game():
         pawn_move = False
         initial_ep = self.en_passent
 
-
         try:
             if last_char == '+' or last_char == '#':
                 print('We will handle the checks, thank you')
                 last_char = notation_array.pop()
                 if '+' in string or '#' in string:
                     string = string[0:-1]
-                print(f'new last_char: {last_char}, new string {string}')
+                # print(f'new last_char: {last_char}, new string {string}')
             if last_char in ['Q','N','R','B']:
                 # print('Looks like pawn promotion!')
                 move_board = parse_pawn_promotion(self, string)
@@ -151,11 +150,10 @@ class Game():
             elif int(last_char) in range(1,9):
                 # print('Standard move type')
                 # Standard move type
-
+                
                 # simple pawn move
                 if len(string) == 2:
                     # print('Looks like a pawn move')
-                    
                     move_board = parse_pawn_move(self, string)
                     pawn_move = True
                 elif string[0] in move_board.files:

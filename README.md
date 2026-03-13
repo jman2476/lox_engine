@@ -1,5 +1,5 @@
 # lox_engine
->Version 1.0.0
+>Version 0.1.2
 
 Lox engine is a rudimentary chess engine and game platform where you can play against Lox, a basic chess engine, or against your friends in timed or untimed games.
 

@@ -8,7 +8,7 @@ class Piece():
         self.name = None
 
     def __repr__(self):
-        return f'{self.side} {self.name} at {self.file}{self.rank}, {self.square()}'
+        return f'{self.side} {self.name} at {self.file}{self.rank}'
     
     def set_piece_square(self):
         return f'{self.file}{self.rank}'

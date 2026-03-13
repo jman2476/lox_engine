@@ -14,7 +14,7 @@ This is a list of all things that need to be implemented, and those that have be
     - [X] board to FEN
     - [X] FEN to board setup
     - [ ] export game as PGN
-    - [ ] import PGN as game
+    - [X] import PGN as game
 - [X] Build classes for pieces
     - [X] Write movement per piece
     - [X] Write special moves:

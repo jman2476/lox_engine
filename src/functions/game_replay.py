@@ -11,7 +11,7 @@ def game_replay(pgn_file, dir='.'):
     print(f'movelist: {move_list}')
     print(game.board)
 
-    while(game.winner == None):
+    while game.winner == None or move_num > len(move_list):
         input('Press return for next move')
         move = move_list[move_num][ply]
         print(f'Move {move_num + 1}')
