@@ -6,6 +6,7 @@ class Piece():
         self.file, self.rank = parse_square(square)
         self.square = self.set_piece_square
         self.name = None
+        self._value = None
 
     def __repr__(self):
         return f'{self.side} {self.name} at {self.file}{self.rank}'
@@ -36,7 +37,9 @@ class Pawn(Piece):
         self.in_start_pos = True
         self.icon = '\u2659' if self.side == 'white' else '\u265F'
         self.name = 'pawn'
+        self.value = 1
     
+
     def move(self, board, destination, ep = False): 
         (file, rank) = parse_square(destination)
         try:
@@ -98,6 +101,8 @@ class King(Piece):
         self.in_check = False
         self.icon = '\u2654' if self.side == 'white' else '\u265A'
         self.name = 'king'
+        self.value = 1000
+
 
     def move(self, board, destination):
         (file, rank) = parse_square(destination)
@@ -127,6 +132,7 @@ class Queen(Piece):
         super().__init__(side, square)
         self.icon = '\u2655' if self.side == 'white' else '\u265B'
         self.name = 'queen'
+        self._value = 9
 
     def move(self, board, destination):
         (file, rank) = parse_square(destination)
@@ -197,6 +203,7 @@ class Rook(Piece):
         self.icon = '\u2656' if self.side == 'white' else '\u265C'
         self.in_start_pos = True
         self.name = 'rook'
+        self._value = 5
 
     def move(self, board, destination):
         (file, rank) = parse_square(destination)
@@ -247,6 +254,7 @@ class Bishop(Piece):
         super().__init__(side, square)
         self.icon = '\u2657' if self.side == 'white' else '\u265D'
         self.name = 'bishop'
+        self._value = 3
 
     def move(self, board, destination):
         (file, rank) = parse_square(destination)
@@ -292,6 +300,7 @@ class Knight(Piece):
         super().__init__(side, square)
         self.icon = '\u2658' if self.side == 'white' else '\u265E'
         self.name = 'knight'
+        self._value = 3
 
     def move(self, board, destination):
         (file, rank) = parse_square(destination)
