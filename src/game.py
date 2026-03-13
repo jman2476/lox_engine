@@ -136,7 +136,9 @@ class Game():
             if last_char == '+' or last_char == '#':
                 print('We will handle the checks, thank you')
                 last_char = notation_array.pop()
-                print(f'new last_char: {last_char}')
+                if '+' in string or '#' in string:
+                    string = string[0:-1]
+                print(f'new last_char: {last_char}, new string {string}')
             if last_char in ['Q','N','R','B']:
                 # print('Looks like pawn promotion!')
                 move_board = parse_pawn_promotion(self, string)
