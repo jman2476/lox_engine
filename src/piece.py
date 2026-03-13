@@ -67,10 +67,10 @@ class Pawn(Piece):
                 raise ValueError('Pawns cannot capture forward')
             if abs(distance) == 2:
                 if self.in_start_pos:
-                    print('Moving two squares')
+                    # print('Moving two squares')
                     next_rank = rank + direction
-                    print(f'Rank {rank}, direction {direction}, next rank {next_rank}')
-                    print(f'Board rank: {board.board[file][next_rank]}, {board.board[file][next_rank - 1]},next rank {next_rank}')
+                    # print(f'Rank {rank}, direction {direction}, next rank {next_rank}')
+                    # print(f'Board rank: {board.board[file][next_rank]}, {board.board[file][next_rank - 1]},next rank {next_rank}')
                     dst_occupied, dst_side, new_piece = board.check_square_filled(file, next_rank)
                     if dst_occupied:
                         raise Exception(f'Moving two squares blocked by {new_piece}')
@@ -138,13 +138,15 @@ class Queen(Piece):
             raise Exception('Queen move error')
         
     def move_valid(self, rank, file, board):
+        print(f'Debugging check: {self}, {file}{rank}')
         dst_occupied, dst_side, _ = board.check_square_filled(file, rank)
         if dst_occupied and dst_side == self.side:
             raise ValueError(f'Cannot capture own piece at {file}{rank}.')
         # determine if move is horizontal, vertical, or diagonal
         dist_hor = ord(file) - ord(self.file)
         dist_ver = rank - self.rank
-        if dist_hor == dist_ver:
+        print(f'Debugging check: {dist_hor}, {dist_ver}')
+        if abs(dist_hor) == abs(dist_ver):
             #treat like bishop
             # + -> to h; - -> to a
             dir_hor = int(dist_hor/abs(dist_hor))
