@@ -186,8 +186,9 @@ def parse_castling(game, pieces, king, checks, string):
         move_board.board['f'][f_rank-1] = h_rook
         move_board.board[king.file][king.rank-1] = None
         move_board.board[h_rook.file][h_rook.rank-1] = None
-        king.square = g_sqr
-        h_rook.square = f_sqr
+        king.file, king.rank = parse_square(g_sqr)
+        h_rook.file, h_rook.rank = parse_square(f_sqr)
+
         return move_board
     elif string in ['0-0-0', 'o-o-o', 'O-O-O']:
         a_rook = next((rook for rook in rooks 
@@ -230,8 +231,8 @@ def parse_castling(game, pieces, king, checks, string):
         move_board.board['d'][d_rank-1] = a_rook
         move_board.board[king.file][king.rank-1] = None
         move_board.board[a_rook.file][a_rook.rank-1] = None
-        king.square = c_sqr
-        a_rook.square = d_sqr
+        king.file, king.rank = parse_square(c_sqr)
+        a_rook.file, a_rook.rank = parse_square(d_sqr)
         return move_board
     else:
         raise ValueError(
@@ -271,7 +272,7 @@ def parse_piece_move(game, string):
                             piece = p
                         else: continue
                     elif (disambiguation) in move_board.ranks:
-                        if p.rank ==int(disambiguation):
+                        if p.rank == int(disambiguation):
                             piece = p
                         else: continue
                     else:

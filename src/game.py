@@ -142,6 +142,9 @@ class Game():
                 pawn_move = True
                 # handle pawn promotion
                 # check that there is a pawn in the previous square
+            elif last_char in ['0', 'o', 'O']:
+                # print('Looks like castling')
+                move_board = parse_castling(self, pieces, king, checks, string)
             elif int(last_char) in range(1,9):
                 # print('Standard move type')
                 # Standard move type
@@ -159,9 +162,6 @@ class Game():
                 elif string[0] in move_board._fen_piece:
                     # parse piece move
                     move_board = parse_piece_move(self, string)
-            elif last_char in ['0', 'o', 'O']:
-                # print('Looks like castling')
-                move_board = parse_castling(self, pieces, king, checks, string)
                 
             else:
                 print('Some unknown move')

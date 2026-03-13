@@ -81,7 +81,7 @@ class Pawn(Piece):
             else:
                 raise ValueError(f'Pawn cannot move distance of {distance} squares')
         else:
-            if distance != 1:
+            if abs(distance) != 1:
                 raise ValueError('Too far for pawn to capture')
             elif not dst_occupied and not ep:
                 raise ValueError('No piece for pawn to capture')
@@ -138,14 +138,14 @@ class Queen(Piece):
             raise Exception('Queen move error')
         
     def move_valid(self, rank, file, board):
-        print(f'Debugging check: {self}, {file}{rank}')
+        # print(f'Debugging check: {self}, {file}{rank}')
         dst_occupied, dst_side, _ = board.check_square_filled(file, rank)
         if dst_occupied and dst_side == self.side:
             raise ValueError(f'Cannot capture own piece at {file}{rank}.')
         # determine if move is horizontal, vertical, or diagonal
         dist_hor = ord(file) - ord(self.file)
         dist_ver = rank - self.rank
-        print(f'Debugging check: {dist_hor}, {dist_ver}')
+        # print(f'Debugging check: {dist_hor}, {dist_ver}')
         if abs(dist_hor) == abs(dist_ver):
             #treat like bishop
             # + -> to h; - -> to a
