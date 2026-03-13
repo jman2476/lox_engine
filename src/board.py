@@ -247,6 +247,8 @@ class Board():
                         break
                 else:
                     pieces[side_of_square] = None
+                    if side_of_square == 1:
+                        break
 
             return pieces
         
@@ -269,6 +271,8 @@ class Board():
                     break
                 else:
                     pieces[side_of_square] = None
+                    if side_of_square == 1:
+                        break
 
             return pieces
         
@@ -306,6 +310,8 @@ class Board():
                         break
                 else:
                     pieces[side_of_square] = None
+                    if side_of_square == 1:
+                        break
             
             return pieces
         
@@ -342,6 +348,8 @@ class Board():
                         break
                 else:
                     pieces[side_of_square] = None
+                    if side_of_square == 1:
+                        break
 
             return pieces
         
