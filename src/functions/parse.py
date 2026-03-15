@@ -101,8 +101,12 @@ def parse_pawn_promotion(game, string):
     if match is None:
         raise ValueError(f'Pawn promotion error: Improper move syntax for pawn promotion {string}')
     elif len(string) == len(match.group(0)):
-        if move_board.check_square_filled(file, rank-1)[0]:
-            raise ValueError(f'Promotion error: square {file}{rank} is occupied.')
+        target_square = move_board.check_square_filled(file, rank)
+        if target_square[0]:
+            print('Pawn promotion check square filled')
+            print(move_board.white())
+            print(move_board.black())
+            raise ValueError(f'Promotion error: square {file}{rank} is occupied by {target_square[2]}.')
         if rank == 8 and game.turn == 'white':
             prv_sq_filled, __, piece = move_board.check_square_filled(file, 7)
             if prv_sq_filled and piece.name == 'pawn':

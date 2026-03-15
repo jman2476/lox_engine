@@ -133,7 +133,7 @@ class Game():
 
         try:
             if last_char == '+' or last_char == '#':
-                print('We will handle the checks, thank you')
+                # print('We will handle the checks, thank you')
                 last_char = notation_array.pop()
                 if '+' in string or '#' in string:
                     string = string[0:-1]
