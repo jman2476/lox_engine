@@ -281,6 +281,8 @@ class Board():
             pieces = [None, None] # top-left-side, bottom-right-side
             side_of_square = 0
             edges = get_diagonal_edges('back')(file, rank)
+            if edges[0] == edges[1]: 
+                return pieces
             check_squares = get_diagonal_squares(*edges)
             
             for square in check_squares:
@@ -320,6 +322,8 @@ class Board():
             pieces = [None, None] # bottom-left-side, top-right-side
             side_of_square = 0
             edges = get_diagonal_edges('forward')(file, rank)
+            if edges[0] == edges[1]: 
+                return pieces
             check_squares = get_diagonal_squares(*edges)
             
             for square in check_squares:

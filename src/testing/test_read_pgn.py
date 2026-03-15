@@ -8,11 +8,11 @@ class TestReadPGN(unittest.TestCase):
         print("Erigaisi v Abdusattorov")
         moves, result = read_pgn(file_name, './test_pgn_files')
 
-        print(moves, result)
+        # print(moves, result)
 
     def test_read_pgn_rozman_rosen(self):
         file_name = 'rozman-rosen_Blitz_May26.pgn'
         print("Rozman v Rosen")
         moves, result = read_pgn(file_name, './test_pgn_files')
 
-        print(moves, result)
+        # print(moves, result)

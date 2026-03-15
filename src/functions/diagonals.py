@@ -75,7 +75,6 @@ def get_diagonal_edges(direction):
             return forward_diagonal
         
 def get_diagonal_squares(left, right):
-    # print(f'squares from get_diagonal_squares: {left}, {right}')
     ranks = [i for i in range(0,8)]
     files = list("abcdefgh")
     i_file_idx, f_file_idx = (files.index(left[0]), 

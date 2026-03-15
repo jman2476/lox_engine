@@ -239,7 +239,6 @@ def parse_castling(game, pieces, king, checks, string):
             'Invalid move syntax. Suspected castling move.')
     
 def parse_piece_move(game, string):
-    print('Parse piece move')
     move_board = copy.deepcopy(game.board)
     piece_type = move_board._fen_piece[string[0]]
     regex = r'^([BKNRQ])([a-h]*[1-8]*)(x*)([a-h][1-8])$'
