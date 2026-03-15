@@ -22,3 +22,7 @@ class TestGameReplay(unittest.TestCase):
         print('Rozman v. Rosen Blitz May \'26')
         game_replay(file_name, './test_pgn_files')
         
+    def test_pawn_move_game(self):
+        file_name = 'pawn_move_test.pgn'
+        print('Pawn move example game')
+        game_replay(file_name, './test_pgn_files')
