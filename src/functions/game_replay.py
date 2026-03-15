@@ -8,7 +8,7 @@ def game_replay(pgn_file, dir='.'):
     game.set_fen()
     move_num = 0
     ply = 0
-    print(f'movelist: {move_list}')
+    print_game_moves(move_list)
     print(game.board)
 
     while game.winner == None or move_num > len(move_list):
@@ -36,3 +36,11 @@ def set_winner(game, result):
         game.winner = 'black'
     else:
         game.winner = 'Nobody'
+        
+def print_game_moves(move_list):
+    for i in range(0,len(move_list)):
+        move = move_list[i]
+        if len(move) == 2:
+            print(f'{i+1}. {move[0]} {move[1]}')
+        else:
+            print(f'Result: {move[0]}')
