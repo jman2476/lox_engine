@@ -6,6 +6,7 @@ from src.piece import (
     Knight, Rook
     )
 from src.functions.parse import parse_square
+from src.functions.find_moves import find_available_moves
 
 # Order of evaluating chess position, according to Gotham:
 #   1. Material count
@@ -59,4 +60,22 @@ def space_control(board, side):
     #   can you attack? 
     # Include squares occupied, empty squares, and 
     #   enemy pieces attacked
-    pass
+    pieces = board.white() if side == "white" else board.black()
+    all_squares = set()
+    opponent_squares = set()
+
+    for piece in pieces:
+        # look forward for each piece, and see all available moves
+        # if a square is on opponent's side of board, add to set
+        all_squares.add(piece.square())
+        moves = find_available_moves(board, piece)
+        all_squares.update(moves)
+    
+    for square in all_squares:
+        _, rank = parse_square(square)
+        if rank > 4 and side == 'white':
+            opponent_squares.add(square)
+        elif rank < 5 and side == 'black':
+            opponent_squares.add(square)
+        
+    return opponent_squares, all_squares
