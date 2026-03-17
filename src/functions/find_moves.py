@@ -5,12 +5,13 @@ from src.piece import (
     )
 from src.functions.parse import parse_square
 
-def find_available_moves(board, piece):
+def find_available_moves(game, piece):
     moves = set()
 
     match type(piece):
         case Pawn():
-            moves.update(find_pawn_moves(board, piece))
+            print(find_pawn_moves(game, piece))
+            moves.update(find_pawn_moves(game, piece))
         case King():
             pass
         case Queen():
@@ -24,20 +25,23 @@ def find_available_moves(board, piece):
 
     return moves
 
-def find_pawn_moves(board, pawn):
+def find_pawn_moves(game, pawn):
     moves = []
     file, rank = pawn.file, pawn.rank
     next_rank = rank + 1 if pawn.side == 'white' else rank - 1
-    file_idx = board.files.index(file)
-    files_to_check =[board.files[j] for j in 
+    file_idx = game.board.files.index(file)
+    files_to_check =[game.board.files[j] for j in 
                      [i + file_idx for i in range(-1,2)]
                      if j in range(0,8)]
     for f in files_to_check:
-        contents = board.check_square_filled(f, next_rank)
+        square = f'{f}{next_rank}'
+        contents = game.board.check_square_filled(f, next_rank)
         if f == file and not contents[0]:
-            moves.append(f'{f}{next_rank}')
+            moves.append(square)
         elif contents[0] and contents[1] != pawn.side:
-            moves.append(f'{f}{next_rank}')
+            moves.append(square)
+        elif not contents[0] and square == game.en_passent:
+            moves.append(square)
     return moves
 
 

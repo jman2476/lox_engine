@@ -68,7 +68,7 @@ def space_control(board, side):
         # look forward for each piece, and see all available moves
         # if a square is on opponent's side of board, add to set
         all_squares.add(piece.square())
-        moves = find_available_moves(board, piece)
+        moves = find_available_moves(board, piece) #this is the wrong function to use for pawns
         all_squares.update(moves)
     
     for square in all_squares:
