@@ -16,7 +16,7 @@ class TestFindMoves(unittest.TestCase):
         w_pieces = game.board.white()
         moves = []
         for piece in w_pieces:
-            moves.append([piece, find_available_moves(game.board, piece)])
+            moves.append([piece, find_available_moves(game, piece)])
 
         print("Available moves:\n", moves)
 
@@ -26,16 +26,22 @@ class TestFindMoves(unittest.TestCase):
         w_pawns = [pawn for pawn in game.board.white() if isinstance(pawn, Pawn)]
 
         for pawn in w_pawns:
-            moves = find_pawn_moves(game.board, pawn)
+            moves = find_pawn_moves(game, pawn)
             print(f'moves for {pawn}: {moves}')
+        print('---------------------')
         
         game.parse_move('e4')
         game.parse_move('d5')
+        game.parse_move('a4')
+        game.parse_move('b5')
+        game.parse_move('e5')
+        game.parse_move('f5')
         w_pawns = [pawn for pawn in game.board.white() if isinstance(pawn, Pawn)]
         
         for pawn in w_pawns:
-            moves = find_pawn_moves(game.board, pawn)
+            moves = find_pawn_moves(game, pawn)
             print(f'moves for {pawn}: {moves}')
+        print(game.board)
         
 
 

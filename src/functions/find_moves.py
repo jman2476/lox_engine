@@ -7,10 +7,11 @@ from src.functions.parse import parse_square
 
 def find_available_moves(game, piece):
     moves = set()
-
+    print("Available moves", type(piece))
     match type(piece):
         case Pawn():
             print(find_pawn_moves(game, piece))
+            print('tato')
             moves.update(find_pawn_moves(game, piece))
         case King():
             pass
@@ -28,7 +29,8 @@ def find_available_moves(game, piece):
 def find_pawn_moves(game, pawn):
     moves = []
     file, rank = pawn.file, pawn.rank
-    next_rank = rank + 1 if pawn.side == 'white' else rank - 1
+    direction = 1 if pawn.side == 'white' else  -1
+    next_rank = rank + direction
     file_idx = game.board.files.index(file)
     files_to_check =[game.board.files[j] for j in 
                      [i + file_idx for i in range(-1,2)]
@@ -42,6 +44,9 @@ def find_pawn_moves(game, pawn):
             moves.append(square)
         elif not contents[0] and square == game.en_passent:
             moves.append(square)
+    double_move = game.board.check_square_filled(f, next_rank + direction)
+    if pawn.in_start_pos and not double_move[0]:
+        moves.append(f'{file}{next_rank+direction}')
     return moves
 
 
