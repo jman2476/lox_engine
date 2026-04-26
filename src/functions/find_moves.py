@@ -11,7 +11,7 @@ def find_available_moves(game, piece):
     print("Available moves", type(piece), boolio)
 
     # print("Available moves of", piece)
-    match type(piece):
+    match piece:
         case Pawn():
             print('tato')
             print(find_pawn_moves(game, piece))

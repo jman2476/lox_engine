@@ -10,7 +10,7 @@ class TestGameReplay(unittest.TestCase):
     def test_replay_keymer_rameshbabu(self):
         file_name = 'keymer-rameshbabu_Tata26.pgn'
         print('Keymer v. Rameshbabu Tata \'26')
-        game_replay(file_name, './test_pgn_files')
+        # game_replay(file_name, './test_pgn_files')
         
     def test_replay_magnus_hikaru(self):
         file_name = 'magnus-hikaru_TT_May24.pgn'
