@@ -7,7 +7,8 @@ from src.functions.parse import parse_square
 
 def find_available_moves(game, piece):
     moves = set()
-    print("Available moves", type(piece))
+    boolio = type(piece) == type(Pawn)
+    print("Available moves", type(piece), boolio)
 
     # print("Available moves of", piece)
     match type(piece):

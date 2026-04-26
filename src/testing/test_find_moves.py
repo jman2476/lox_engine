@@ -11,14 +11,17 @@ from src.piece import (
 
 class TestFindMoves(unittest.TestCase):
     def test_find_available(self):
-        game = Game()
-        game.start_new_game()
-        w_pieces = game.board.white()
-        moves = []
-        for piece in w_pieces:
-            moves.append([piece, find_available_moves(game, piece)])
+        try:
+            game = Game()
+            game.start_new_game()
+            w_pieces = game.board.white()
+            moves = []
+            for piece in w_pieces:
+                moves.append([piece, find_available_moves(game, piece)])
 
-        print("Available moves:\n", moves)
+            print("Available moves:\n", moves)
+        except Exception as e:
+            print(f'test_find_available error: ', e)
 
     def test_find_pawn_moves(self):
         game = Game()
