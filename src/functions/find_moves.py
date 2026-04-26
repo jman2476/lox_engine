@@ -8,10 +8,12 @@ from src.functions.parse import parse_square
 def find_available_moves(game, piece):
     moves = set()
     print("Available moves", type(piece))
+
+    # print("Available moves of", piece)
     match type(piece):
         case Pawn():
-            print(find_pawn_moves(game, piece))
             print('tato')
+            print(find_pawn_moves(game, piece))
             moves.update(find_pawn_moves(game, piece))
         case King():
             pass
