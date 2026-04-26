@@ -7,25 +7,20 @@ from src.functions.parse import parse_square
 
 def find_available_moves(game, piece):
     moves = set()
-    boolio = type(piece) == type(Pawn)
-    print("Available moves", type(piece), boolio)
-
-    # print("Available moves of", piece)
+  
     match piece:
         case Pawn():
-            print('tato')
-            print(find_pawn_moves(game, piece))
             moves.update(find_pawn_moves(game, piece))
         case King():
-            pass
+            moves.update(find_king_moves(game, piece))
         case Queen():
-            pass
+            moves.update(find_queen_moves(game, piece))
         case Bishop():
-            pass
+            moves.update(find_bishop_moves(game,piece))
         case Rook():
-            pass
+            moves.update(find_rook_moves(game, piece))
         case Knight():
-            pass
+            moves.update(find_knight_moves(game, piece)) 
 
     return moves
 
@@ -53,17 +48,27 @@ def find_pawn_moves(game, pawn):
     return moves
 
 
-def find_king_moves(board, pawn):
-    pass
+def find_king_moves(game, king):
+    moves = []
+    file, rank = king.file, king.rank
+    return moves
 
-def find_knight_moves(board, pawn):
-    pass
+def find_knight_moves(game, knight):
+    moves = []
+    file, rank = knight.file, knight.rank
+    return moves
 
-def find_queen_moves(board, pawn):
-    pass
+def find_queen_moves(game, queen):
+    moves = []
+    file, rank = queen.file, queen.rank
+    return moves
 
-def find_rook_moves(board, pawn):
-    pass
+def find_rook_moves(game, rook):
+    moves = []
+    file, rank = rook.file, rook.rank
+    return moves
 
-def find_bishop_moves(board, pawn):
-    pass
+def find_bishop_moves(game, bishop):
+    moves = []
+    file, rank = bishop.file, bishop.rank
+    return moves

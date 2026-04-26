@@ -19,7 +19,9 @@ class TestFindMoves(unittest.TestCase):
             for piece in w_pieces:
                 moves.append([piece, find_available_moves(game, piece)])
 
-            print("Available moves:\n", moves)
+            print("Available moves:")
+            for piece_moves in moves:
+                print(piece_moves[0], piece_moves[1])
         except Exception as e:
             print(f'test_find_available error: ', e)
 
@@ -27,6 +29,7 @@ class TestFindMoves(unittest.TestCase):
         game = Game()
         game.start_new_game()
         w_pawns = [pawn for pawn in game.board.white() if isinstance(pawn, Pawn)]
+        b_pawns = [pawn for pawn in game.board.black() if isinstance(pawn, Pawn)]
 
         for pawn in w_pawns:
             moves = find_pawn_moves(game, pawn)
@@ -44,6 +47,11 @@ class TestFindMoves(unittest.TestCase):
         for pawn in w_pawns:
             moves = find_pawn_moves(game, pawn)
             print(f'moves for {pawn}: {moves}')
+            
+        for pawn in b_pawns:
+            moves = find_pawn_moves(game, pawn)
+            print(f'moves for {pawn}: {moves}')
+        
         print(game.board)
         
 
