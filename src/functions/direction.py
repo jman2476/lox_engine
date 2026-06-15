@@ -9,4 +9,4 @@ def adjacent_squares(board, file, rank):
     ranks = [j for j in
              [rank - 1, rank, rank + 1]
              if j in range(1,9)]
-    return [(i, j) for j in ranks for i in files if j != rank or i != file ]
+    return [f'{i}{j}' for j in ranks for i in files if j != rank or i != file ]

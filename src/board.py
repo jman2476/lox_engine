@@ -228,6 +228,18 @@ class Board():
 
         return checks
     
+    # def find_checks_adjacent(self, king_square, side, adj_square):
+    #     king_file, king_rank = parse_square(king_square)
+    #     checks = []
+    #     directions = [
+    #         'horizontal',
+    #         'vertical',
+    #         'back_diagonal',
+    #         'forward_diagonal',
+    #         'knight'
+    #     ]
+    #     temp_board = self
+    
     # Nested function to return what pieces 
     # have eyes on a specific square
     def next_piece(self, direction):
