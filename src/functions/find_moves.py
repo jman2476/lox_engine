@@ -3,7 +3,6 @@ from src.piece import (
     Queen, Bishop, 
     Knight, Rook
     )
-from src.game import Game
 from src.functions.parse import parse_square, parse_piece_move
 from src.functions.direction import adjacent_squares
 
@@ -50,11 +49,12 @@ def find_pawn_moves(game, pawn):
     return moves
 
 
-def find_king_moves(game: Game, king: King):
+def find_king_moves(game, king):
     moves = []
     squares_to_check = adjacent_squares(
         game.board, king.file, king.rank)
     for square in squares_to_check:
+        print(f'For king, checking square {square}')
         file, rank = parse_square(square)
         dst_occupied, dst_side, _ = game.board.check_square_filled(file, rank)
         if dst_occupied and dst_side == king.side: continue;

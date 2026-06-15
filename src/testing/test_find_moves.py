@@ -2,7 +2,8 @@ import unittest
 from src.game import Game
 from src.functions.find_moves import (
         find_available_moves,
-        find_pawn_moves
+        find_pawn_moves,
+        find_king_moves
         )
 from src.piece import (
         Pawn, King,
@@ -54,5 +55,33 @@ class TestFindMoves(unittest.TestCase):
         
         print(game.board)
         
+    def test_find_king_moves(self):
+        game = Game()
+        game.start_new_game()
+        w_king = [king for king in game.board.white() if isinstance(king, King)]
+        b_king = [king for king in game.board.black() if isinstance(king, King)]
+        
+        for king in w_king:
+            moves = find_king_moves(game, king)
+            print(f'moves for {king}: {moves}')
+        
+        print('---------------------')
+        game.parse_move('e4')
 
+        for king in b_king:
+            moves = find_king_moves(game, king)
+            print(f'moves for {king}: {moves}')
+            
+        print('---------------------')
+        game.parse_move('e5')
 
+        for king in w_king:
+            moves = find_king_moves(game, king)
+            print(f'moves for {king}: {moves}')
+        
+        print('---------------------')
+        game.parse_move('d4')
+
+        for king in b_king:
+            moves = find_king_moves(game, king)
+            print(f'moves for {king}: {moves}')
