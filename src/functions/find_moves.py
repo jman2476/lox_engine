@@ -4,6 +4,7 @@ from src.piece import (
     Knight, Rook
     )
 from src.functions.parse import parse_square
+from src.functions.direction import adjacent_squares
 
 def find_available_moves(game, piece):
     moves = set()
@@ -51,9 +52,7 @@ def find_pawn_moves(game, pawn):
 def find_king_moves(game, king):
     moves = []
     file, rank = king.file, king.rank
-    squares_to_check = [
-        
-    ]
+    squares_to_check = 
     return moves
 
 def find_knight_moves(game, knight):
