@@ -67,7 +67,7 @@ class Board():
                     piece = Back.RED + ' ' if dark else Back.YELLOW + ' '
                     piece = Fore.BLACK + Style.BRIGHT + piece
                 else: 
-                    piece = (Back.RED if dark else Back.YELLOW) + piece.icon  
+                    piece = (Back.RED if dark else Back.YELLOW) +  Fore.BLACK + Style.BRIGHT + piece.icon  
                 dark = not dark if key != 'h' else dark
                 rank += f' {piece}'
             rank += f' {Style.RESET_ALL}{r+1}'
