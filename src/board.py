@@ -1,7 +1,7 @@
 from src.piece import (
     Pawn, King, 
     Queen, Bishop, 
-    Knight, Rook
+    Knight, Rook, Piece
     )
 from src.functions.parse import parse_square
 from src.functions.diagonals import (
@@ -13,7 +13,7 @@ from src.functions.evaluation import get_evaluation
 
 class Board():
     def __init__(self):
-        self.board = {
+        self.board:dict[str, list[Piece]] = {
                 "a":[None for i in range(0,8)],
                 "b":[None for i in range(0,8)],
                 "c":[None for i in range(0,8)],
