@@ -8,6 +8,7 @@ clock = pygame.time.Clock()
 running = True
 dt = 0
 game_board = GUI_Board()
+piece_font = pygame.font.Font("./fonts/nishiki-teki/NishikiTeki-MVxaJ.ttf", 30)
 
 player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() /2)
 
@@ -21,6 +22,7 @@ while running:
     # RENDER GAME HERE
     screen.blit(game_board, (50, 50))
     pygame.draw.circle(screen, "red", player_pos, 40)
+    screen.blit(piece_font.render("Hello, chess", 0, "black"), (10,10))
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
