@@ -27,7 +27,6 @@ while running:
         case "black":
             game_board.render_board(Color.BLACK, piece_font)
     screen.blit(game_board, (50, 50))
-    pygame.draw.circle(screen, "red", player_pos, 40)
     screen.blit(piece_font.render("Hello, chess. Time: %.3f"%(elapsed), 0, "black"), (10,10))
     
 
