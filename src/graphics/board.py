@@ -49,6 +49,7 @@ class GUI_Board(pygame.Surface):
                 color = ~color
             
     def render_board(self, turn:Color, font:pygame.font.FontType):
+        self.set_squares()
         def render_w_view():
             y = 700
             for r in self.ranks:
@@ -95,6 +96,6 @@ class GUI_Square(pygame.Surface):
         
     def render_piece(self, font:pygame.font.FontType):
         if self.piece is not None:
-            self.blit(font.render(self.piece, 0, 'orange'), (50,50))
+            self.blit(font.render(self.piece, 0, 'orange'), (30,30))
         else:
             self.__clear_sq__()
