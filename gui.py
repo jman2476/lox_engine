@@ -1,12 +1,13 @@
 import pygame
-
+from src.graphics.board import GUI_Board
 # based on quick start from pygame.org/docs
 
 pygame.init()
-screen = pygame.display.set_mode((1000, 800))
+screen = pygame.display.set_mode((1200, 900))
 clock = pygame.time.Clock()
 running = True
 dt = 0
+game_board = GUI_Board()
 
 player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() /2)
 
@@ -18,6 +19,7 @@ while running:
     screen.fill("purple")
     
     # RENDER GAME HERE
+    screen.blit(game_board, (50, 50))
     pygame.draw.circle(screen, "red", player_pos, 40)
 
     keys = pygame.key.get_pressed()
