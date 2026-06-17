@@ -1,5 +1,7 @@
 import pygame
 from src.graphics.board import GUI_Board, Color
+from src.graphics.clock import Clock
+import datetime
 # based on quick start from pygame.org/docs
 
 pygame.init()
@@ -24,6 +26,14 @@ while running:
             running = False
 
     screen.fill("purple")
+    w_clock = Clock(datetime.timedelta(minutes=5), Color.WHITE)
+    b_clock = Clock(datetime.timedelta(minutes=5), Color.BLACK)
+    
+    w_clock.render()
+    b_clock.render()
+
+    screen.blit(w_clock, (1000, 500))
+    screen.blit(b_clock, (1000, 600))
 
     # AUTO PLAY GAME HERE
     
@@ -31,9 +41,9 @@ while running:
         if not move_idx >= len(move_list):
             game_board.game.parse_move(move_list[move_idx])
             move_idx += 1
-            trigger += 5
+            trigger += 3
         else:
-            pygame.quit()
+            break
     
     # RENDER GAME HERE
     match(game_board.game.turn):
