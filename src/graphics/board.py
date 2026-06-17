@@ -74,7 +74,7 @@ class GUI_Board(pygame.Surface):
             case Color.WHITE:
                 render_w_view()
             case Color.BLACK:
-                return render_b_view
+                render_b_view()
 
 class GUI_Square(pygame.Surface):
     pygame.font.init()
