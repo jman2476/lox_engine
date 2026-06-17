@@ -35,42 +35,52 @@ class GUI_Board(pygame.Surface):
         self.files = list("abcdefgh")
         self.fill("green")
         self.set_squares()
+        self.render_board(Color.WHITE)
 
     def set_squares(self):
         color = self._white 
-        x, y = 0, 0
         for r in self.ranks:
-            x = 0
             color = ~color
             for f in self.files:
-                print(f'light: {color.name}, (x,y): ({x},{y})')
-                square = self.board[f][r]
-                square = GUI_Square(color, x, y)
-                x += 100
+                self.board[f][r] = GUI_Square(color, f'{f}{r+1}')
                 color = ~color
-                self.blit(square, (square.x_pos, square.y_pos))
-            y += 100
             
     def render_board(self, turn:Color):
         if turn == Color.WHITE:
-            self.__render_w_view__() 
+            self._render_w_view_() 
         else:
-            self.__render_b_view__()
+            self._render_b_view_()
 
     def _render_w_view_(self):
-        pass
+        y = 700
+        for r in self.ranks:
+            x = 0
+            for f in self.files:
+                self.blit(self.board[f][r], (x,y)) 
+                x += 100
+            y -= 100
 
     def _render_b_view_(self):
-        pass
+        y = 0
+        for r in self.ranks:
+            x = 700
+            
+            for f in self.files:
+                self.blit(self.board[f][r], (x,y))
+                x -= 100
+            y += 100
 
 
 class GUI_Square(pygame.Surface):
-    def __init__(self, color:Color, x:int = 0, y:int = 0):
+    pygame.font.init()
+    _font = pygame.font.SysFont("Arial", 20)
+
+    def __init__(self, color:Color, square:str):
         pygame.Surface.__init__(self, (100,100))
         self.color = color
-        (self.x_pos, self.y_pos) = (x, y)
+        self.square = square   
         self.fill(self.color.name)
+        self.__render_sq_name__()
 
-    def set_position(self, x:int, y:int):
-       self.x = x
-       self.y = y
+    def __render_sq_name__(self):
+        self.blit(self._font.render(self.square, 0, 'grey'), (10,10))
