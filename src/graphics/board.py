@@ -1,6 +1,6 @@
 from src.board import Board
 from src.piece import (
-    Pawn, King,
+    Piece, Pawn, King,
     Queen, Bishop,
     Knight, Rook
 )
@@ -44,8 +44,8 @@ class GUI_Board(pygame.Surface):
             color = ~color
             for f in self.files:
                 piece = self.game.board.board[f][r]
-                piece_icon = None if piece is None else piece.icon 
-                self.board[f][r] = GUI_Square(color, f'{f}{r+1}', piece_icon)
+                # piece_icon = None if piece is None else piece.icon 
+                self.board[f][r] = GUI_Square(color, f'{f}{r+1}', piece)
                 color = ~color
             
     def render_board(self, turn:Color, font:pygame.font.FontType):
@@ -80,7 +80,7 @@ class GUI_Square(pygame.Surface):
     pygame.font.init()
     _font = pygame.font.SysFont("Arial", 20)
 
-    def __init__(self, color:Color, square:str, piece:str):
+    def __init__(self, color:Color, square:str, piece:Piece):
         pygame.Surface.__init__(self, (100,100))
         self.color = color
         self.square = square
@@ -96,6 +96,9 @@ class GUI_Square(pygame.Surface):
         
     def render_piece(self, font:pygame.font.FontType):
         if self.piece is not None:
-            self.blit(font.render(self.piece, 0, 'orange'), (30,30))
+            path = f'./imgs/piece_icons/{self.piece.side}_{self.piece.name}.png'
+            icon = pygame.image.load(path)
+            # self.blit(font.render(self.piece, 0, 'orange'), (30,30))
+            self.blit(icon, (0,0))
         else:
             self.__clear_sq__()
