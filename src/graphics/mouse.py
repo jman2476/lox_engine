@@ -20,7 +20,7 @@ def get_square(turn:str, side_len:int, corner:tuple[int,int], mouse_pos:tuple[in
         return file, rank + 1
     
     match turn:
-        case "white": print(get_sq_white())
-        case "black": print(get_sq_black())
+        case "white": return get_sq_white()
+        case "black": return get_sq_black()
         
 # def calc_dist()
