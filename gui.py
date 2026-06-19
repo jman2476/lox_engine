@@ -14,18 +14,37 @@ elapsed = 0
 game_board = GUI_Board()
 piece_font = pygame.font.Font("./fonts/nishiki-teki/NishikiTeki-MVxaJ.ttf", 30)
 
-player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() /2)
+# mouse handlers
+dragging = False
+sigma_offset = (0,0)
 
 # test game => automation
 move_list = ["e4", "d5", "Ke2", "Kd7", "Qe1", "Qe8", "Kd1", "Kd8"]
 move_idx = 0
 trigger = 5 #seconds
+mouse_msgs = []
 
 while running:
-    for event in pygame.event.get():
+    events = pygame.event.get()
+    # print(f'Events {events}') 
+    for event in events:
         if event.type == pygame.QUIT:
             running = False
-
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            dragging = True
+            square = get_square(game_board.game.turn, 100, (50,50), event.pos)
+            mouse_msgs.append(f'Start: Mouse {"is" if dragging else "isn't"} dragging from {event.pos}')
+        if event.type == pygame.MOUSEMOTION and dragging == True:
+            offset = pygame.mouse.get_rel()
+            sigma_offset = (sigma_offset[0]+offset[0], sigma_offset[1]+offset[1])
+            mouse_msgs.append(f'Middle: Moving mouse, offset: {offset}, sigma_offset: {sigma_offset}')
+        if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+            dragging = False
+            fin_sq = get_square(game_board.game.turn,100, (50,50), event.pos)
+            mouse_msgs.append(f'End: Mouse {"is" if dragging else "isn't"} dragging to {event.pos}')
+    if len(mouse_msgs) > 0:
+        print("Mouse messages:", mouse_msgs)
+    mouse_msgs = []
     screen.fill("purple")
     w_clock = Clock(datetime.timedelta(minutes=5), Color.WHITE)
     b_clock = Clock(datetime.timedelta(minutes=5), Color.BLACK)
@@ -38,12 +57,12 @@ while running:
     
 
     # MOUSE OBSERVATION
-    mouse = pygame.mouse.get_pos()
-    print(f'Buttons {pygame.mouse.get_pressed()}')
-    print(f'Get focused {pygame.mouse.get_focused()}')
-    print(f'Get pos {mouse}')
-    print(f'Get rel pos {pygame.mouse.get_rel()}')
-    get_square(game_board.game.turn, 100, (50,50), mouse)
+    # mouse = pygame.mouse.get_pos() 
+    # print(f'Buttons {pygame.mouse.get_pressed()}') 
+    # print(f'Get focused {pygame.mouse.get_focused()}') 
+    # print(f'Get pos {mouse}') 
+    # print(f'Get rel pos {pygame.mouse.get_rel()}') 
+    
 
     # AUTO PLAY GAME HERE
     
@@ -66,14 +85,6 @@ while running:
     screen.blit(piece_font.render("Fen: %s"%(game_board.game.fen), 0, "black"), (10,850))
 
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_w]:
-        player_pos.y -= 300 * dt
-    if keys[pygame.K_s]: 
-        player_pos.y += 300 * dt
-    if keys[pygame.K_a]:
-        player_pos.x -= 300 * dt
-    if keys[pygame.K_d]:
-        player_pos.x += 300 * dt
 
     pygame.display.flip()
 
