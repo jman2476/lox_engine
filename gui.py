@@ -16,7 +16,6 @@ piece_font = pygame.font.Font("./fonts/nishiki-teki/NishikiTeki-MVxaJ.ttf", 30)
 
 # mouse handlers
 dragging = False
-sigma_offset = (0,0)
 
 # test game => automation
 move_list = ["e4", "d5", "Ke2", "Kd7", "Qe1", "Qe8", "Kd1", "Kd8"]
@@ -24,7 +23,11 @@ move_idx = 0
 trigger = 5 #seconds
 mouse_msgs = []
 
+# dnd test vars
+circle_pos = pygame.Vector2(1000, 450)
+
 while running:
+    sigma_offset = (0,0)
     events = pygame.event.get()
     # print(f'Events {events}') 
     for event in events:
@@ -42,6 +45,8 @@ while running:
             dragging = False
             fin_sq = get_square(game_board.game.turn,100, (50,50), event.pos)
             mouse_msgs.append(f'End: Mouse {"is" if dragging else "isn't"} dragging to {event.pos}')
+            sigma_offset = (0,0)
+            
     if len(mouse_msgs) > 0:
         print("Mouse messages:", mouse_msgs)
     mouse_msgs = []
@@ -83,8 +88,11 @@ while running:
     screen.blit(game_board, (50, 50))
     screen.blit(piece_font.render("Hello, chess. Time: %.3f, Turn: %s"%(elapsed, game_board.game.turn), 0, "black"), (10,10))
     screen.blit(piece_font.render("Fen: %s"%(game_board.game.fen), 0, "black"), (10,850))
-
-    keys = pygame.key.get_pressed()
+    
+    # drag n drop test
+    pygame.draw.circle(screen, 'red',circle_pos, 40)
+    circle_pos.x += sigma_offset[0]
+    circle_pos.y += sigma_offset[1]
 
     pygame.display.flip()
 
