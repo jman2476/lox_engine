@@ -1,6 +1,7 @@
 import pygame
 from src.graphics.board import GUI_Board, Color
 from src.graphics.clock import Clock
+from src.graphics.square import get_square
 import datetime
 # based on quick start from pygame.org/docs
 
@@ -34,6 +35,15 @@ while running:
 
     screen.blit(w_clock, (1000, 500))
     screen.blit(b_clock, (1000, 600))
+    
+
+    # MOUSE OBSERVATION
+    mouse = pygame.mouse.get_pos()
+    print(f'Buttons {pygame.mouse.get_pressed()}')
+    print(f'Get focused {pygame.mouse.get_focused()}')
+    print(f'Get pos {mouse}')
+    print(f'Get rel pos {pygame.mouse.get_rel()}')
+    get_square(game_board.game.turn, 100, (50,50), mouse)
 
     # AUTO PLAY GAME HERE
     
@@ -41,9 +51,9 @@ while running:
         if not move_idx >= len(move_list):
             game_board.game.parse_move(move_list[move_idx])
             move_idx += 1
-            trigger += 3
-        else:
-            break
+            trigger += 10
+        # else:
+        #     break
     
     # RENDER GAME HERE
     match(game_board.game.turn):
