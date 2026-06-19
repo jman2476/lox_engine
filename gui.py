@@ -1,7 +1,7 @@
 import pygame
 from src.graphics.board import GUI_Board, Color
 from src.graphics.clock import Clock
-from src.graphics.square import get_square
+from src.graphics.mouse import get_square
 import datetime
 # based on quick start from pygame.org/docs
 
