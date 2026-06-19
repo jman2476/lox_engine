@@ -28,21 +28,22 @@ circle_pos = pygame.Vector2(1000, 450)
 
 while running:
     sigma_offset = (0,0)
-    drag_v = pygame.Vector2()
+    offset = (0,0)
+    # drag_v = pygame.Vector2()
     events = pygame.event.get()
     # print(f'Events {events}') 
     for event in events:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            drag_v = pygame.Vector2(event.pos)
-            dist = circle_pos.distance_to(drag_v)
+            dist = circle_pos.distance_to(pygame.Vector2(event.pos))
             if dist <=40:
                 dragging = True
             square = get_square(game_board.game.turn, 100, (50,50), event.pos)
             mouse_msgs.append(f'Start: Mouse {"is" if dragging else "isn't"} dragging from {event.pos}. Distance to circle: {dist}')
         if event.type == pygame.MOUSEMOTION and dragging == True:
             offset = pygame.mouse.get_rel()
+            circle_pos = pygame.Vector2(pygame.mouse.get_pos())
             sigma_offset = (sigma_offset[0]+offset[0], sigma_offset[1]+offset[1])
             mouse_msgs.append(f'Middle: Moving mouse, offset: {offset}, sigma_offset: {sigma_offset}')
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
@@ -95,11 +96,9 @@ while running:
     
     # drag n drop test
     pygame.draw.circle(screen, 'red',circle_pos, 40)
-    dist = circle_pos.distance_to(drag_v)
-    if dragging:
-        circle_pos.x += sigma_offset[0]
-        circle_pos.y += sigma_offset[1]
-
+    # if dragging:
+    #     circle_pos.x += sigma_offset[0]
+    #     circle_pos.y += sigma_offset[1]
     pygame.display.flip()
 
     dt = clock.tick(60)/1000
