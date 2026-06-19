@@ -17,7 +17,9 @@ class Color(Flag):
 class GUI_Board(pygame.Surface):
     _white = Color.WHITE
     _black = Color.BLACK
-
+    _ranks = [i for i in range(0,8)]
+    _files = list("abcdefgh")
+ 
     def __init__(self):
         pygame.Surface.__init__(self, (800, 800))
         self.game = Game()
@@ -32,17 +34,15 @@ class GUI_Board(pygame.Surface):
                 "g":[None for i in range(0,8)],
                 "h":[None for i in range(0,8)],
                 }
-        self.ranks = [i for i in range(0,8)]
-        self.files = list("abcdefgh")
         self.fill("green")
         self.set_squares()
         # self.render_board(Color.WHITE)
 
     def set_squares(self):
         color = self._white 
-        for r in self.ranks:
+        for r in self._ranks:
             color = ~color
-            for f in self.files:
+            for f in self._files:
                 piece = self.game.board.board[f][r]
                 # piece_icon = None if piece is None else piece.icon 
                 self.board[f][r] = GUI_Square(color, f'{f}{r+1}', piece)
@@ -52,9 +52,9 @@ class GUI_Board(pygame.Surface):
         self.set_squares()
         def render_w_view():
             y = 700
-            for r in self.ranks:
+            for r in self._ranks:
                 x = 0
-                for f in self.files:
+                for f in self._files:
                     self.board[f][r].render_piece(font)
                     self.blit(self.board[f][r], (x,y)) 
                     x += 100
@@ -62,9 +62,9 @@ class GUI_Board(pygame.Surface):
 
         def render_b_view():
             y = 0
-            for r in self.ranks:
+            for r in self._ranks:
                 x = 700
-                for f in self.files:
+                for f in self._files:
                     self.board[f][r].render_piece(font)
                     self.blit(self.board[f][r], (x,y))
                     x -= 100
