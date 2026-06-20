@@ -102,3 +102,10 @@ class GUI_Square(pygame.Surface):
             self.blit(icon, (0,0))
         else:
             self.__clear_sq__()
+            
+class GUI_Piece(pygame.Surface):
+
+    def __init__(self, piece:Piece):
+        pygame.Surface.__init__(self, (100,100))
+        self.piece = piece
+        
