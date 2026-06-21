@@ -62,32 +62,30 @@ class GUI_Board(pygame.Surface):
             for r in self._ranks:
                 x = 0
                 for f in self._files:
-                    # self.board[f][r].render_piece(font)
                     self.blit(self.board[f][r], (x,y)) 
                     x += 100
                 y -= 100
+            for p in self.pieces:
+                p.set_coords(turn)
+                self.blit(p, (p.x_pos, p.y_pos))
 
         def render_b_view():
             y = 0
             for r in self._ranks:
                 x = 700
                 for f in self._files:
-                    # self.board[f][r].render_piece(font)
                     self.blit(self.board[f][r], (x,y))
                     x -= 100
                 y += 100
+            for p in self.pieces:
+                p.set_coords(turn)
+                self.blit(p, (p.x_pos, p.y_pos))
 
         match turn:
             case Color.WHITE:
                 render_w_view()
-                for p in self.pieces:
-                    p.set_coords(turn)
-                    self.blit(p, (p.x_pos, p.y_pos))
             case Color.BLACK:
                 render_b_view()
-                for p in self.pieces:
-                    p.set_coords(turn)
-                    self.blit(p, (p.x_pos, p.y_pos))
 
 class GUI_Square(pygame.Surface):
     pygame.font.init()
