@@ -5,6 +5,7 @@ from src.piece import (
     Knight, Rook
 )
 from src.game import Game
+from src.functions.parse import parse_square
 # from src.graphics.square import GUI_Square
 import pygame
 from enum import Flag, auto
@@ -36,6 +37,7 @@ class GUI_Board(pygame.Surface):
                 }
         self.fill("green")
         self.set_squares()
+        self.pieces = self.set_pieces()
         # self.render_board(Color.WHITE)
 
     def set_squares(self):
@@ -47,9 +49,16 @@ class GUI_Board(pygame.Surface):
                 # piece_icon = None if piece is None else piece.icon 
                 self.board[f][r] = GUI_Square(color, f'{f}{r+1}', piece)
                 color = ~color
+
+    def set_pieces(self):
+        # return [*[GUI_Piece(p) for p in self.game.board.white()], 
+        #         *[GUI_Piece(p) for p in self.game.board.black()]]
+        return [GUI_Piece(p) for p in 
+                [*self.game.board.white(), * self.game.board.black()]]
             
     def render_board(self, turn:Color, font:pygame.font.FontType):
         self.set_squares()
+        self.pieces = self.set_pieces()
         def render_w_view():
             y = 700
             for r in self._ranks:
@@ -73,8 +82,14 @@ class GUI_Board(pygame.Surface):
         match turn:
             case Color.WHITE:
                 render_w_view()
+                for p in self.pieces:
+                    p.set_coords(turn)
+                    self.blit(p, (p.x_pos, p.y_pos))
             case Color.BLACK:
                 render_b_view()
+                for p in self.pieces:
+                    p.set_coords(turn)
+                    self.blit(p, (p.x_pos, p.y_pos))
 
 class GUI_Square(pygame.Surface):
     pygame.font.init()
@@ -99,13 +114,40 @@ class GUI_Square(pygame.Surface):
             path = f'./imgs/piece_icons/{self.piece.side}_{self.piece.name}.png'
             icon = pygame.image.load(path)
             # self.blit(font.render(self.piece, 0, 'orange'), (30,30))
-            self.blit(icon, (0,0))
+            #self.blit(icon, (0,0))
         else:
             self.__clear_sq__()
             
 class GUI_Piece(pygame.Surface):
 
     def __init__(self, piece:Piece):
-        pygame.Surface.__init__(self, (100,100))
+        pygame.Surface.__init__(self, (100,100), flags=pygame.SRCALPHA)
+        self.fill((0,0,0,0))
         self.piece = piece
+        self.x_pos, self.y_pos = self.square_to_coordinates(Color.WHITE)
         
+        self._set_icon()
+
+    def square_to_coordinates(self, view:Color):
+        file, rank = self.piece.file, self.piece.rank
+        f_idx, r_idx = ord(file)-97, rank - 1
+
+        def b_view():
+            return 100 * (7-f_idx), 100 * r_idx
+        
+        def w_view():
+            return 100 * f_idx, 100 * (7 - r_idx)
+        
+        if view == Color.WHITE:
+            return w_view()
+        else:
+            return b_view()
+    
+    def _set_icon(self):
+        path = f'./imgs/piece_icons/{self.piece.side}_{self.piece.name}.png'
+        icon = pygame.image.load(path).convert_alpha()
+        self.blit(icon, (0,0))
+        print(f"Blitted {self.piece.name} for {self.piece.square()} at {self.x_pos},{self.y_pos}")
+
+    def set_coords(self, view:Color):
+        self.x_pos, self.y_pos = self.square_to_coordinates(view)
