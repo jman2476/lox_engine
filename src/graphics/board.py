@@ -62,7 +62,7 @@ class GUI_Board(pygame.Surface):
             for r in self._ranks:
                 x = 0
                 for f in self._files:
-                    self.board[f][r].render_piece(font)
+                    # self.board[f][r].render_piece(font)
                     self.blit(self.board[f][r], (x,y)) 
                     x += 100
                 y -= 100
@@ -72,7 +72,7 @@ class GUI_Board(pygame.Surface):
             for r in self._ranks:
                 x = 700
                 for f in self._files:
-                    self.board[f][r].render_piece(font)
+                    # self.board[f][r].render_piece(font)
                     self.blit(self.board[f][r], (x,y))
                     x -= 100
                 y += 100
