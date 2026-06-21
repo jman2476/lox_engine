@@ -51,8 +51,6 @@ class GUI_Board(pygame.Surface):
                 color = ~color
 
     def set_pieces(self):
-        # return [*[GUI_Piece(p) for p in self.game.board.white()], 
-        #         *[GUI_Piece(p) for p in self.game.board.black()]]
         return [GUI_Piece(p) for p in 
                 [*self.game.board.white(), * self.game.board.black()]]
             
@@ -108,15 +106,16 @@ class GUI_Square(pygame.Surface):
 
     def __render_sq_name__(self):
         self.blit(self._font.render(self.square, 0, 'grey'), (10,10))
-        
-    def render_piece(self, font:pygame.font.FontType):
-        if self.piece is not None:
-            path = f'./imgs/piece_icons/{self.piece.side}_{self.piece.name}.png'
-            icon = pygame.image.load(path)
-            # self.blit(font.render(self.piece, 0, 'orange'), (30,30))
-            #self.blit(icon, (0,0))
-        else:
-            self.__clear_sq__()
+    
+    # Depricated
+    # def render_piece(self, font:pygame.font.FontType):
+    #     if self.piece is not None:
+    #         path = f'./imgs/piece_icons/{self.piece.side}_{self.piece.name}.png'
+    #         icon = pygame.image.load(path)
+    #         # self.blit(font.render(self.piece, 0, 'orange'), (30,30))
+    #         #self.blit(icon, (0,0))
+    #     else:
+    #         self.__clear_sq__()
             
 class GUI_Piece(pygame.Surface):
 
