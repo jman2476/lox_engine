@@ -142,3 +142,6 @@ class GUI_Piece(pygame.Surface):
 
     def set_coords(self, view:Color):
         self.x_pos, self.y_pos = self.square_to_coordinates(view)
+
+    def set_drag_coords(self, pos:tuple[int, int]):
+        self.x_pos, self.y_pos = pos[0],pos[1]
