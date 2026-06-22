@@ -275,7 +275,7 @@ def parse_piece_move(game, string):
                         if p.file == disambiguation:
                             piece = p
                         else: continue
-                    elif int(disambiguation) in move_board.ranks:
+                    elif len(disambiguation) == 1 and  int(disambiguation) in move_board.ranks:
                         if p.rank == int(disambiguation):
                             piece = p
                         else: continue

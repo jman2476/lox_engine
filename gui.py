@@ -1,7 +1,7 @@
 import pygame
 from src.graphics.board import GUI_Board, Color
 from src.graphics.clock import Clock
-from src.graphics.mouse import get_square
+from src.graphics.mouse import get_square, play_move
 import datetime
 # based on quick start from pygame.org/docs
 
@@ -17,6 +17,7 @@ piece_font = pygame.font.Font("./fonts/nishiki-teki/NishikiTeki-MVxaJ.ttf", 30)
 # mouse handlers
 dragging = False
 move_piece = None
+init_tracker = None
 
 # test game => automation
 move_list = ["e4", "d5", "Ke2", "Kd7", "Qe1", "Qe8", "Kd1", "Kd8"]
@@ -43,6 +44,7 @@ while running:
             init_sq = get_square(game_board.game.turn, 100, (50,50), pygame.mouse.get_pos())
             if init_sq != (None, None):
                 move_piece = game_board.clear_square(init_sq)
+                init_tracker = init_sq
             
             print(f'init_sq {init_sq}, move_piece {move_piece}')
             if move_piece is not None:
@@ -65,8 +67,13 @@ while running:
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             dragging = False
             fin_sq = get_square(game_board.game.turn,100, (50,50), pygame.mouse.get_pos())
+            move_notation = play_move(game_board.game, move_piece.piece, init_tracker, fin_sq)
+            print(f"Algebraic notation: {move_notation}")
+            game_board.game.parse_move(move_notation)
             mouse_msgs.append(f'End: Mouse {"is" if dragging else "isn't"} dragging to {event.pos}. Square end: {fin_sq}')
             sigma_offset = (0,0)
+            init_tracker = None
+            
             
     if len(mouse_msgs) > 0:
         print("Mouse messages:", mouse_msgs)
