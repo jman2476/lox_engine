@@ -26,14 +26,14 @@ class GUI_Board(pygame.Surface):
         self.game = Game()
         self.game.start_new_game()
         self.board = {
-                "a":[None for i in range(0,8)],
-                "b":[None for i in range(0,8)],
-                "c":[None for i in range(0,8)],
-                "d":[None for i in range(0,8)],
-                "e":[None for i in range(0,8)],
-                "f":[None for i in range(0,8)],
-                "g":[None for i in range(0,8)],
-                "h":[None for i in range(0,8)],
+                "a":[[None, None] for i in range(0,8)],
+                "b":[[None, None] for i in range(0,8)],
+                "c":[[None, None] for i in range(0,8)],
+                "d":[[None, None] for i in range(0,8)],
+                "e":[[None, None] for i in range(0,8)],
+                "f":[[None, None] for i in range(0,8)],
+                "g":[[None, None] for i in range(0,8)],
+                "h":[[None, None] for i in range(0,8)],
                 }
         self.fill("green")
         self.set_squares()
@@ -45,24 +45,30 @@ class GUI_Board(pygame.Surface):
         for r in self._ranks:
             color = ~color
             for f in self._files:
-                piece = self.game.board.board[f][r]
-                # piece_icon = None if piece is None else piece.icon 
-                self.board[f][r] = GUI_Square(color, f'{f}{r+1}', piece)
+                self.board[f][r][0]= GUI_Square(color, f'{f}{r+1}')
                 color = ~color
 
     def set_pieces(self):
         return [GUI_Piece(p) for p in 
                 [*self.game.board.white(), * self.game.board.black()]]
+        
+
             
     def render_board(self, turn:Color, font:pygame.font.FontType):
         self.set_squares()
         self.pieces = self.set_pieces()
+        
+        for piece in self.pieces:
+            f, r = piece.piece.file, piece.piece.rank
+            self.board[f][r-1][1] = piece
+
+
         def render_w_view():
             y = 700
             for r in self._ranks:
                 x = 0
                 for f in self._files:
-                    self.blit(self.board[f][r], (x,y)) 
+                    self.blit(self.board[f][r][0], (x,y)) 
                     x += 100
                 y -= 100
             for p in self.pieces:
@@ -74,7 +80,7 @@ class GUI_Board(pygame.Surface):
             for r in self._ranks:
                 x = 700
                 for f in self._files:
-                    self.blit(self.board[f][r], (x,y))
+                    self.blit(self.board[f][r][0], (x,y))
                     x -= 100
                 y += 100
             for p in self.pieces:
@@ -91,12 +97,11 @@ class GUI_Square(pygame.Surface):
     pygame.font.init()
     _font = pygame.font.SysFont("Arial", 20)
 
-    def __init__(self, color:Color, square:str, piece:Piece):
+    def __init__(self, color:Color, square:str):
         pygame.Surface.__init__(self, (100,100))
         self.color = color
         self.square = square
         self.__clear_sq__()
-        self.piece = piece
 
     def __clear_sq__(self):
         self.fill(self.color.name)
@@ -134,7 +139,6 @@ class GUI_Piece(pygame.Surface):
         path = f'./imgs/piece_icons/{self.piece.side}_{self.piece.name}.png'
         icon = pygame.image.load(path).convert_alpha()
         self.blit(icon, (0,0))
-        print(f"Blitted {self.piece.name} for {self.piece.square()} at {self.x_pos},{self.y_pos}")
 
     def set_coords(self, view:Color):
         self.x_pos, self.y_pos = self.square_to_coordinates(view)
