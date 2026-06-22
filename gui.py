@@ -29,8 +29,8 @@ mouse_msgs = []
 # circle_pos = pygame.Vector2(1000, 450)
 
 while running:
-    sigma_offset = (0,0)
-    offset = (0,0)
+    # sigma_offset = (0,0)
+    # offset = (0,0)
     # drag_v = pygame.Vector2()
     events = pygame.event.get()
     # print(f'Events {events}') 
@@ -55,11 +55,10 @@ while running:
                 # move_piece = game_board.board[square[0]][square[1]-1][1]
                 # if move_piece is not None:
                     # print(f'{move_piece.piece.side} {move_piece.piece.name}')
-            mouse_msgs.append(f'Start: Mouse {"is" if dragging else "isn't"} dragging from {event.pos}. Square start: {square}')
+            # mouse_msgs.append(f'Start: Mouse {"is" if dragging else "isn't"} dragging from {event.pos}. Square start: {square}')
         if event.type == pygame.MOUSEMOTION and dragging == True:
             if move_piece:
                 move_piece.set_drag_coords(pygame.mouse.get_pos())
-                print(f'mouse position: {move_piece.x_pos}, {move_piece.y_pos}')
             # offset = pygame.mouse.get_rel()
             # circle_pos = pygame.Vector2(pygame.mouse.get_pos())
             # sigma_offset = (sigma_offset[0]+offset[0], sigma_offset[1]+offset[1])
@@ -71,8 +70,8 @@ while running:
             if move_notation is not None:
                 print(f"Algebraic notation: {move_notation}")
                 game_board.game.parse_move(move_notation)
-            mouse_msgs.append(f'End: Mouse {"is" if dragging else "isn't"} dragging to {event.pos}. Square end: {fin_sq}')
-            sigma_offset = (0,0)
+            # mouse_msgs.append(f'End: Mouse {"is" if dragging else "isn't"} dragging to {event.pos}. Square end: {fin_sq}')
+            # sigma_offset = (0,0)
             init_tracker = None
             move_piece.set_drag_coords((-100, -100))
             game_board.drag_square = (None, None)

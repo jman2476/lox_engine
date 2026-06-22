@@ -47,6 +47,11 @@ def play_move(game:Game, piece:Piece, i_sqr:tuple[str, int], f_sqr:tuple[str, in
     
 
     def pawn_move():
+        print("---Pawn Debugging---")
+        print(f'Init sq: {i_sqr[0]}{i_sqr[1]}')
+        print(f'Fin_sq: {f_sqr[0]}{f_sqr[1]}')
+        print(f'Pawn sq: {piece.square()}')
+        print('--------------------')
         if piece.move_valid(f_sqr[1], f_sqr[0], game.board, game.en_passent):
             return f'{i_sqr[0] + "x" if capture else ''}'
         return None
