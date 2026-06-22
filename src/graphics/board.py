@@ -92,6 +92,11 @@ class GUI_Board(pygame.Surface):
                 render_w_view()
             case Color.BLACK:
                 render_b_view()
+    
+    def clear_square(self, square: tuple[str, int]):
+        piece = self.board[square[0]][square[1]][1]
+        self.board[square[0]][square[1]][1] = None
+        return piece
 
 class GUI_Square(pygame.Surface):
     pygame.font.init()
@@ -144,4 +149,4 @@ class GUI_Piece(pygame.Surface):
         self.x_pos, self.y_pos = self.square_to_coordinates(view)
 
     def set_drag_coords(self, pos:tuple[int, int]):
-        self.x_pos, self.y_pos = pos[0],pos[1]
+        self.x_pos, self.y_pos = pos[0] - 50,pos[1] - 50

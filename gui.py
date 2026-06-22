@@ -43,10 +43,12 @@ while running:
             init_sq = get_square(game_board.game.turn, 100, (50,50), pygame.mouse.get_pos())
             if init_sq != (None, None):
                 move_piece = game_board.board[init_sq[0]][init_sq[1]-1][1]
+                game_board.board[init_sq[0]][init_sq[1]-1][1] = None
             
             print(f'init_sq {init_sq}, move_piece {move_piece}')
             if move_piece is not None:
                 dragging = True
+                move_piece.set_drag_coords(pygame.mouse.get_pos())
             square = get_square(game_board.game.turn, 100, (50,50), pygame.mouse.get_pos())
             # if square is not None and square[0] is not None and square[1] is not None:
                 # move_piece = game_board.board[square[0]][square[1]-1][1]
