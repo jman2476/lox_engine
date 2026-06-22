@@ -68,12 +68,15 @@ while running:
             dragging = False
             fin_sq = get_square(game_board.game.turn,100, (50,50), pygame.mouse.get_pos())
             move_notation = play_move(game_board.game, move_piece.piece, init_tracker, fin_sq)
-            print(f"Algebraic notation: {move_notation}")
-            game_board.game.parse_move(move_notation)
+            if move_notation is not None:
+                print(f"Algebraic notation: {move_notation}")
+                game_board.game.parse_move(move_notation)
             mouse_msgs.append(f'End: Mouse {"is" if dragging else "isn't"} dragging to {event.pos}. Square end: {fin_sq}')
             sigma_offset = (0,0)
             init_tracker = None
-            
+            move_piece.set_drag_coords((-100, -100))
+            game_board.drag_square = (None, None)
+            move_piece = None
             
     if len(mouse_msgs) > 0:
         print("Mouse messages:", mouse_msgs)

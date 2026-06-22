@@ -44,22 +44,35 @@ def play_move(game:Game, piece:Piece, i_sqr:tuple[str, int], f_sqr:tuple[str, in
         'knight': 'N',
         'rook': 'R'
     }
+    
 
     def pawn_move():
-        return f'{i_sqr[0] + "x" if capture else ''}'
+        if piece.move_valid(f_sqr[1], f_sqr[0], game.board, game.en_passent):
+            return f'{i_sqr[0] + "x" if capture else ''}'
+        return None
     
     def king_move():
-        return f'K{'x' if capture else ''}'
+        if piece.move_valid(f_sqr[1], f_sqr[0], game.board):
+            return f'K{'x' if capture else ''}'
+        return None
     
     def piece_move():
-        char = piece_notation[piece.name]
-        init_sqr = f'{i_sqr[0]}{i_sqr[1]}'
-        return f'{char}{init_sqr}{'x' if capture else ''}'
+        if piece.move_valid(f_sqr[1], f_sqr[0], game.board):
+            char = piece_notation[piece.name]
+            init_sqr = f'{i_sqr[0]}{i_sqr[1]}'
+            return f'{char}{init_sqr}{'x' if capture else ''}'
+        return None
     
     match piece.name:
         case 'pawn':
-            return pawn_move() + move_sq
+            mv = pawn_move()
+            if mv is not None: return mv + move_sq
+            return mv
         case 'king':
-            return king_move() + move_sq
+            mv = king_move()
+            if mv is not None: return mv + move_sq
+            return mv
         case _:
-            return piece_move() + move_sq
+            mv = piece_move()
+            if mv is not None: return mv + move_sq
+            return mv
