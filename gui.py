@@ -40,6 +40,10 @@ while running:
             if dist <=40:
                 dragging = True
             square = get_square(game_board.game.turn, 100, (50,50), pygame.mouse.get_pos())
+            if square is not None and square[0] is not None and square[1] is not None:
+                entity = game_board.board[square[0]][square[1]-1][1]
+                if entity is not None:
+                    print(f'{entity.piece.side} {entity.piece.name}')
             mouse_msgs.append(f'Start: Mouse {"is" if dragging else "isn't"} dragging from {event.pos}. Square start: {square}')
         if event.type == pygame.MOUSEMOTION and dragging == True:
             offset = pygame.mouse.get_rel()
