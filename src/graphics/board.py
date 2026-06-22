@@ -38,7 +38,7 @@ class GUI_Board(pygame.Surface):
         self.fill("green")
         self.set_squares()
         self.pieces = self.set_pieces()
-        # self.render_board(Color.WHITE)
+        self.drag_square = (None, None)
 
     def set_squares(self):
         color = self._white 
@@ -57,9 +57,12 @@ class GUI_Board(pygame.Surface):
     def render_board(self, turn:Color, font:pygame.font.FontType):
         self.set_squares()
         self.pieces = self.set_pieces()
+        drag_piece = None
         
         for piece in self.pieces:
             f, r = piece.piece.file, piece.piece.rank
+            if f == self.drag_square[0] and r == self.drag_square[1]:
+                drag_piece = piece
             self.board[f][r-1][1] = piece
 
 
@@ -72,6 +75,8 @@ class GUI_Board(pygame.Surface):
                     x += 100
                 y -= 100
             for p in self.pieces:
+                if p == drag_piece:
+                    continue
                 p.set_coords(turn)
                 self.blit(p, (p.x_pos, p.y_pos))
 
@@ -84,6 +89,8 @@ class GUI_Board(pygame.Surface):
                     x -= 100
                 y += 100
             for p in self.pieces:
+                if p == drag_piece:
+                    continue
                 p.set_coords(turn)
                 self.blit(p, (p.x_pos, p.y_pos))
 
@@ -94,8 +101,9 @@ class GUI_Board(pygame.Surface):
                 render_b_view()
     
     def clear_square(self, square: tuple[str, int]):
-        piece = self.board[square[0]][square[1]][1]
-        self.board[square[0]][square[1]][1] = None
+        self.drag_square = square
+        piece = self.board[square[0]][square[1]-1][1]
+        self.board[square[0]][square[1]-1][1] = None
         return piece
 
 class GUI_Square(pygame.Surface):

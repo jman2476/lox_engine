@@ -42,8 +42,7 @@ while running:
             #     dragging = True
             init_sq = get_square(game_board.game.turn, 100, (50,50), pygame.mouse.get_pos())
             if init_sq != (None, None):
-                move_piece = game_board.board[init_sq[0]][init_sq[1]-1][1]
-                game_board.board[init_sq[0]][init_sq[1]-1][1] = None
+                move_piece = game_board.clear_square(init_sq)
             
             print(f'init_sq {init_sq}, move_piece {move_piece}')
             if move_piece is not None:
@@ -93,11 +92,11 @@ while running:
 
     # AUTO PLAY GAME HERE
     
-    if elapsed > trigger:
-        if not move_idx >= len(move_list):
-            game_board.game.parse_move(move_list[move_idx])
-            move_idx += 1
-            trigger += 10
+    # if elapsed > trigger:
+    #     if not move_idx >= len(move_list):
+    #         game_board.game.parse_move(move_list[move_idx])
+    #         move_idx += 1
+    #         trigger += 10
         # else:
         #     break
     
