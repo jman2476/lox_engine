@@ -1,7 +1,7 @@
 import pygame
 from src.graphics.board import GUI_Board, Color
 from src.graphics.clock import Clock
-from src.graphics.mouse import get_square, play_move
+from src.graphics.mouse import get_square, move_notation
 import datetime
 # based on quick start from pygame.org/docs
 
@@ -66,7 +66,7 @@ while running:
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             dragging = False
             fin_sq = get_square(game_board.game.turn,100, (50,50), pygame.mouse.get_pos())
-            move_notation = play_move(game_board.game, move_piece.piece, init_tracker, fin_sq)
+            move_notation = move_notation(game_board.game, move_piece.piece, init_tracker, fin_sq)
             if move_notation is not None:
                 print(f"Algebraic notation: {move_notation}")
                 game_board.game.parse_move(move_notation)

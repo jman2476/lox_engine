@@ -34,7 +34,7 @@ def get_square(turn:str, side_len:int, corner:tuple[int,int], mouse_pos:tuple[in
         case "white": return get_sq_white()
         case "black": return get_sq_black()
         
-def play_move(game:Game, piece:Piece, i_sqr:tuple[str, int], f_sqr:tuple[str, int]):
+def move_notation(game:Game, piece:Piece, i_sqr:tuple[str, int], f_sqr:tuple[str, int]):
     capture, _, __ = game.board.check_square_filled(f_sqr[0], f_sqr[1])
     move_sq = f'{f_sqr[0]}{f_sqr[1]}'
     piece_notation = {
