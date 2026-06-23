@@ -2,7 +2,7 @@ import pygame
 from src.graphics.board import GUI_Board, Color
 from src.graphics.clock import Clock
 from src.graphics.error_box import ErrorBox
-from src.graphics.mouse import get_square, move_notation
+from src.graphics.mouse import get_square, move_notation, play_move
 import datetime
 # based on quick start from pygame.org/docs
 
@@ -68,10 +68,13 @@ while running:
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             dragging = False
             fin_sq = get_square(game_board.game.turn,100, (50,50), pygame.mouse.get_pos())
-            move_notation = move_notation(game_board.game, move_piece.piece, init_tracker, fin_sq)
-            if move_notation is not None:
-                print(f"Algebraic notation: {move_notation}")
-                game_board.game.parse_move(move_notation)
+            move, err = move_notation(game_board.game, move_piece.piece, init_tracker, fin_sq)
+            if err is not None:
+                print("Error writing move notation ", move, err)
+                error_box.set_message(str(err))
+            elif move is not None:
+                print(f"Algebraic notation: {move}")
+                error_box.set_message(play_move(game_board.game, move))
             # mouse_msgs.append(f'End: Mouse {"is" if dragging else "isn't"} dragging to {event.pos}. Square end: {fin_sq}')
             # sigma_offset = (0,0)
             init_tracker = None
@@ -85,7 +88,7 @@ while running:
     screen.fill("purple")
     w_clock = Clock(datetime.timedelta(minutes=5), Color.WHITE)
     b_clock = Clock(datetime.timedelta(minutes=5), Color.BLACK)
-    error_box.set_message("ALOHA from the future! We need you to spend your time making as much bread and banana pudding so we can eat it with our hands!")
+    # error_box.set_message("ALOHA from the future! We need you to spend your time making as much bread and banana pudding so we can eat it with our hands!")
     
     w_clock.render()
     b_clock.render()

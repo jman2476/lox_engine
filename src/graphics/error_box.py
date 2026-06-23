@@ -10,11 +10,11 @@ class ErrorBox(pygame.Surface):
         
     def set_message(self, message:str):
         self.message = message
-        # self.__render__()
+        self.__render__()
         self.__render_text__()
         
     def __render__(self):
-        self.blit(self._font.render(self.message, 0, 'cornsilk'), (0,0))
+        self.fill("black")
         
     def __render_text__(self):
         # surface == self

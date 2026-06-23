@@ -47,38 +47,59 @@ def move_notation(game:Game, piece:Piece, i_sqr:tuple[str, int], f_sqr:tuple[str
     
 
     def pawn_move():
-        print("---Pawn Debugging---")
-        print(f'Init sq: {i_sqr[0]}{i_sqr[1]}')
-        print(f'Fin_sq: {f_sqr[0]}{f_sqr[1]}')
-        print(f'Pawn sq: {piece.square()}')
-        print('--------------------')
-        ep = game.en_passent == f'{f_sqr[0]}{f_sqr[1]}'
-        if piece.move_valid(f_sqr[1], f_sqr[0], game.board, ep):
-            return f'{i_sqr[0] + "x" if capture or ep else ''}'
-        return None
+        try:
+            print("---Pawn Debugging---")
+            print(f'Init sq: {i_sqr[0]}{i_sqr[1]}')
+            print(f'Fin_sq: {f_sqr[0]}{f_sqr[1]}')
+            print(f'Pawn sq: {piece.square()}')
+            print('--------------------')
+            ep = game.en_passent == f'{f_sqr[0]}{f_sqr[1]}'
+            if piece.move_valid(f_sqr[1], f_sqr[0], game.board, ep):
+                return f'{i_sqr[0] + "x" if capture or ep else ''}', None
+            return None, None
+        except Exception as e:
+            return None, e
     
     def king_move():
-        if piece.move_valid(f_sqr[1], f_sqr[0], game.board):
-            return f'K{'x' if capture else ''}'
-        return None
+        try:
+            if piece.move_valid(f_sqr[1], f_sqr[0], game.board):
+                return f'K{'x' if capture else ''}', None
+            return None, None
+        except Exception as e:
+            return None, e
     
     def piece_move():
-        if piece.move_valid(f_sqr[1], f_sqr[0], game.board):
-            char = piece_notation[piece.name]
-            init_sqr = f'{i_sqr[0]}{i_sqr[1]}'
-            return f'{char}{init_sqr}{'x' if capture else ''}'
-        return None
+        try:
+            if piece.move_valid(f_sqr[1], f_sqr[0], game.board):
+                char = piece_notation[piece.name]
+                init_sqr = f'{i_sqr[0]}{i_sqr[1]}'
+                return f'{char}{init_sqr}{'x' if capture else ''}', None
+            return None, None
+        except Exception as e:
+            return None, e
     
+    # try: 
     match piece.name:
         case 'pawn':
-            mv = pawn_move()
-            if mv is not None: return mv + move_sq
-            return mv
+            mv, err = pawn_move()
+            if mv is not None: return mv + move_sq, None
+            return mv, err
         case 'king':
-            mv = king_move()
-            if mv is not None: return mv + move_sq
-            return mv
+            mv, err = king_move()
+            if mv is not None: return mv + move_sq, None
+            return mv, err
         case _:
-            mv = piece_move()
-            if mv is not None: return mv + move_sq
-            return mv
+            mv, err = piece_move()
+            if mv is not None: return mv + move_sq, None
+            return mv, err
+    # except Exception as e:
+    #     print(f'Notation error: {e}')
+    #     return None, True
+        
+def play_move(game: Game, move:str) -> str:
+    try:
+        game.parse_move(move)
+        return move
+    except Exception as e:
+        return e
+    
