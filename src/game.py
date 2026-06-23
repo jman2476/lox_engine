@@ -190,6 +190,8 @@ class Game():
                     self.halfmove += 1
                 else: 
                     self.halfmove = 0
+                if self.en_passent != '-' and self.en_passent == initial_ep:
+                    self.en_passent = '-'
             self.set_fen()
 
 
