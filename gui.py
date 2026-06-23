@@ -68,13 +68,16 @@ while running:
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             dragging = False
             fin_sq = get_square(game_board.game.turn,100, (50,50), pygame.mouse.get_pos())
-            move, err = move_notation(game_board.game, move_piece.piece, init_tracker, fin_sq)
-            if err is not None:
-                print("Error writing move notation ", move, err)
-                error_box.set_message(str(err))
-            elif move is not None:
-                print(f"Algebraic notation: {move}")
-                error_box.set_message(play_move(game_board.game, move))
+            if fin_sq[0] is not None:
+                move, err = move_notation(game_board.game, move_piece.piece, init_tracker, fin_sq)
+                if err is not None:
+                    print("Error writing move notation ", move, err)
+                    error_box.set_message(str(err))
+                elif move is not None:
+                    print(f"Algebraic notation: {move}")
+                    error_box.set_message(play_move(game_board.game, move))
+            else:
+                error_box.set_message("Don't throw pieces off the board")
             # mouse_msgs.append(f'End: Mouse {"is" if dragging else "isn't"} dragging to {event.pos}. Square end: {fin_sq}')
             # sigma_offset = (0,0)
             init_tracker = None
