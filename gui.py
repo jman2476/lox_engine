@@ -1,6 +1,7 @@
 import pygame
 from src.graphics.board import GUI_Board, Color
 from src.graphics.clock import Clock
+from src.graphics.error_box import ErrorBox
 from src.graphics.mouse import get_square, move_notation
 import datetime
 # based on quick start from pygame.org/docs
@@ -13,6 +14,7 @@ dt = 0
 elapsed = 0
 game_board = GUI_Board()
 piece_font = pygame.font.Font("./fonts/nishiki-teki/NishikiTeki-MVxaJ.ttf", 30)
+error_box = ErrorBox()
 
 # mouse handlers
 dragging = False
@@ -83,12 +85,14 @@ while running:
     screen.fill("purple")
     w_clock = Clock(datetime.timedelta(minutes=5), Color.WHITE)
     b_clock = Clock(datetime.timedelta(minutes=5), Color.BLACK)
+    error_box.set_message("ALOHA from the future! We need you to spend your time making as much bread and banana pudding so we can eat it with our hands!")
     
     w_clock.render()
     b_clock.render()
 
     screen.blit(w_clock, (1000, 500))
     screen.blit(b_clock, (1000, 600))
+    screen.blit(error_box, (900, 100))
     
 
     # MOUSE OBSERVATION
