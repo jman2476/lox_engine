@@ -52,9 +52,9 @@ def play_move(game:Game, piece:Piece, i_sqr:tuple[str, int], f_sqr:tuple[str, in
         print(f'Fin_sq: {f_sqr[0]}{f_sqr[1]}')
         print(f'Pawn sq: {piece.square()}')
         print('--------------------')
-        ep = False if game.en_passent == '-' else game.en_passent
+        ep = game.en_passent == f'{f_sqr[0]}{f_sqr[1]}'
         if piece.move_valid(f_sqr[1], f_sqr[0], game.board, ep):
-            return f'{i_sqr[0] + "x" if capture else ''}'
+            return f'{i_sqr[0] + "x" if capture or ep else ''}'
         return None
     
     def king_move():
