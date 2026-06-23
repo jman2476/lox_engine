@@ -96,9 +96,9 @@ while running:
     w_clock.render()
     b_clock.render()
 
-    screen.blit(w_clock, (1000, 500))
-    screen.blit(b_clock, (1000, 600))
-    screen.blit(error_box, (900, 100))
+    screen.blit(w_clock, (900, 50))
+    screen.blit(b_clock, (900, 140))
+    screen.blit(error_box, (900, 230))
     
 
     # MOUSE OBSERVATION
