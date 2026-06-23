@@ -1,5 +1,16 @@
 import pygame
+from src.game import Game
+from src.piece import (
+    Piece, Pawn, King,
+    Queen, Bishop,
+    Knight, Rook
+)
 from src.graphics.board import Color, GUI_Board
+
+class MoveTranslator():
+    pass
+
+   
 
 def get_square(turn:str, side_len:int, corner:tuple[int,int], mouse_pos:tuple[int,int]):
     board_pos = (mouse_pos[0] - corner[0] - 1, mouse_pos[1] - corner[1] - 1)
