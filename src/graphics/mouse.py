@@ -82,3 +82,11 @@ def move_notation(game:Game, piece:Piece, i_sqr:tuple[str, int], f_sqr:tuple[str
             mv = piece_move()
             if mv is not None: return mv + move_sq
             return mv
+        
+def play_move(game: Game, move:str) -> str:
+    try:
+        game.parse_move(move)
+        return move
+    except Exception as e:
+        return e
+    
