@@ -36,6 +36,8 @@ while running:
     for event in events:
         if event.type == pygame.QUIT:
             running = False
+        
+        # Mouse down
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             mouse_pos = pygame.mouse.get_pos()
             if mouse_pos[0] > 1180 and mouse_pos[1] < 20:
@@ -52,10 +54,12 @@ while running:
                 move_piece.set_drag_coords(mouse_pos)
             square = get_square(game_board.game.turn, 100, (50,50), mouse_pos)
 
+        # Mouse drag
         if event.type == pygame.MOUSEMOTION and dragging == True:
             if move_piece:
                 move_piece.set_drag_coords(pygame.mouse.get_pos())
 
+        # Mouse up
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             dragging = False
             fin_sq = get_square(game_board.game.turn,100, (50,50), pygame.mouse.get_pos())
