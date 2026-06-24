@@ -42,7 +42,22 @@ while running:
             mouse_pos = pygame.mouse.get_pos()
             if mouse_pos[0] > 1180 and mouse_pos[1] < 20:
                 exit_button.on_click()
-   
+
+            if game_board.promoting['current']:
+                if mouse_pos[0] > 50 and mouse_pos[0] < 150:
+                    if mouse_pos[1] > 50 and mouse_pos[1] < 150:
+                        p = game_board.promoting['options'].buttons[0].on_click(game_board)
+                        print(f"Promotion to {p}")
+                    elif mouse_pos[1] > 150 and mouse_pos[1] < 250:
+                        p = game_board.promoting['options'].buttons[1].on_click(game_board)
+                        print(f"Promotion to {p}")
+                    elif mouse_pos[1] > 250 and mouse_pos[1] < 350:
+                        p = game_board.promoting['options'].buttons[2].on_click(game_board)
+                        print(f"Promotion to {p}")
+                    elif mouse_pos[1] > 350 and mouse_pos[1] < 450:
+                        p = game_board.promoting['options'].buttons[3].on_click(game_board)
+                        print(f"Promotion to {p}")
+                    
             init_sq = get_square(game_board.game.turn, 100, (50,50), mouse_pos)
             if init_sq != (None, None):
                 move_piece = game_board.clear_square(init_sq)

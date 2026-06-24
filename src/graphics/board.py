@@ -177,6 +177,7 @@ class PromotionOptions(pygame.Surface):
         pygame.Surface.__init__(self,(100,400))
         self.fill('beige')
         self.side = side
+        self.buttons = []
         self.__set_buttons__()
         
     def __set_buttons__(self):
@@ -184,6 +185,7 @@ class PromotionOptions(pygame.Surface):
             pos = (0, i*100)
             button = PromotionButton(piece, self.side)
             self.blit(button, pos)
+            self.buttons.append(button)
 
 class PromotionButton(Button):
     def __init__(self, piece:str, side: Color):
@@ -199,5 +201,6 @@ class PromotionButton(Button):
         return pygame.image.load(path).convert_alpha()
     
     def on_click(self, board: GUI_Board):
+        print(f'Piece {self.piece}')
         board.promoting['current'] = False
         return self.piece[:1].capitalize()
