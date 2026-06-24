@@ -57,17 +57,17 @@ while running:
                     elif mouse_pos[1] > 350 and mouse_pos[1] < 450:
                         p = game_board.promoting['options'].buttons[3].on_click(game_board)
                         print(f"Promotion to {p}")
-                    
-            init_sq = get_square(game_board.game.turn, 100, (50,50), mouse_pos)
-            if init_sq != (None, None):
-                move_piece = game_board.clear_square(init_sq)
-                init_tracker = init_sq
-            
-            print(f'init_sq {init_sq}, move_piece {move_piece}')
-            if move_piece is not None:
-                dragging = True
-                move_piece.set_drag_coords(mouse_pos)
-            square = get_square(game_board.game.turn, 100, (50,50), mouse_pos)
+            else:        
+                init_sq = get_square(game_board.game.turn, 100, (50,50), mouse_pos)
+                if init_sq != (None, None):
+                    move_piece = game_board.clear_square(init_sq)
+                    init_tracker = init_sq
+                
+                print(f'init_sq {init_sq}, move_piece {move_piece}')
+                if move_piece is not None:
+                    dragging = True
+                    move_piece.set_drag_coords(mouse_pos)
+                square = get_square(game_board.game.turn, 100, (50,50), mouse_pos)
 
         # Mouse drag
         if event.type == pygame.MOUSEMOTION and dragging == True:
@@ -78,7 +78,7 @@ while running:
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             dragging = False
             fin_sq = get_square(game_board.game.turn,100, (50,50), pygame.mouse.get_pos())
-            if fin_sq[0] is not None:
+            if fin_sq[0] is not None and move_piece is not None:
                 move, err = move_notation(game_board, move_piece.piece, init_tracker, fin_sq)
                 if err is not None:
                     print("Error writing move notation ", move, err)
@@ -102,7 +102,7 @@ while running:
     screen.fill("purple")
     w_clock = Clock(datetime.timedelta(minutes=5), Color.WHITE)
     b_clock = Clock(datetime.timedelta(minutes=5), Color.BLACK)
-    promotion_test = PromotionOptions(game_board.game.turn)
+    
     
     w_clock.render()
     b_clock.render()
@@ -111,7 +111,6 @@ while running:
     screen.blit(b_clock, (900, 140))
     screen.blit(error_box, (900, 230))
     screen.blit(exit_button, (1180, 0))
-    screen.blit(promotion_test, (800, 20))
     
     # RENDER GAME HERE
     match(game_board.game.turn):
