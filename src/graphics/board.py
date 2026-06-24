@@ -45,7 +45,8 @@ class GUI_Board(pygame.Surface):
         for r in self._ranks:
             color = ~color
             for f in self._files:
-                self.board[f][r][0]= GUI_Square(color, f'{f}{r+1}')
+                tile_color = 'antiquewhite' if color == Color.WHITE else 'darkolivegreen'
+                self.board[f][r][0]= GUI_Square(tile_color, f'{f}{r+1}')
                 color = ~color
 
     def set_pieces(self):
@@ -110,14 +111,14 @@ class GUI_Square(pygame.Surface):
     pygame.font.init()
     _font = pygame.font.SysFont("Arial", 20)
 
-    def __init__(self, color:Color, square:str):
+    def __init__(self, color:str, square:str):
         pygame.Surface.__init__(self, (100,100))
         self.color = color
         self.square = square
         self.__clear_sq__()
 
     def __clear_sq__(self):
-        self.fill(self.color.name)
+        self.fill(self.color)
         self.__render_sq_name__()
 
     def __render_sq_name__(self):

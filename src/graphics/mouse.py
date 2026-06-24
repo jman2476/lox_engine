@@ -60,6 +60,9 @@ def move_notation(game:Game, piece:Piece, i_sqr:tuple[str, int], f_sqr:tuple[str
         except Exception as e:
             return None, e
     
+    def pawn_promote():
+        pass
+
     def king_move():
         try:
             if piece.move_valid(f_sqr[1], f_sqr[0], game.board):
@@ -67,7 +70,17 @@ def move_notation(game:Game, piece:Piece, i_sqr:tuple[str, int], f_sqr:tuple[str
             return None, None
         except Exception as e:
             return None, e
-    
+        
+    def castle():
+        try:
+            if f_sqr[0] == 'c':
+                return 'O-O-O', None
+            elif f_sqr[0] == 'g':
+                return 'O-O', None
+            return None, None
+        except Exception as e:
+            return None, e
+
     def piece_move():
         try:
             if piece.move_valid(f_sqr[1], f_sqr[0], game.board):
@@ -78,23 +91,26 @@ def move_notation(game:Game, piece:Piece, i_sqr:tuple[str, int], f_sqr:tuple[str
         except Exception as e:
             return None, e
     
-    # try: 
     match piece.name:
         case 'pawn':
             mv, err = pawn_move()
             if mv is not None: return mv + move_sq, None
             return mv, err
         case 'king':
-            mv, err = king_move()
+            mv, err = None, None
+            if (i_sqr[0] == 'e' 
+                and f_sqr[0] in ['c','g']
+                and i_sqr[1] == f_sqr[1]
+                and i_sqr[1] in [1,8]) :
+                return castle()
+            else:
+                mv, err = king_move()
             if mv is not None: return mv + move_sq, None
             return mv, err
         case _:
             mv, err = piece_move()
             if mv is not None: return mv + move_sq, None
             return mv, err
-    # except Exception as e:
-    #     print(f'Notation error: {e}')
-    #     return None, True
         
 def play_move(game: Game, move:str) -> str:
     try:

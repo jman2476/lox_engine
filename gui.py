@@ -2,11 +2,12 @@ import pygame
 from src.graphics.board import GUI_Board, Color
 from src.graphics.clock import Clock
 from src.graphics.error_box import ErrorBox
+from src.graphics.button import ExitButton
 from src.graphics.mouse import get_square, move_notation, play_move
 import datetime
-# based on quick start from pygame.org/docs
 
 pygame.init()
+pygame.mouse.set_visible(True)
 screen = pygame.display.set_mode((1200, 900))
 clock = pygame.time.Clock()
 running = True
@@ -27,23 +28,22 @@ move_idx = 0
 trigger = 5 #seconds
 mouse_msgs = []
 
-# dnd test vars
-# circle_pos = pygame.Vector2(1000, 450)
+# exit button
+exit_button = ExitButton()
 
 while running:
-    # sigma_offset = (0,0)
-    # offset = (0,0)
-    # drag_v = pygame.Vector2()
     events = pygame.event.get()
-    # print(f'Events {events}') 
     for event in events:
         if event.type == pygame.QUIT:
             running = False
+        
+        # Mouse down
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            # dist = circle_pos.distance_to(pygame.Vector2(event.pos))
-            # if dist <=40:
-            #     dragging = True
-            init_sq = get_square(game_board.game.turn, 100, (50,50), pygame.mouse.get_pos())
+            mouse_pos = pygame.mouse.get_pos()
+            if mouse_pos[0] > 1180 and mouse_pos[1] < 20:
+                exit_button.on_click()
+   
+            init_sq = get_square(game_board.game.turn, 100, (50,50), mouse_pos)
             if init_sq != (None, None):
                 move_piece = game_board.clear_square(init_sq)
                 init_tracker = init_sq
@@ -51,34 +51,32 @@ while running:
             print(f'init_sq {init_sq}, move_piece {move_piece}')
             if move_piece is not None:
                 dragging = True
-                move_piece.set_drag_coords(pygame.mouse.get_pos())
-            square = get_square(game_board.game.turn, 100, (50,50), pygame.mouse.get_pos())
-            # if square is not None and square[0] is not None and square[1] is not None:
-                # move_piece = game_board.board[square[0]][square[1]-1][1]
-                # if move_piece is not None:
-                    # print(f'{move_piece.piece.side} {move_piece.piece.name}')
-            # mouse_msgs.append(f'Start: Mouse {"is" if dragging else "isn't"} dragging from {event.pos}. Square start: {square}')
+                move_piece.set_drag_coords(mouse_pos)
+            square = get_square(game_board.game.turn, 100, (50,50), mouse_pos)
+
+        # Mouse drag
         if event.type == pygame.MOUSEMOTION and dragging == True:
             if move_piece:
                 move_piece.set_drag_coords(pygame.mouse.get_pos())
-            # offset = pygame.mouse.get_rel()
-            # circle_pos = pygame.Vector2(pygame.mouse.get_pos())
-            # sigma_offset = (sigma_offset[0]+offset[0], sigma_offset[1]+offset[1])
-            # mouse_msgs.append(f'Middle: Moving mouse, offset: {offset}, sigma_offset: {sigma_offset}')
+
+        # Mouse up
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             dragging = False
             fin_sq = get_square(game_board.game.turn,100, (50,50), pygame.mouse.get_pos())
-            move, err = move_notation(game_board.game, move_piece.piece, init_tracker, fin_sq)
-            if err is not None:
-                print("Error writing move notation ", move, err)
-                error_box.set_message(str(err))
-            elif move is not None:
-                print(f"Algebraic notation: {move}")
-                error_box.set_message(play_move(game_board.game, move))
-            # mouse_msgs.append(f'End: Mouse {"is" if dragging else "isn't"} dragging to {event.pos}. Square end: {fin_sq}')
-            # sigma_offset = (0,0)
+            if fin_sq[0] is not None:
+                move, err = move_notation(game_board.game, move_piece.piece, init_tracker, fin_sq)
+                if err is not None:
+                    print("Error writing move notation ", move, err)
+                    error_box.set_message(str(err))
+                elif move is not None:
+                    print(f"Algebraic notation: {move}")
+                    error_box.set_message(play_move(game_board.game, move))
+            else:
+                error_box.set_message("Don't throw pieces off the board")
+            
             init_tracker = None
-            move_piece.set_drag_coords((-100, -100))
+            if move_piece:
+                move_piece.set_drag_coords((-100, -100))
             game_board.drag_square = (None, None)
             move_piece = None
             
@@ -88,33 +86,15 @@ while running:
     screen.fill("purple")
     w_clock = Clock(datetime.timedelta(minutes=5), Color.WHITE)
     b_clock = Clock(datetime.timedelta(minutes=5), Color.BLACK)
-    # error_box.set_message("ALOHA from the future! We need you to spend your time making as much bread and banana pudding so we can eat it with our hands!")
+
     
     w_clock.render()
     b_clock.render()
 
-    screen.blit(w_clock, (1000, 500))
-    screen.blit(b_clock, (1000, 600))
-    screen.blit(error_box, (900, 100))
-    
-
-    # MOUSE OBSERVATION
-    # mouse = pygame.mouse.get_pos() 
-    # print(f'Buttons {pygame.mouse.get_pressed()}') 
-    # print(f'Get focused {pygame.mouse.get_focused()}') 
-    # print(f'Get pos {mouse}') 
-    # print(f'Get rel pos {pygame.mouse.get_rel()}') 
-    
-
-    # AUTO PLAY GAME HERE
-    
-    # if elapsed > trigger:
-    #     if not move_idx >= len(move_list):
-    #         game_board.game.parse_move(move_list[move_idx])
-    #         move_idx += 1
-    #         trigger += 10
-        # else:
-        #     break
+    screen.blit(w_clock, (900, 50))
+    screen.blit(b_clock, (900, 140))
+    screen.blit(error_box, (900, 230))
+    screen.blit(exit_button, (1180, 0))
     
     # RENDER GAME HERE
     match(game_board.game.turn):
@@ -129,8 +109,6 @@ while running:
     screen.blit(piece_font.render("Hello, chess. Time: %.3f, Turn: %s"%(elapsed, game_board.game.turn), 0, "black"), (10,10))
     screen.blit(piece_font.render("Fen: %s"%(game_board.game.fen), 0, "black"), (10,850))
     
-    # drag n drop test
-    # pygame.draw.circle(screen, 'red',circle_pos, 40)
     pygame.display.flip()
 
     dt = clock.tick(60)/1000
