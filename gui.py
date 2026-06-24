@@ -5,7 +5,6 @@ from src.graphics.error_box import ErrorBox
 from src.graphics.button import ExitButton
 from src.graphics.mouse import get_square, move_notation, play_move
 import datetime
-# based on quick start from pygame.org/docs
 
 pygame.init()
 pygame.mouse.set_visible(True)
@@ -32,17 +31,8 @@ mouse_msgs = []
 # exit button
 exit_button = ExitButton()
 
-
-# dnd test vars
-# circle_pos = pygame.Vector2(1000, 450)
-
 while running:
-    print(f'Mouse visible: {pygame.mouse.get_visible()}')
-    # sigma_offset = (0,0)
-    # offset = (0,0)
-    # drag_v = pygame.Vector2()
     events = pygame.event.get()
-    # print(f'Events {events}') 
     for event in events:
         if event.type == pygame.QUIT:
             running = False
@@ -50,9 +40,7 @@ while running:
             mouse_pos = pygame.mouse.get_pos()
             if mouse_pos[0] > 1180 and mouse_pos[1] < 20:
                 exit_button.on_click()
-            # dist = circle_pos.distance_to(pygame.Vector2(event.pos))
-            # if dist <=40:
-            #     dragging = True
+   
             init_sq = get_square(game_board.game.turn, 100, (50,50), mouse_pos)
             if init_sq != (None, None):
                 move_piece = game_board.clear_square(init_sq)
@@ -63,18 +51,11 @@ while running:
                 dragging = True
                 move_piece.set_drag_coords(mouse_pos)
             square = get_square(game_board.game.turn, 100, (50,50), mouse_pos)
-            # if square is not None and square[0] is not None and square[1] is not None:
-                # move_piece = game_board.board[square[0]][square[1]-1][1]
-                # if move_piece is not None:
-                    # print(f'{move_piece.piece.side} {move_piece.piece.name}')
-            # mouse_msgs.append(f'Start: Mouse {"is" if dragging else "isn't"} dragging from {event.pos}. Square start: {square}')
+
         if event.type == pygame.MOUSEMOTION and dragging == True:
             if move_piece:
                 move_piece.set_drag_coords(pygame.mouse.get_pos())
-            # offset = pygame.mouse.get_rel()
-            # circle_pos = pygame.Vector2(pygame.mouse.get_pos())
-            # sigma_offset = (sigma_offset[0]+offset[0], sigma_offset[1]+offset[1])
-            # mouse_msgs.append(f'Middle: Moving mouse, offset: {offset}, sigma_offset: {sigma_offset}')
+
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             dragging = False
             fin_sq = get_square(game_board.game.turn,100, (50,50), pygame.mouse.get_pos())
@@ -88,8 +69,7 @@ while running:
                     error_box.set_message(play_move(game_board.game, move))
             else:
                 error_box.set_message("Don't throw pieces off the board")
-            # mouse_msgs.append(f'End: Mouse {"is" if dragging else "isn't"} dragging to {event.pos}. Square end: {fin_sq}')
-            # sigma_offset = (0,0)
+            
             init_tracker = None
             if move_piece:
                 move_piece.set_drag_coords((-100, -100))
@@ -102,7 +82,7 @@ while running:
     screen.fill("purple")
     w_clock = Clock(datetime.timedelta(minutes=5), Color.WHITE)
     b_clock = Clock(datetime.timedelta(minutes=5), Color.BLACK)
-    # error_box.set_message("ALOHA from the future! We need you to spend your time making as much bread and banana pudding so we can eat it with our hands!")
+
     
     w_clock.render()
     b_clock.render()
@@ -111,25 +91,6 @@ while running:
     screen.blit(b_clock, (900, 140))
     screen.blit(error_box, (900, 230))
     screen.blit(exit_button, (1180, 0))
-    
-
-    # MOUSE OBSERVATION
-    # mouse = pygame.mouse.get_pos() 
-    # print(f'Buttons {pygame.mouse.get_pressed()}') 
-    # print(f'Get focused {pygame.mouse.get_focused()}') 
-    # print(f'Get pos {mouse}') 
-    # print(f'Get rel pos {pygame.mouse.get_rel()}') 
-    
-
-    # AUTO PLAY GAME HERE
-    
-    # if elapsed > trigger:
-    #     if not move_idx >= len(move_list):
-    #         game_board.game.parse_move(move_list[move_idx])
-    #         move_idx += 1
-    #         trigger += 10
-        # else:
-        #     break
     
     # RENDER GAME HERE
     match(game_board.game.turn):
@@ -144,8 +105,6 @@ while running:
     screen.blit(piece_font.render("Hello, chess. Time: %.3f, Turn: %s"%(elapsed, game_board.game.turn), 0, "black"), (10,10))
     screen.blit(piece_font.render("Fen: %s"%(game_board.game.fen), 0, "black"), (10,850))
     
-    # drag n drop test
-    # pygame.draw.circle(screen, 'red',circle_pos, 40)
     pygame.display.flip()
 
     dt = clock.tick(60)/1000
