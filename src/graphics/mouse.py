@@ -72,14 +72,10 @@ def move_notation(game:Game, piece:Piece, i_sqr:tuple[str, int], f_sqr:tuple[str
             return None, e
         
     def castle():
-        print("Castling")
-        print(f"Isq:{i_sqr}, fsq: {f_sqr}")
         try:
             if f_sqr[0] == 'c':
-                print("queen side castle")
                 return 'O-O-O', None
             elif f_sqr[0] == 'g':
-                print("king side castle")
                 return 'O-O', None
             return None, None
         except Exception as e:
@@ -95,7 +91,6 @@ def move_notation(game:Game, piece:Piece, i_sqr:tuple[str, int], f_sqr:tuple[str
         except Exception as e:
             return None, e
     
-    # try: 
     match piece.name:
         case 'pawn':
             mv, err = pawn_move()
@@ -116,9 +111,6 @@ def move_notation(game:Game, piece:Piece, i_sqr:tuple[str, int], f_sqr:tuple[str
             mv, err = piece_move()
             if mv is not None: return mv + move_sq, None
             return mv, err
-    # except Exception as e:
-    #     print(f'Notation error: {e}')
-    #     return None, True
         
 def play_move(game: Game, move:str) -> str:
     try:
