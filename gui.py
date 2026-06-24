@@ -84,7 +84,12 @@ while running:
             if game_board.promoting['current'] and game_board.promoting['new'] != '':
                 print("about to execute promotion")
                 move, err = move_notation(*(game_board.promoting['move']))
-                error_box.set_message(play_move(game_board.game, move))
+                if err is not None:
+                    print("Error writing move notation ", move, err)
+                    error_box.set_message(str(err))
+                elif move is not None:
+                    print(f"Algebraic notation: {move}")
+                    error_box.set_message(play_move(game_board.game, move))
             elif fin_sq[0] is not None and move_piece is not None:
                 move, err = move_notation(game_board, move_piece.piece, init_tracker, fin_sq)
                 if err is not None:
