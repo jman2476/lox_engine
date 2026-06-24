@@ -80,7 +80,12 @@ while running:
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             dragging = False
             fin_sq = get_square(game_board.game.turn,100, (50,50), pygame.mouse.get_pos())
-            if fin_sq[0] is not None and move_piece is not None:
+
+            if game_board.promoting['current'] and game_board.promoting['new'] != '':
+                print("about to execute promotion")
+                move, err = move_notation(*(game_board.promoting['move']))
+                error_box.set_message(play_move(game_board.game, move))
+            elif fin_sq[0] is not None and move_piece is not None:
                 move, err = move_notation(game_board, move_piece.piece, init_tracker, fin_sq)
                 if err is not None:
                     print("Error writing move notation ", move, err)

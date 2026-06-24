@@ -60,19 +60,31 @@ def move_notation(board:GUI_Board, piece:Piece, i_sqr:tuple[str, int], f_sqr:tup
                     or (piece.side == 'black' and f_sqr[1] == 1)  
                 ):
                     print('Promotion')
-                    pawn_promote()
+                    return pawn_promote()
                 return f'{i_sqr[0] + "x" if capture or ep else ''}', None
             return None, None
         except Exception as e:
             return None, e
     
     def pawn_promote():
-            board.promoting['current'] = True
-            match board.game.turn:
-                case 'white':
-                    board.promoting['options'] = PromotionOptions(Color.WHITE)
-                case 'black':
-                    board.promoting['options'] = PromotionOptions(Color.BLACK)
+            if not board.promoting['current']:
+                print('prepping promotion')
+                board.promoting['current'] = True
+                board.promoting['move'] = [
+                    board, piece, i_sqr, f_sqr
+                ]
+                return None, None
+            else:
+                print('executing promotion')
+                p = board.promoting['new']
+                board.promoting ={
+                'current': False,
+                'options': None,
+                'move': [],
+                'new': ''
+                }
+                return f'{i_sqr[0] + "x" if capture else ''}{move_sq}={p}', 'promotion'
+
         
 
     def king_move():
@@ -106,6 +118,10 @@ def move_notation(board:GUI_Board, piece:Piece, i_sqr:tuple[str, int], f_sqr:tup
     match piece.name:
         case 'pawn':
             mv, err = pawn_move()
+        
+            print(f'move pawn: mv = {mv}{err}')
+            if err == 'promotion':
+                return mv, None
             if mv is not None: return mv + move_sq, None
             return mv, err
         case 'king':

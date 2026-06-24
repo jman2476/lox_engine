@@ -205,5 +205,5 @@ class PromotionButton(Button):
     
     def on_click(self, board: GUI_Board):
         print(f'Piece {self.piece}')
-        board.promoting['current'] = False
+        # board.promoting['current'] = False
         return self.piece[:1].capitalize()
