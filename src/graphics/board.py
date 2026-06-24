@@ -6,14 +6,10 @@ from src.piece import (
 )
 from src.game import Game
 from src.functions.parse import parse_square
-# from src.graphics.square import GUI_Square
+# from src.graphics.mouse import PromotionOptions
 import pygame
-from enum import Flag, auto
-
-class Color(Flag):
-    WHITE = auto() 
-    BLACK = auto()
-
+from src.graphics.color import Color
+from src.graphics.button import Button
 
 class GUI_Board(pygame.Surface):
     _white = Color.WHITE
@@ -39,6 +35,10 @@ class GUI_Board(pygame.Surface):
         self.set_squares()
         self.pieces = self.set_pieces()
         self.drag_square = (None, None)
+        self.promoting = {
+            'current': False,
+            'options': None
+        }
 
     def set_squares(self):
         color = self._white 
@@ -53,7 +53,9 @@ class GUI_Board(pygame.Surface):
         return [GUI_Piece(p) for p in 
                 [*self.game.board.white(), * self.game.board.black()]]
         
-
+    def render_promotion(self, turn:Color):
+        self.promoting['options'] = PromotionOptions(turn)
+        self.blit(self.promoting['options'], (0,0))
             
     def render_board(self, turn:Color, font:pygame.font.FontType):
         self.set_squares()
@@ -100,6 +102,9 @@ class GUI_Board(pygame.Surface):
                 render_w_view()
             case Color.BLACK:
                 render_b_view()
+        
+        if self.promoting['current']:
+            self.render_promotion(turn)
     
     def clear_square(self, square: tuple[str, int]):
         self.drag_square = square
@@ -159,3 +164,40 @@ class GUI_Piece(pygame.Surface):
 
     def set_drag_coords(self, pos:tuple[int, int]):
         self.x_pos, self.y_pos = pos[0] - 50,pos[1] - 50
+
+class PromotionOptions(pygame.Surface):
+    _pieces = [
+        'queen',
+        'rook',
+        'bishop',
+        'knight'
+    ]
+
+    def __init__(self, side:Color):
+        pygame.Surface.__init__(self,(100,400))
+        self.fill('beige')
+        self.side = side
+        self.__set_buttons__()
+        
+    def __set_buttons__(self):
+        for i, piece in enumerate(self._pieces):
+            pos = (0, i*100)
+            button = PromotionButton(piece, self.side)
+            self.blit(button, pos)
+
+class PromotionButton(Button):
+    def __init__(self, piece:str, side: Color):
+        super().__init__((100,100), pygame.SRCALPHA)
+        self.side = side
+        self.piece = piece
+        self.icon = self.__set_icon__()
+        self.blit(self.icon, (0,0))
+
+    def __set_icon__(self):
+        color = 'white' if self.side == Color.WHITE else 'black'
+        path = f'./imgs/piece_icons/{color}_{self.piece}.png' 
+        return pygame.image.load(path).convert_alpha()
+    
+    def on_click(self, board: GUI_Board):
+        board.promoting['current'] = False
+        return self.piece[:1].capitalize()

@@ -1,5 +1,6 @@
 import pygame
-from src.graphics.board import Color
+# from src.graphics.board import GUI_Board
+# from src.graphics.color import Color
 
 
 class Button(pygame.Surface):
@@ -21,36 +22,3 @@ class ExitButton(Button):
     def on_click(self):
         pygame.quit()
 
-class PromotionOptions(pygame.Surface):
-    _pieces = [
-        'queen',
-        'rook',
-        'bishop',
-        'knight'
-    ]
-
-    def __init__(self, side:Color):
-        pygame.Surface.__init__(self,(100,400))
-        self.fill('beige')
-        self.side = side
-        
-    def __set_buttons__(self):
-        for i, piece in enumerate(self._pieces):
-            pos = (i*100, 0)
-            button = PromotionButton(piece, self.side)
-            self.blit(button, pos)
-
-class PromotionButton(Button):
-    def __init__(self, piece:str, side: Color):
-        super().__init__((100,100), pygame.SRCALPHA)
-        self.side = side
-        self.piece = piece
-        self.icon = self.__set_icon__()
-        self.blit(self.icon, (0,0))
-
-    def __set_icon__(self):
-        path = f'./imgs/piece_icons/{self.side}_{self.piece}' 
-        return pygame.image.load(path).convert_alpha()
-    
-    def on_click(self):
-        return self.piece[:1].capitalize()

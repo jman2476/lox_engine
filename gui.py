@@ -1,5 +1,5 @@
 import pygame
-from src.graphics.board import GUI_Board, Color
+from src.graphics.board import GUI_Board, Color, PromotionOptions
 from src.graphics.clock import Clock
 from src.graphics.error_box import ErrorBox
 from src.graphics.button import ExitButton
@@ -64,21 +64,22 @@ while running:
             dragging = False
             fin_sq = get_square(game_board.game.turn,100, (50,50), pygame.mouse.get_pos())
             if fin_sq[0] is not None:
-                move, err = move_notation(game_board.game, move_piece.piece, init_tracker, fin_sq)
+                move, err = move_notation(game_board, move_piece.piece, init_tracker, fin_sq)
                 if err is not None:
                     print("Error writing move notation ", move, err)
                     error_box.set_message(str(err))
-                elif move is not None:
+                elif move is not None and not game_board.promoting['current']:
                     print(f"Algebraic notation: {move}")
                     error_box.set_message(play_move(game_board.game, move))
             else:
                 error_box.set_message("Don't throw pieces off the board")
             
-            init_tracker = None
-            if move_piece:
-                move_piece.set_drag_coords((-100, -100))
-            game_board.drag_square = (None, None)
-            move_piece = None
+            if not game_board.promoting['current']:
+                init_tracker = None
+                if move_piece:
+                    move_piece.set_drag_coords((-100, -100))
+                game_board.drag_square = (None, None)
+                move_piece = None
             
     if len(mouse_msgs) > 0:
         print("Mouse messages:", mouse_msgs)
@@ -86,7 +87,7 @@ while running:
     screen.fill("purple")
     w_clock = Clock(datetime.timedelta(minutes=5), Color.WHITE)
     b_clock = Clock(datetime.timedelta(minutes=5), Color.BLACK)
-
+    promotion_test = PromotionOptions(game_board.game.turn)
     
     w_clock.render()
     b_clock.render()
@@ -95,6 +96,7 @@ while running:
     screen.blit(b_clock, (900, 140))
     screen.blit(error_box, (900, 230))
     screen.blit(exit_button, (1180, 0))
+    screen.blit(promotion_test, (800, 20))
     
     # RENDER GAME HERE
     match(game_board.game.turn):

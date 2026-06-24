@@ -5,12 +5,11 @@ from src.piece import (
     Queen, Bishop,
     Knight, Rook
 )
-from src.graphics.board import Color, GUI_Board
+from src.graphics.board import GUI_Board, PromotionOptions
+# from src.graphics.button import 
 
 class MoveTranslator():
     pass
-
-   
 
 def get_square(turn:str, side_len:int, corner:tuple[int,int], mouse_pos:tuple[int,int]):
     board_pos = (mouse_pos[0] - corner[0] - 1, mouse_pos[1] - corner[1] - 1)
@@ -34,7 +33,8 @@ def get_square(turn:str, side_len:int, corner:tuple[int,int], mouse_pos:tuple[in
         case "white": return get_sq_white()
         case "black": return get_sq_black()
         
-def move_notation(game:Game, piece:Piece, i_sqr:tuple[str, int], f_sqr:tuple[str, int]):
+def move_notation(board:GUI_Board, piece:Piece, i_sqr:tuple[str, int], f_sqr:tuple[str, int]):
+    game = board.game
     capture, _, __ = game.board.check_square_filled(f_sqr[0], f_sqr[1])
     move_sq = f'{f_sqr[0]}{f_sqr[1]}'
     piece_notation = {
@@ -55,13 +55,22 @@ def move_notation(game:Game, piece:Piece, i_sqr:tuple[str, int], f_sqr:tuple[str
             print('--------------------')
             ep = game.en_passent == f'{f_sqr[0]}{f_sqr[1]}'
             if piece.move_valid(f_sqr[1], f_sqr[0], game.board, ep):
+                if (
+                    (piece.side == "white" and f_sqr[1] == 8)
+                    or (piece.side == 'black' and f_sqr[1] == 1)  
+                ):
+                    print('Promotion')
+                    pawn_promote()
                 return f'{i_sqr[0] + "x" if capture or ep else ''}', None
             return None, None
         except Exception as e:
             return None, e
     
     def pawn_promote():
-        pass
+            board.promoting['current'] = True 
+            promotion = PromotionOptions(piece.side)
+            board.blit(promotion, (0,0))
+        
 
     def king_move():
         try:
