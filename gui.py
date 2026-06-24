@@ -45,6 +45,7 @@ while running:
 
             if game_board.promoting['current']:
                 if mouse_pos[0] > 50 and mouse_pos[0] < 150:
+                    p = ''
                     if mouse_pos[1] > 50 and mouse_pos[1] < 150:
                         p = game_board.promoting['options'].buttons[0].on_click(game_board)
                         print(f"Promotion to {p}")
@@ -57,6 +58,7 @@ while running:
                     elif mouse_pos[1] > 350 and mouse_pos[1] < 450:
                         p = game_board.promoting['options'].buttons[3].on_click(game_board)
                         print(f"Promotion to {p}")
+                    game_board.promoting['new'] = p
             else:        
                 init_sq = get_square(game_board.game.turn, 100, (50,50), mouse_pos)
                 if init_sq != (None, None):

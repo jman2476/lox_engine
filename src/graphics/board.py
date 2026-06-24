@@ -37,7 +37,9 @@ class GUI_Board(pygame.Surface):
         self.drag_square = (None, None)
         self.promoting = {
             'current': False,
-            'options': None
+            'options': None,
+            'move': [],
+            'new': ''
         }
 
     def set_squares(self):
@@ -179,6 +181,7 @@ class PromotionOptions(pygame.Surface):
         self.side = side
         self.buttons = []
         self.__set_buttons__()
+        self.move_args = []
         
     def __set_buttons__(self):
         for i, piece in enumerate(self._pieces):

@@ -6,7 +6,7 @@ from src.piece import (
     Knight, Rook
 )
 from src.graphics.board import GUI_Board, PromotionOptions
-# from src.graphics.button import 
+from src.graphics.color import Color
 
 class MoveTranslator():
     pass
@@ -67,9 +67,12 @@ def move_notation(board:GUI_Board, piece:Piece, i_sqr:tuple[str, int], f_sqr:tup
             return None, e
     
     def pawn_promote():
-            board.promoting['current'] = True 
-            promotion = PromotionOptions(piece.side)
-            board.blit(promotion, (0,0))
+            board.promoting['current'] = True
+            match board.game.turn:
+                case 'white':
+                    board.promoting['options'] = PromotionOptions(Color.WHITE)
+                case 'black':
+                    board.promoting['options'] = PromotionOptions(Color.BLACK)
         
 
     def king_move():
