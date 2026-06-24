@@ -2,11 +2,13 @@ import pygame
 from src.graphics.board import GUI_Board, Color
 from src.graphics.clock import Clock
 from src.graphics.error_box import ErrorBox
+from src.graphics.button import ExitButton
 from src.graphics.mouse import get_square, move_notation, play_move
 import datetime
 # based on quick start from pygame.org/docs
 
 pygame.init()
+pygame.mouse.set_visible(True)
 screen = pygame.display.set_mode((1200, 900))
 clock = pygame.time.Clock()
 running = True
@@ -27,10 +29,15 @@ move_idx = 0
 trigger = 5 #seconds
 mouse_msgs = []
 
+# exit button
+exit_button = ExitButton()
+
+
 # dnd test vars
 # circle_pos = pygame.Vector2(1000, 450)
 
 while running:
+    print(f'Mouse visible: {pygame.mouse.get_visible()}')
     # sigma_offset = (0,0)
     # offset = (0,0)
     # drag_v = pygame.Vector2()
@@ -40,10 +47,13 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            mouse_pos = pygame.mouse.get_pos()
+            if mouse_pos[0] > 1180 and mouse_pos[1] < 20:
+                exit_button.on_click()
             # dist = circle_pos.distance_to(pygame.Vector2(event.pos))
             # if dist <=40:
             #     dragging = True
-            init_sq = get_square(game_board.game.turn, 100, (50,50), pygame.mouse.get_pos())
+            init_sq = get_square(game_board.game.turn, 100, (50,50), mouse_pos)
             if init_sq != (None, None):
                 move_piece = game_board.clear_square(init_sq)
                 init_tracker = init_sq
@@ -51,8 +61,8 @@ while running:
             print(f'init_sq {init_sq}, move_piece {move_piece}')
             if move_piece is not None:
                 dragging = True
-                move_piece.set_drag_coords(pygame.mouse.get_pos())
-            square = get_square(game_board.game.turn, 100, (50,50), pygame.mouse.get_pos())
+                move_piece.set_drag_coords(mouse_pos)
+            square = get_square(game_board.game.turn, 100, (50,50), mouse_pos)
             # if square is not None and square[0] is not None and square[1] is not None:
                 # move_piece = game_board.board[square[0]][square[1]-1][1]
                 # if move_piece is not None:
@@ -81,7 +91,8 @@ while running:
             # mouse_msgs.append(f'End: Mouse {"is" if dragging else "isn't"} dragging to {event.pos}. Square end: {fin_sq}')
             # sigma_offset = (0,0)
             init_tracker = None
-            move_piece.set_drag_coords((-100, -100))
+            if move_piece:
+                move_piece.set_drag_coords((-100, -100))
             game_board.drag_square = (None, None)
             move_piece = None
             
@@ -99,6 +110,7 @@ while running:
     screen.blit(w_clock, (900, 50))
     screen.blit(b_clock, (900, 140))
     screen.blit(error_box, (900, 230))
+    screen.blit(exit_button, (1180, 0))
     
 
     # MOUSE OBSERVATION
