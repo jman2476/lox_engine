@@ -60,6 +60,9 @@ def move_notation(game:Game, piece:Piece, i_sqr:tuple[str, int], f_sqr:tuple[str
         except Exception as e:
             return None, e
     
+    def pawn_promote():
+        pass
+
     def king_move():
         try:
             if piece.move_valid(f_sqr[1], f_sqr[0], game.board):
@@ -67,7 +70,10 @@ def move_notation(game:Game, piece:Piece, i_sqr:tuple[str, int], f_sqr:tuple[str
             return None, None
         except Exception as e:
             return None, e
-    
+        
+    def castle():
+        pass
+
     def piece_move():
         try:
             if piece.move_valid(f_sqr[1], f_sqr[0], game.board):
