@@ -1,5 +1,5 @@
 import pygame
-from src.graphics.board import GUI_Board, Color
+from src.graphics.board import GUI_Board, Color, PromotionOptions
 from src.graphics.clock import Clock
 from src.graphics.error_box import ErrorBox
 from src.graphics.button import ExitButton
@@ -32,6 +32,7 @@ mouse_msgs = []
 exit_button = ExitButton()
 
 while running:
+    
     events = pygame.event.get()
     for event in events:
         if event.type == pygame.QUIT:
@@ -42,17 +43,34 @@ while running:
             mouse_pos = pygame.mouse.get_pos()
             if mouse_pos[0] > 1180 and mouse_pos[1] < 20:
                 exit_button.on_click()
-   
-            init_sq = get_square(game_board.game.turn, 100, (50,50), mouse_pos)
-            if init_sq != (None, None):
-                move_piece = game_board.clear_square(init_sq)
-                init_tracker = init_sq
-            
-            print(f'init_sq {init_sq}, move_piece {move_piece}')
-            if move_piece is not None:
-                dragging = True
-                move_piece.set_drag_coords(mouse_pos)
-            square = get_square(game_board.game.turn, 100, (50,50), mouse_pos)
+
+            if game_board.promoting['current']:
+                if mouse_pos[0] > 50 and mouse_pos[0] < 150:
+                    p = ''
+                    if mouse_pos[1] > 50 and mouse_pos[1] < 150:
+                        p = game_board.promoting['options'].buttons[0].on_click(game_board)
+                        print(f"Promotion to {p}")
+                    elif mouse_pos[1] > 150 and mouse_pos[1] < 250:
+                        p = game_board.promoting['options'].buttons[1].on_click(game_board)
+                        print(f"Promotion to {p}")
+                    elif mouse_pos[1] > 250 and mouse_pos[1] < 350:
+                        p = game_board.promoting['options'].buttons[2].on_click(game_board)
+                        print(f"Promotion to {p}")
+                    elif mouse_pos[1] > 350 and mouse_pos[1] < 450:
+                        p = game_board.promoting['options'].buttons[3].on_click(game_board)
+                        print(f"Promotion to {p}")
+                    game_board.promoting['new'] = p
+            else:        
+                init_sq = get_square(game_board.game.turn, 100, (50,50), mouse_pos)
+                if init_sq != (None, None):
+                    move_piece = game_board.clear_square(init_sq)
+                    init_tracker = init_sq
+                
+                print(f'init_sq {init_sq}, move_piece {move_piece}')
+                if move_piece is not None:
+                    dragging = True
+                    move_piece.set_drag_coords(mouse_pos)
+                square = get_square(game_board.game.turn, 100, (50,50), mouse_pos)
 
         # Mouse drag
         if event.type == pygame.MOUSEMOTION and dragging == True:
@@ -63,22 +81,39 @@ while running:
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             dragging = False
             fin_sq = get_square(game_board.game.turn,100, (50,50), pygame.mouse.get_pos())
-            if fin_sq[0] is not None:
-                move, err = move_notation(game_board.game, move_piece.piece, init_tracker, fin_sq)
+
+            if game_board.promoting['current'] and game_board.promoting['new'] != '':
+                print("about to execute promotion")
+                move, err = move_notation(*(game_board.promoting['move']))
                 if err is not None:
                     print("Error writing move notation ", move, err)
                     error_box.set_message(str(err))
                 elif move is not None:
                     print(f"Algebraic notation: {move}")
-                    error_box.set_message(play_move(game_board.game, move))
+                    error_box.set_message(str(play_move(game_board.game, move)))
+                    print("-------------------------")
+                    print(f'FEN: {game_board.game.fen}')
+                    print("-------------------------")
+            elif fin_sq[0] is not None and move_piece is not None:
+                move, err = move_notation(game_board, move_piece.piece, init_tracker, fin_sq)
+                if err is not None:
+                    print("Error writing move notation ", move, err)
+                    error_box.set_message(str(err))
+                elif move is not None and not game_board.promoting['current']:
+                    print(f"Algebraic notation: {move}")
+                    error_box.set_message(str(play_move(game_board.game, move)))
+                    print("-------------------------")
+                    print(f'FEN: {game_board.game.fen}')
+                    print("-------------------------")
             else:
                 error_box.set_message("Don't throw pieces off the board")
             
-            init_tracker = None
-            if move_piece:
-                move_piece.set_drag_coords((-100, -100))
-            game_board.drag_square = (None, None)
-            move_piece = None
+            if not game_board.promoting['current']:
+                init_tracker = None
+                if move_piece:
+                    move_piece.set_drag_coords((-100, -100))
+                game_board.drag_square = (None, None)
+                move_piece = None
             
     if len(mouse_msgs) > 0:
         print("Mouse messages:", mouse_msgs)
@@ -86,7 +121,7 @@ while running:
     screen.fill("purple")
     w_clock = Clock(datetime.timedelta(minutes=5), Color.WHITE)
     b_clock = Clock(datetime.timedelta(minutes=5), Color.BLACK)
-
+    
     
     w_clock.render()
     b_clock.render()

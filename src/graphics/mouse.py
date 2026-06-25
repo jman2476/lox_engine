@@ -5,12 +5,11 @@ from src.piece import (
     Queen, Bishop,
     Knight, Rook
 )
-from src.graphics.board import Color, GUI_Board
+from src.graphics.board import GUI_Board, PromotionOptions
+from src.graphics.color import Color
 
 class MoveTranslator():
     pass
-
-   
 
 def get_square(turn:str, side_len:int, corner:tuple[int,int], mouse_pos:tuple[int,int]):
     board_pos = (mouse_pos[0] - corner[0] - 1, mouse_pos[1] - corner[1] - 1)
@@ -34,7 +33,8 @@ def get_square(turn:str, side_len:int, corner:tuple[int,int], mouse_pos:tuple[in
         case "white": return get_sq_white()
         case "black": return get_sq_black()
         
-def move_notation(game:Game, piece:Piece, i_sqr:tuple[str, int], f_sqr:tuple[str, int]):
+def move_notation(board:GUI_Board, piece:Piece, i_sqr:tuple[str, int], f_sqr:tuple[str, int]):
+    game = board.game
     capture, _, __ = game.board.check_square_filled(f_sqr[0], f_sqr[1])
     move_sq = f'{f_sqr[0]}{f_sqr[1]}'
     piece_notation = {
@@ -55,13 +55,37 @@ def move_notation(game:Game, piece:Piece, i_sqr:tuple[str, int], f_sqr:tuple[str
             print('--------------------')
             ep = game.en_passent == f'{f_sqr[0]}{f_sqr[1]}'
             if piece.move_valid(f_sqr[1], f_sqr[0], game.board, ep):
+                if (
+                    (piece.side == "white" and f_sqr[1] == 8)
+                    or (piece.side == 'black' and f_sqr[1] == 1)  
+                ):
+                    print('Promotion')
+                    return pawn_promote()
                 return f'{i_sqr[0] + "x" if capture or ep else ''}', None
             return None, None
         except Exception as e:
             return None, e
     
     def pawn_promote():
-        pass
+            if not board.promoting['current']:
+                print('prepping promotion')
+                board.promoting['current'] = True
+                board.promoting['move'] = [
+                    board, piece, i_sqr, f_sqr
+                ]
+                return None, None
+            else:
+                print('executing promotion')
+                p = board.promoting['new']
+                board.promoting ={
+                'current': False,
+                'options': None,
+                'move': [],
+                'new': ''
+                }
+                return f'{i_sqr[0] + "x" if capture else ''}{move_sq}={p}', 'promotion'
+
+        
 
     def king_move():
         try:
@@ -94,6 +118,10 @@ def move_notation(game:Game, piece:Piece, i_sqr:tuple[str, int], f_sqr:tuple[str
     match piece.name:
         case 'pawn':
             mv, err = pawn_move()
+        
+            print(f'move pawn: mv = {mv}{err}')
+            if err == 'promotion':
+                return mv, None
             if mv is not None: return mv + move_sq, None
             return mv, err
         case 'king':
@@ -117,5 +145,6 @@ def play_move(game: Game, move:str) -> str:
         game.parse_move(move)
         return move
     except Exception as e:
+        print(f'Play move exception: {e}')
         return e
     

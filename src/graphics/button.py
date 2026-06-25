@@ -1,9 +1,11 @@
 import pygame
+# from src.graphics.board import GUI_Board
+# from src.graphics.color import Color
 
 
 class Button(pygame.Surface):
-    def __init__(self, size:tuple[int,int]):
-        pygame.Surface.__init__(self, size)
+    def __init__(self, size:tuple[int,int], flags:int = 0):
+        pygame.Surface.__init__(self, size, flags=flags)
         self.font = pygame.freetype.Font("./fonts/kissinger2.ttf", 20)
         
     def on_click(self):
@@ -19,3 +21,4 @@ class ExitButton(Button):
 
     def on_click(self):
         pygame.quit()
+
