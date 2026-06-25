@@ -145,5 +145,6 @@ def play_move(game: Game, move:str) -> str:
         game.parse_move(move)
         return move
     except Exception as e:
+        print(f'Play move exception: {e}')
         return e
     

@@ -32,6 +32,7 @@ mouse_msgs = []
 exit_button = ExitButton()
 
 while running:
+    
     events = pygame.event.get()
     for event in events:
         if event.type == pygame.QUIT:
@@ -89,7 +90,10 @@ while running:
                     error_box.set_message(str(err))
                 elif move is not None:
                     print(f"Algebraic notation: {move}")
-                    error_box.set_message(play_move(game_board.game, move))
+                    error_box.set_message(str(play_move(game_board.game, move)))
+                    print("-------------------------")
+                    print(f'FEN: {game_board.game.fen}')
+                    print("-------------------------")
             elif fin_sq[0] is not None and move_piece is not None:
                 move, err = move_notation(game_board, move_piece.piece, init_tracker, fin_sq)
                 if err is not None:
@@ -97,7 +101,10 @@ while running:
                     error_box.set_message(str(err))
                 elif move is not None and not game_board.promoting['current']:
                     print(f"Algebraic notation: {move}")
-                    error_box.set_message(play_move(game_board.game, move))
+                    error_box.set_message(str(play_move(game_board.game, move)))
+                    print("-------------------------")
+                    print(f'FEN: {game_board.game.fen}')
+                    print("-------------------------")
             else:
                 error_box.set_message("Don't throw pieces off the board")
             
