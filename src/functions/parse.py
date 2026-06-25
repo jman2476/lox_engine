@@ -213,12 +213,15 @@ def parse_castling(game, pieces, king, checks, string):
         
         # handle castling
         # will king move through check on f and g files?
-        (d_sqr, c_sqr) = ('d' + king.square()[1],
-                            'c' + king.square()[1])
+        (d_sqr, c_sqr, b_sqr) = ('d' + king.square()[1],
+                                'c' + king.square()[1],
+                                'b' + king.square()[1])
         d_file, d_rank = parse_square(d_sqr)
         c_file, c_rank = parse_square(c_sqr)
+        b_file, b_rank = parse_square(b_sqr)
         blocked = (move_board.check_square_filled(d_file,d_rank)[0],
-                    move_board.check_square_filled(c_file,c_rank)[0])
+                    move_board.check_square_filled(c_file,c_rank)[0],
+                    move_board.check_square_filled(b_file,b_rank)[0])
         if True in blocked:
             raise ValueError(
                 'Castling error: Castling movement is blocked by a piece')
