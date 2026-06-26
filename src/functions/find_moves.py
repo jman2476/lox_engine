@@ -81,7 +81,7 @@ def find_king_moves(game, king):
                     game.board.check_square_filled(f_file,f_rank)[0],
                     game.board.check_square_filled(g_file,g_rank)[0]
                     )
-                if (True in blocked
+                if (True not in blocked
                     and len(g_check) == 0
                     and len(f_check) == 0
                     ):
@@ -94,8 +94,8 @@ def find_king_moves(game, king):
                 c_file, c_rank = parse_square(c_sqr)
                 b_file, b_rank = parse_square(b_sqr)
                 d_check, c_check = (
-                    move_board.find_checks(d_sqr, king.side),
-                    move_board.find_checks(c_sqr, king.side)
+                    game.board.find_checks(d_sqr, king.side),
+                    game.board.find_checks(c_sqr, king.side)
                     )
                 blocked = (
                     game.board.check_square_filled(d_file,d_rank)[0],
@@ -121,7 +121,7 @@ def find_king_moves(game, king):
                     game.board.check_square_filled(f_file,f_rank)[0],
                     game.board.check_square_filled(g_file,g_rank)[0]
                     )
-                if (True in blocked
+                if (True not in blocked
                     and len(g_check) == 0
                     and len(f_check) == 0
                     ):
@@ -134,8 +134,8 @@ def find_king_moves(game, king):
                 c_file, c_rank = parse_square(c_sqr)
                 b_file, b_rank = parse_square(b_sqr)
                 d_check, c_check = (
-                    move_board.find_checks(d_sqr, king.side),
-                    move_board.find_checks(c_sqr, king.side)
+                    game.board.find_checks(d_sqr, king.side),
+                    game.board.find_checks(c_sqr, king.side)
                     )
                 blocked = (
                     game.board.check_square_filled(d_file,d_rank)[0],
