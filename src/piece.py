@@ -65,12 +65,7 @@ class Pawn(Piece):
         
         distance = rank - self.rank
         dst_occupied, dst_side, piece = board.check_square_filled(file, rank)
-        print("Pawn mv valid debug---")
-        print(f'dst_occupied: {dst_occupied}')
-        print(f'En passent: {ep}')
-        print(f's file: {self.file} d file: {file}')
-        print(f's rank: {self.rank} d rank: {rank}')
-        print('----------------------')
+
         if dst_occupied and dst_side == self.side:
             raise ValueError(f'Cannot capture own {piece} at {file}{rank}.')
         direction = 1 if self.side == 'black' else -1
