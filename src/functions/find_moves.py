@@ -63,8 +63,21 @@ def find_king_moves(game, king):
         checks = move_board.find_checks(square, king.side)
         if len(checks) == 0:
             moves.append(square)
-    
-    
+    # add in castling moves
+    # castling = {'qsc': False, 'ksc': False}
+    # missing checks if castling is currently a valid move
+    match king.side:
+        case 'white':
+            if 'K' in game.castling:
+                moves.append('O-O')
+            if 'Q' in game.castling:
+                moves.append('O-O-O')
+        case 'black':
+            if 'k' in game.castling:
+                moves.append('O-O')
+            if 'q' in game.castling:
+                moves.append('O-O-O')
+
     return moves
 
 def find_knight_moves(game, knight):
