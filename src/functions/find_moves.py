@@ -54,7 +54,6 @@ def find_king_moves(game, king):
     squares_to_check = adjacent_squares(
         game.board, king.file, king.rank)
     for square in squares_to_check:
-        print(f'For king, checking square {square}')
         file, rank = parse_square(square)
         dst_occupied, dst_side, _ = game.board.check_square_filled(file, rank)
         if dst_occupied and dst_side == king.side: continue;
