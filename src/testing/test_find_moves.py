@@ -64,28 +64,28 @@ class TestFindMoves(unittest.TestCase):
         game.start_new_game()
         w_king = [king for king in game.board.white() if isinstance(king, King)]
         b_king = [king for king in game.board.black() if isinstance(king, King)]
-        
+        move_list = ['e4', 'e5', 'd4', 'Bb4', 'Bd2', 'Nf6', 'h3', 'h6', 'Bxb4', 'd6', 'Qg4', 'a6', 'Nd2', 'O-O', 'O-O-O']
+        move_list_2 = ['e4', 'e5', 'Ke2', 'Ke7']
+        white_move = True
+
+        def print_w_king_moves(): 
+            for king in [king for king in game.board.white() if isinstance(king, King)]:
+                moves = find_king_moves(game, king)
+                print(f'moves for {king}: {moves}')
+
+        def print_b_king_moves():
+            for king in [king for king in game.board.black() if isinstance(king, King)]:
+                moves = find_king_moves(game, king)
+                print(f'moves for {king}: {moves}')
+
         print('-------Game start-------')
-        for king in w_king:
-            moves = find_king_moves(game, king)
-            print(f'moves for {king}: {moves}')
-        
-        print('----------move: e4----------')
-        game.parse_move('e4')
+        print_w_king_moves()
 
-        for king in b_king:
-            moves = find_king_moves(game, king)
-            print(f'moves for {king}: {moves}')
-            
-        print('----------move: e5----------')
-        game.parse_move('e5')
-
-        for king in w_king:
-            moves = find_king_moves(game, king)
-            print(f'moves for {king}: {moves}')
-        
-        print('----------move: d4----------')
-        game.parse_move('d4')
-        for king in b_king:
-            moves = find_king_moves(game, king)
-            print(f'moves for {king}: {moves}')
+        for mv in move_list:
+            print(f'----------move: {mv}----------')
+            game.parse_move(mv)
+            if white_move:
+                print_b_king_moves()
+            else:
+                print_w_king_moves()
+            white_move = not white_move
