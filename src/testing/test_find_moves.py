@@ -57,7 +57,35 @@ class TestFindMoves(unittest.TestCase):
             print(f'moves for {pawn}: {moves}')
         
         print(game.board)
+
+        print('-----second test-----')
+        game2 = Game()
+        game2.start_new_game()
+        w_pawns = [pawn for pawn in game2.board.white() if isinstance(pawn, Pawn)]
+        b_pawns = [pawn for pawn in game2.board.black() if isinstance(pawn, Pawn)]
+        move_list = ['e4', 'e5', 'Bb5']
+
+        for pawn in w_pawns:
+            moves = find_pawn_moves(game2, pawn)
+            print(f'moves for {pawn}: {moves}')
         
+        for mv in move_list:
+            game2.parse_move(mv)
+            
+        for pawn in w_pawns:
+            moves = find_pawn_moves(game2, pawn)
+            print(f'moves for {pawn}: {moves}')
+            
+        for pawn in b_pawns:
+            moves = find_pawn_moves(game2, pawn)
+            print(f'moves for {pawn}: {moves}')
+        
+        print(game2.board)
+
+        
+        
+
+
     def test_find_king_moves(self):
         print('==Test: Find king moves==')
         game = Game()

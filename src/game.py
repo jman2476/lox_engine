@@ -184,6 +184,8 @@ class Game():
                 self.en_passent = initial_ep
             else: # move succeeds
                 self.board = move_board
+                
+
                 if self.turn == 'black':
                     self.fullmove += 1
                 self.turn = 'black' if self.turn == 'white' else 'white'
