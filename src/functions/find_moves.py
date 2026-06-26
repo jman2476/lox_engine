@@ -54,7 +54,6 @@ def find_king_moves(game, king):
     squares_to_check = adjacent_squares(
         game.board, king.file, king.rank)
     for square in squares_to_check:
-        print(f'For king, checking square {square}')
         file, rank = parse_square(square)
         dst_occupied, dst_side, _ = game.board.check_square_filled(file, rank)
         if dst_occupied and dst_side == king.side: continue;
@@ -63,8 +62,89 @@ def find_king_moves(game, king):
         checks = move_board.find_checks(square, king.side)
         if len(checks) == 0:
             moves.append(square)
-    
-    
+
+    match king.side:
+        case 'white':
+            if 'K' in game.castling:
+                (f_sqr, g_sqr) = ('f' + king.square()[1],
+                            'g' + king.square()[1])
+                f_file, f_rank = parse_square(f_sqr)
+                g_file, g_rank = parse_square(g_sqr)
+                f_check, g_check = (
+                    game.board.find_checks(f_sqr, king.side),
+                    game.board.find_checks(g_sqr, king.side)
+                    )
+                blocked = (
+                    game.board.check_square_filled(f_file,f_rank)[0],
+                    game.board.check_square_filled(g_file,g_rank)[0]
+                    )
+                if (True not in blocked
+                    and len(g_check) == 0
+                    and len(f_check) == 0
+                    ):
+                    moves.append('O-O')
+            if 'Q' in game.castling:
+                (d_sqr, c_sqr, b_sqr) = ('d' + king.square()[1],
+                                'c' + king.square()[1],
+                                'b' + king.square()[1])
+                d_file, d_rank = parse_square(d_sqr)
+                c_file, c_rank = parse_square(c_sqr)
+                b_file, b_rank = parse_square(b_sqr)
+                d_check, c_check = (
+                    game.board.find_checks(d_sqr, king.side),
+                    game.board.find_checks(c_sqr, king.side)
+                    )
+                blocked = (
+                    game.board.check_square_filled(d_file,d_rank)[0],
+                    game.board.check_square_filled(c_file,c_rank)[0],
+                    game.board.check_square_filled(b_file,b_rank)[0]
+                    )
+                if (True not in blocked
+                    and len(d_check) == 0
+                    and len(c_check) == 0
+                    ):
+                    moves.append('O-O-O')
+        case 'black':
+            if 'k' in game.castling:
+                (f_sqr, g_sqr) = ('f' + king.square()[1],
+                            'g' + king.square()[1])
+                f_file, f_rank = parse_square(f_sqr)
+                g_file, g_rank = parse_square(g_sqr)
+                f_check, g_check = (
+                    game.board.find_checks(f_sqr, king.side),
+                    game.board.find_checks(g_sqr, king.side)
+                    )
+                blocked = (
+                    game.board.check_square_filled(f_file,f_rank)[0],
+                    game.board.check_square_filled(g_file,g_rank)[0]
+                    )
+                if (True not in blocked
+                    and len(g_check) == 0
+                    and len(f_check) == 0
+                    ):
+                    moves.append('O-O')
+            if 'q' in game.castling:
+                (d_sqr, c_sqr, b_sqr) = ('d' + king.square()[1],
+                                'c' + king.square()[1],
+                                'b' + king.square()[1])
+                d_file, d_rank = parse_square(d_sqr)
+                c_file, c_rank = parse_square(c_sqr)
+                b_file, b_rank = parse_square(b_sqr)
+                d_check, c_check = (
+                    game.board.find_checks(d_sqr, king.side),
+                    game.board.find_checks(c_sqr, king.side)
+                    )
+                blocked = (
+                    game.board.check_square_filled(d_file,d_rank)[0],
+                    game.board.check_square_filled(c_file,c_rank)[0],
+                    game.board.check_square_filled(b_file,b_rank)[0]
+                    )
+                if (True not in blocked
+                    and len(d_check) == 0
+                    and len(c_check) == 0
+                    ):
+                    moves.append('O-O-O')
+
     return moves
 
 def find_knight_moves(game, knight):

@@ -12,6 +12,7 @@ from src.piece import (
 
 class TestFindMoves(unittest.TestCase):
     def test_find_available(self):
+        print('==Test: Find available moves, game start==')
         try:
             game = Game()
             game.start_new_game()
@@ -20,22 +21,23 @@ class TestFindMoves(unittest.TestCase):
             for piece in w_pieces:
                 moves.append([piece, find_available_moves(game, piece)])
 
-            print("Available moves:")
+            print("---Available moves:---")
             for piece_moves in moves:
                 print(piece_moves[0], piece_moves[1])
         except Exception as e:
             print(f'test_find_available error: ', e)
 
     def test_find_pawn_moves(self):
+        print('==Test: find pawn moves==')
         game = Game()
         game.start_new_game()
         w_pawns = [pawn for pawn in game.board.white() if isinstance(pawn, Pawn)]
         b_pawns = [pawn for pawn in game.board.black() if isinstance(pawn, Pawn)]
 
+        print('-----initial position-----')
         for pawn in w_pawns:
             moves = find_pawn_moves(game, pawn)
             print(f'moves for {pawn}: {moves}')
-        print('---------------------')
         
         game.parse_move('e4')
         game.parse_move('d5')
@@ -45,6 +47,7 @@ class TestFindMoves(unittest.TestCase):
         game.parse_move('f5')
         w_pawns = [pawn for pawn in game.board.white() if isinstance(pawn, Pawn)]
         
+        print('---moves: e4, d5, a4, b5, e5, f5---')
         for pawn in w_pawns:
             moves = find_pawn_moves(game, pawn)
             print(f'moves for {pawn}: {moves}')
@@ -54,34 +57,63 @@ class TestFindMoves(unittest.TestCase):
             print(f'moves for {pawn}: {moves}')
         
         print(game.board)
+
+        print('-----second test-----')
+        game2 = Game()
+        game2.start_new_game()
+        w_pawns = [pawn for pawn in game2.board.white() if isinstance(pawn, Pawn)]
+        b_pawns = [pawn for pawn in game2.board.black() if isinstance(pawn, Pawn)]
+        move_list = ['e4', 'e5', 'Bb5']
+
+        for pawn in w_pawns:
+            moves = find_pawn_moves(game2, pawn)
+            print(f'moves for {pawn}: {moves}')
         
+        for mv in move_list:
+            game2.parse_move(mv)
+            
+        for pawn in w_pawns:
+            moves = find_pawn_moves(game2, pawn)
+            print(f'moves for {pawn}: {moves}')
+            
+        for pawn in b_pawns:
+            moves = find_pawn_moves(game2, pawn)
+            print(f'moves for {pawn}: {moves}')
+        
+        print(game2.board)
+
+        
+        
+
+
     def test_find_king_moves(self):
+        print('==Test: Find king moves==')
         game = Game()
         game.start_new_game()
         w_king = [king for king in game.board.white() if isinstance(king, King)]
         b_king = [king for king in game.board.black() if isinstance(king, King)]
-        
-        for king in w_king:
-            moves = find_king_moves(game, king)
-            print(f'moves for {king}: {moves}')
-        
-        print('---------------------')
-        game.parse_move('e4')
+        move_list = ['e4', 'e5', 'd4', 'Bb4', 'Bd2', 'Nf6', 'h3', 'h6', 'Bxb4', 'd6', 'Qg4', 'a6', 'Nd2', 'O-O', 'O-O-O']
+        move_list_2 = ['e4', 'e5', 'Ke2', 'Ke7']
+        white_move = True
 
-        for king in b_king:
-            moves = find_king_moves(game, king)
-            print(f'moves for {king}: {moves}')
-            
-        print('---------------------')
-        game.parse_move('e5')
+        def print_w_king_moves(): 
+            for king in [king for king in game.board.white() if isinstance(king, King)]:
+                moves = find_king_moves(game, king)
+                print(f'moves for {king}: {moves}')
 
-        for king in w_king:
-            moves = find_king_moves(game, king)
-            print(f'moves for {king}: {moves}')
-        
-        print('---------------------')
-        game.parse_move('d4')
+        def print_b_king_moves():
+            for king in [king for king in game.board.black() if isinstance(king, King)]:
+                moves = find_king_moves(game, king)
+                print(f'moves for {king}: {moves}')
 
-        for king in b_king:
-            moves = find_king_moves(game, king)
-            print(f'moves for {king}: {moves}')
+        print('-------Game start-------')
+        print_w_king_moves()
+
+        for mv in move_list:
+            print(f'----------move: {mv}----------')
+            game.parse_move(mv)
+            if white_move:
+                print_b_king_moves()
+            else:
+                print_w_king_moves()
+            white_move = not white_move

@@ -7,6 +7,7 @@ from src.functions.parse import (
     parse_pawn_capture,
     parse_piece_move
     )
+from src.functions.find_moves import find_king_moves
 import copy
 
 class Game():
@@ -181,11 +182,21 @@ class Game():
                 print(f'New king: {new_king}, {new_king.square()}')
                 print(f'This move would cause checks at {new_checks}. Undoing move')
                 self.en_passent = initial_ep
-            else:
+            else: # move succeeds
                 self.board = move_board
+
                 if self.turn == 'black':
                     self.fullmove += 1
                 self.turn = 'black' if self.turn == 'white' else 'white'
+                # show checkmate validator
+                if self.turn == 'white':
+                    end = self.is_checkmated_naive('white')
+                    if end:
+                        print('Looks like black has been checkmated')
+                else:
+                    end = self.is_checkmated_naive('black')
+                    if end:
+                        print('Looks like white has been checkmated')
                 if not pawn_move:
                     self.halfmove += 1
                 else: 
@@ -193,6 +204,21 @@ class Game():
                 if self.en_passent != '-' and self.en_passent == initial_ep:
                     self.en_passent = '-'
             self.set_fen()
-
-
     
+    # Function is currently naive: doesn't account for blocking
+    def is_checkmated_naive(self, side:str) -> bool:
+        from src.piece import King
+        # Cannot be complete until all find_move functions are completed
+
+        king = None
+        if side == 'white':
+            king = [k for k in self.board.white() if isinstance(k, King)][0]
+        else:
+            king = [k for k in self.board.black() if isinstance(k, King)][0]
+        
+        checks = self.board.find_checks(king.square(), king.side)
+        moves = find_king_moves(self, king)
+
+        if len(checks) > 0 and len(moves) == 0:
+            return True
+        return False

@@ -10,6 +10,7 @@ from src.functions.diagonals import (
     )
 from colorama import Back, Style, Fore
 from src.functions.evaluation import get_evaluation
+from src.functions.find_moves import find_king_moves
 
 class Board():
     def __init__(self):
@@ -227,6 +228,8 @@ class Board():
 
 
         return checks
+    
+    
     
     # def find_checks_adjacent(self, king_square, side, adj_square):
     #     king_file, king_rank = parse_square(king_square)
