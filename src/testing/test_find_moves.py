@@ -71,12 +71,13 @@ class TestFindMoves(unittest.TestCase):
         
         for mv in move_list:
             game2.parse_move(mv)
-            
-        for pawn in w_pawns:
+        
+        print("----After moves------")
+        for pawn in [pawn for pawn in game2.board.white() if isinstance(pawn, Pawn)]:
             moves = find_pawn_moves(game2, pawn)
             print(f'moves for {pawn}: {moves}')
             
-        for pawn in b_pawns:
+        for pawn in [pawn for pawn in game2.board.black() if isinstance(pawn, Pawn)]:
             moves = find_pawn_moves(game2, pawn)
             print(f'moves for {pawn}: {moves}')
         

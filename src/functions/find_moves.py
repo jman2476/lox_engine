@@ -39,11 +39,14 @@ def find_pawn_moves(game, pawn):
         contents = game.board.check_square_filled(f, next_rank)
         if f == file and not contents[0]:
             moves.append(square)
-        elif contents[0] and contents[1] != pawn.side:
+        elif (f != file
+              and contents[0] 
+              and contents[1] != pawn.side):
             moves.append(square)
         elif not contents[0] and square == game.en_passent:
             moves.append(square)
-    double_move = game.board.check_square_filled(f, next_rank + direction)
+    double_move = game.board.check_square_filled(file, next_rank + direction)
+    print(f'Double move blocked: {double_move}, Start pos: {pawn.in_start_pos},')
     if pawn.in_start_pos and not double_move[0]:
         moves.append(f'{file}{next_rank+direction}')
     return moves
