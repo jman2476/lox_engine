@@ -3,8 +3,9 @@ from src.piece import (
     Queen, Bishop, 
     Knight, Rook
     )
-from src.functions.parse import parse_square, parse_piece_move
+from src.functions.parse import parse_square, parse_piece_move, parse_pawn_move, parse_pawn_capture
 from src.functions.direction import adjacent_squares
+import copy
 
 def find_available_moves(game, piece):
     moves = set()
@@ -49,7 +50,26 @@ def find_pawn_moves(game, pawn):
     print(f'Double move blocked: {double_move}, Start pos: {pawn.in_start_pos},')
     if pawn.in_start_pos and not double_move[0]:
         moves.append(f'{file}{next_rank+direction}')
-    return moves
+
+    # Check if each move causes check
+    valid_moves = []
+    for mv in moves:
+        gm = copy.deepcopy(game)
+        try:
+            print(f'-=MV: {mv}, mv[0]: {mv[0]}, file: {file}')
+            if mv[0] == file:
+                gm.parse_move(mv)
+            else:
+                mv_full = f'{file}x{mv}'
+                gm.parse_move(f'{file}x{mv}')
+
+            if gm.fen != game.fen:
+                valid_moves.append(mv)
+        except Exception as e:
+            print(f'Move {mv} failed: {str(e)}')
+            continue
+
+    return valid_moves
 
 
 def find_king_moves(game, king):
