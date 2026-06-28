@@ -63,7 +63,7 @@ class TestFindMoves(unittest.TestCase):
         game2.start_new_game()
         w_pawns = [pawn for pawn in game2.board.white() if isinstance(pawn, Pawn)]
         b_pawns = [pawn for pawn in game2.board.black() if isinstance(pawn, Pawn)]
-        move_list = ['e4', 'e5', 'Bb5']
+        move_list = ['e4', 'e5', 'Bb5', 'c5', 'h4', 'c4', 'h5', 'c3', 'h6', 'cxb2', 'hxg7', 'a6']
 
         for pawn in w_pawns:
             moves = find_pawn_moves(game2, pawn)
@@ -73,10 +73,13 @@ class TestFindMoves(unittest.TestCase):
             game2.parse_move(mv)
         
         print("----After moves------")
+        #print(f'FEN: {game2.fen}')
         for pawn in [pawn for pawn in game2.board.white() if isinstance(pawn, Pawn)]:
             moves = find_pawn_moves(game2, pawn)
             print(f'moves for {pawn}: {moves}')
-            
+
+        game2.parse_move('g3')
+        print(f'FEN: {game2.fen}')
         for pawn in [pawn for pawn in game2.board.black() if isinstance(pawn, Pawn)]:
             moves = find_pawn_moves(game2, pawn)
             print(f'moves for {pawn}: {moves}')

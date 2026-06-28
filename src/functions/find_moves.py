@@ -47,7 +47,7 @@ def find_pawn_moves(game, pawn):
         elif not contents[0] and square == game.en_passent:
             moves.append(square)
     double_move = game.board.check_square_filled(file, next_rank + direction)
-    print(f'Double move blocked: {double_move}, Start pos: {pawn.in_start_pos},')
+    #print(f'Double move blocked: {double_move}, Start pos: {pawn.in_start_pos},')
     if pawn.in_start_pos and not double_move[0]:
         moves.append(f'{file}{next_rank+direction}')
 
@@ -56,11 +56,15 @@ def find_pawn_moves(game, pawn):
     for mv in moves:
         gm = copy.deepcopy(game)
         try:
-            print(f'-=MV: {mv}, mv[0]: {mv[0]}, file: {file}')
+            back_rank = '8' if pawn.side == 'white' else '1'
+            # print(f'-=MV: {mv}, mv[0]: {mv[0]}, mv[1]: {mv[1]} file: {file}, side: {pawn.side}, back rank: {back_rank}')
+
+            if mv[1] == back_rank:
+                mv = f'{mv}=Q'
+                print(f'Move adjusted: {mv}')
             if mv[0] == file:
                 gm.parse_move(mv)
             else:
-                mv_full = f'{file}x{mv}'
                 gm.parse_move(f'{file}x{mv}')
 
             if gm.fen != game.fen:
@@ -69,7 +73,15 @@ def find_pawn_moves(game, pawn):
             print(f'Move {mv} failed: {str(e)}')
             continue
 
-    return valid_moves
+    # Check for promotions
+    all_valid = []
+    promotions = ['R', 'N', 'B']
+    for mv in valid_moves:
+        all_valid.append(mv)
+        if mv[-1] == 'Q':
+            for p in promotions:
+                all_valid.append(f'{mv[:2]}={p}')
+    return all_valid
 
 
 def find_king_moves(game, king):
