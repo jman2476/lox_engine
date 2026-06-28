@@ -47,9 +47,9 @@ def find_pawn_moves(game, pawn):
         elif not contents[0] and square == game.en_passent:
             moves.append(square)
     
-    # adjust logic to avoid unnecessary checks
-    double_move = game.board.check_square_filled(file, next_rank + direction)
-    if pawn.in_start_pos and not double_move[0]:
+    # check for two square move:
+    if (pawn.in_start_pos and
+        game.board.check_square_filled(file, next_rank + direction)[0]):
         moves.append(f'{file}{next_rank+direction}')
 
     # Check if each move causes check
