@@ -189,14 +189,14 @@ class Game():
                     self.fullmove += 1
                 self.turn = 'black' if self.turn == 'white' else 'white'
                 # show checkmate validator
-                if self.turn == 'white':
-                    end = self.is_checkmated_naive('white')
-                    if end:
-                        print('Looks like black has been checkmated')
-                else:
-                    end = self.is_checkmated_naive('black')
-                    if end:
-                        print('Looks like white has been checkmated')
+                # if self.turn == 'white':
+                #     end = self.is_checkmated_naive('white')
+                #     if end:
+                #         print('Looks like black has been checkmated')
+                # else:
+                #     end = self.is_checkmated_naive('black')
+                #     if end:
+                #         print('Looks like white has been checkmated')
                 if not pawn_move:
                     self.halfmove += 1
                 else: 
@@ -207,6 +207,7 @@ class Game():
     
     # Function is currently naive: doesn't account for blocking
     def is_checkmated_naive(self, side:str) -> bool:
+        print('checking for checkmate naively')
         from src.piece import King
         # Cannot be complete until all find_move functions are completed
 
@@ -217,6 +218,7 @@ class Game():
             king = [k for k in self.board.black() if isinstance(k, King)][0]
         
         checks = self.board.find_checks(king.square(), king.side)
+        print(f'Checks found: {checks}')
         moves = find_king_moves(self, king)
 
         if len(checks) > 0 and len(moves) == 0:

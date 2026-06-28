@@ -46,8 +46,9 @@ def find_pawn_moves(game, pawn):
             moves.append(square)
         elif not contents[0] and square == game.en_passent:
             moves.append(square)
+    
+    # adjust logic to avoid unnecessary checks
     double_move = game.board.check_square_filled(file, next_rank + direction)
-    #print(f'Double move blocked: {double_move}, Start pos: {pawn.in_start_pos},')
     if pawn.in_start_pos and not double_move[0]:
         moves.append(f'{file}{next_rank+direction}')
 
@@ -57,11 +58,10 @@ def find_pawn_moves(game, pawn):
         gm = copy.deepcopy(game)
         try:
             back_rank = '8' if pawn.side == 'white' else '1'
-            # print(f'-=MV: {mv}, mv[0]: {mv[0]}, mv[1]: {mv[1]} file: {file}, side: {pawn.side}, back rank: {back_rank}')
 
             if mv[1] == back_rank:
                 mv = f'{mv}=Q'
-                print(f'Move adjusted: {mv}')
+
             if mv[0] == file:
                 gm.parse_move(mv)
             else:

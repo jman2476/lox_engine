@@ -291,6 +291,7 @@ def parse_piece_move(game, string):
             if destination_square[0] and destination_square[1] == game.turn:
                 raise ValueError(f'Piece move error: Cannot capture own {destination_square[2]}')
             elif destination_square[0] and capture != 'x':
+                # print(f'Capture parse fail: {capture}, {destination_square}')
                 raise ValueError(f'Piece move error: Destination square {square} is occupied; incorrect move syntax')
             else:
                 piece.move(move_board, square)
