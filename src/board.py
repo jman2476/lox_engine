@@ -449,3 +449,50 @@ class Board():
                 return knight
             case 'king':
                 return king
+            
+    # Nested function to return what squares 
+    # a specific piece has eyes on
+    # Note: Contrast with next_piece() function
+    def bound_squares(self, direction: str) -> list[str]:
+        def horizontal(file, rank, piece_side):
+            squares = [f'a{rank}', f'h{rank}']
+            side_of_square = 0
+
+            for idx, f in enumerate(self.files):
+                if f == file:
+                    side_of_square = 1
+                    continue
+                filled, side, _ = self.check_square_filled(f, rank)
+                if filled:
+                    if piece_side != side:
+                        squares[side_of_square] = f'{f}{rank}'
+                    else:
+                        dir = 1 if side_of_square == 0 else -1
+                        squares[side_of_square] = f'{self.files[idx+dir]}{rank}'
+                    if side_of_square == 1:
+                        break
+            return squares
+
+        def vertical(file, rank):
+            ...
+            
+        def back_diagonal(file, rank):
+            ...
+        
+        def forward_diagonal(file, rank):
+            ...
+
+        def knight(file, rank):
+            ...
+
+        match direction:
+            case 'horizontal':
+                return horizontal
+            case 'vertical':
+                return vertical
+            case 'back_diagonal':
+                return back_diagonal
+            case 'forward_diagonal':
+                return forward_diagonal
+            case 'knight':
+                return knight
