@@ -3,8 +3,9 @@ from src.piece import (
     Queen, Bishop, 
     Knight, Rook
     )
-from src.functions.parse import parse_square, parse_piece_move
+from src.functions.parse import parse_square, parse_piece_move, parse_pawn_move, parse_pawn_capture
 from src.functions.direction import adjacent_squares
+import copy
 
 def find_available_moves(game, piece):
     moves = set()
@@ -39,14 +40,48 @@ def find_pawn_moves(game, pawn):
         contents = game.board.check_square_filled(f, next_rank)
         if f == file and not contents[0]:
             moves.append(square)
-        elif contents[0] and contents[1] != pawn.side:
+        elif (f != file
+              and contents[0] 
+              and contents[1] != pawn.side):
             moves.append(square)
         elif not contents[0] and square == game.en_passent:
             moves.append(square)
-    double_move = game.board.check_square_filled(f, next_rank + direction)
-    if pawn.in_start_pos and not double_move[0]:
+    
+    # check for two square move:
+    if (pawn.in_start_pos and
+        game.board.check_square_filled(file, next_rank + direction)[0]):
         moves.append(f'{file}{next_rank+direction}')
-    return moves
+
+    # Check if each move causes check
+    valid_moves = []
+    for mv in moves:
+        gm = copy.deepcopy(game)
+        try:
+            back_rank = '8' if pawn.side == 'white' else '1'
+
+            if mv[1] == back_rank:
+                mv = f'{mv}=Q'
+
+            if mv[0] == file:
+                gm.parse_move(mv)
+            else:
+                gm.parse_move(f'{file}x{mv}')
+
+            if gm.fen != game.fen:
+                valid_moves.append(mv)
+        except Exception as e:
+            print(f'Move {mv} failed: {str(e)}')
+            continue
+
+    # Check for promotions
+    all_valid = []
+    promotions = ['R', 'N', 'B']
+    for mv in valid_moves:
+        all_valid.append(mv)
+        if mv[-1] == 'Q':
+            for p in promotions:
+                all_valid.append(f'{mv[:2]}={p}')
+    return all_valid
 
 
 def find_king_moves(game, king):
@@ -160,6 +195,10 @@ def find_queen_moves(game, queen):
 def find_rook_moves(game, rook):
     moves = []
     file, rank = rook.file, rook.rank
+    h_limits = game.board.next_piece('horizontal')(file, rank)
+    v_limits = game.board.next_piece('vertical')(file, rank)
+    print(f'Limits for ')
+
     return moves
 
 def find_bishop_moves(game, bishop):
