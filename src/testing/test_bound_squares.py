@@ -54,7 +54,33 @@ class TestBoundSquares(unittest.TestCase):
         self.assertEqual(bounds_g, ['g2', 'g8'])
 
     def test_forward_diagonal(self):
-        ...
+        print('--Test forward diagonal--')
+        board = Board()
+        w_wbishop = Bishop('white', 'e4')
+        w_bbishop = Bishop('white', 'a1')
+        b_pawn = Pawn('black', 'g6')
+        w_pawn = Pawn('white', 'c2')
+        b_bishop = Bishop('black', 'd5')
+        w_queen = Queen('white', 'a2')
+        b_queen = Queen('black', 'b3')
+        w_knight = Knight('white', 'f7')
+        b_knight = Knight('black', 'g8')
+        pieces = [w_wbishop, b_bishop, w_bbishop, b_pawn, w_pawn, w_queen, b_queen, w_knight, b_knight]
+
+        for p in pieces:
+            f, r = parse_square(p.square())
+            board.board[f][r-1] = p
+            
+        print(board)
+        
+        bounds_wb = board.bound_squares('forward_diagonal')('a', 1, 'white')
+        self.assertEqual(bounds_wb, ['a1','h8']) 
+        
+        bounds_ww = board.bound_squares('forward_diagonal')('e', 4, 'white')
+        self.assertEqual(bounds_ww, ['d3', 'g6'])
+
+        bounds_b = board.bound_squares('forward_diagonal')('d', 5, 'black')
+        self.assertEqual(bounds_b, ['c4', 'f7'])
 
     def test_back_diagonal(self):
         print('--Test back diagonal--')
