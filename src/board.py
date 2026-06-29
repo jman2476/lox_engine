@@ -449,3 +449,143 @@ class Board():
                 return knight
             case 'king':
                 return king
+            
+    # Nested function to return what squares 
+    # a specific piece has eyes on
+    # Note: Contrast with next_piece() function
+    def bound_squares(self, direction: str) -> list[str]:
+        def horizontal(file, rank, piece_side):
+            squares = [f'a{rank}', f'h{rank}']
+            side_of_square = 0
+
+            for idx, f in enumerate(self.files):
+                if f == file:
+                    side_of_square = 1
+                    continue
+                filled, side, _ = self.check_square_filled(f, rank)
+                if filled:
+                    if piece_side != side:
+                        squares[side_of_square] = f'{f}{rank}'
+                    else:
+                        dir = 1 if side_of_square == 0 else -1
+                        squares[side_of_square] = f'{self.files[idx+dir]}{rank}'
+                    if side_of_square == 1:
+                        break
+
+            return squares
+
+        def vertical(file, rank, piece_side):
+            squares = [f'{file}1', f'{file}8']
+            side_of_square = 0
+            
+            for r in self.ranks:
+                if r == rank-1:
+                    side_of_square = 1
+                    continue
+                filled, side, _ = self.check_square_filled(file, r+1)
+                if filled:
+                    if piece_side != side:
+                        squares[side_of_square] = f'{file}{r+1}'
+                    else:
+                        dir = 2 if side_of_square == 0 else 0
+                        squares[side_of_square] = f'{file}{r+dir}'
+                    if side_of_square == 1:
+                        break
+            
+            return squares
+            
+        def back_diagonal(file, rank, piece_side):
+            edges = get_diagonal_edges('back')(file, rank)
+            squares = [f'{edges[0][0]}{edges[0][1]}', 
+                       f'{edges[1][0]}{edges[1][1]}']
+            side_of_square = 0
+            if squares[0] == squares[1]:
+                return squares
+            diag_squares = get_diagonal_squares(*edges)
+        
+            for i, sq in enumerate(diag_squares):
+                if sq[0] == file:
+                    side_of_square = 1
+                    continue
+                filled, side, _ = self.check_square_filled(sq[0], sq[1])
+                if filled:
+                    if piece_side != side:
+                        squares[side_of_square] = f'{sq[0]}{sq[1]}'
+                    else:
+                        dir = 1 if side_of_square == 0 else -1
+                        nxt_sq = diag_squares[i+dir]
+                        squares[side_of_square] = f'{nxt_sq[0]}{nxt_sq[1]}'
+                    if side_of_square == 1:
+                        break
+            
+            return squares
+
+        
+        def forward_diagonal(file, rank, piece_side):
+            edges = get_diagonal_edges('forward')(file, rank)
+            squares = [f'{edges[0][0]}{edges[0][1]}', 
+                       f'{edges[1][0]}{edges[1][1]}']
+            side_of_square = 0
+            if squares[0] == squares[1]:
+                return squares
+            diag_squares = get_diagonal_squares(*edges)
+        
+            for i, sq in enumerate(diag_squares):
+                if sq[0] == file:
+                    side_of_square = 1
+                    continue
+                filled, side, _ = self.check_square_filled(sq[0], sq[1])
+                if filled:
+                    if piece_side != side:
+                        squares[side_of_square] = f'{sq[0]}{sq[1]}'
+                    else:
+                        dir = 1 if side_of_square == 0 else -1
+                        nxt_sq = diag_squares[i+dir]
+                        squares[side_of_square] = f'{nxt_sq[0]}{nxt_sq[1]}'
+                    if side_of_square == 1:
+                        break
+            
+            return squares
+
+        def knight(file, rank, piece_side):
+            squares = []
+            file_ord = ord(file)
+            sq_to_check = [
+                (chr(file_ord + 1), rank + 2), # "+2+1; +1+2" (+up+over)
+                (chr(file_ord + 2), rank + 1),
+                (chr(file_ord + 2), rank - 1), # "-1+2; -2+1"
+                (chr(file_ord + 1), rank - 2),
+                (chr(file_ord - 1), rank - 2), # "-2-1; -1-2"
+                (chr(file_ord - 2), rank - 1),
+                (chr(file_ord - 2), rank + 1), # "+1-2; +2-1"
+                (chr(file_ord - 1), rank + 2),
+            ]
+
+            board_squares = []
+            for sq in sq_to_check:
+                f, r = sq
+                if f not in self.files:
+                    continue
+                if r-1 not in self.ranks:
+                    continue
+                board_squares.append(sq)
+
+            for sq in board_squares:
+                f, r = sq
+                filled, side, _ = self.check_square_filled(f, r)
+                if not filled or side != piece_side:
+                    squares.append(f'{f}{r}')
+                
+            return squares
+
+        match direction:
+            case 'horizontal':
+                return horizontal
+            case 'vertical':
+                return vertical
+            case 'back_diagonal':
+                return back_diagonal
+            case 'forward_diagonal':
+                return forward_diagonal
+            case 'knight':
+                return knight
