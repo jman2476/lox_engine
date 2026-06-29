@@ -195,6 +195,10 @@ def find_queen_moves(game, queen):
 def find_rook_moves(game, rook):
     moves = []
     file, rank = rook.file, rook.rank
+    h_limits = game.board.next_piece('horizontal')(file, rank)
+    v_limits = game.board.next_piece('vertical')(file, rank)
+    print(f'Limits for ')
+
     return moves
 
 def find_bishop_moves(game, bishop):
