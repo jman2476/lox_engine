@@ -471,10 +471,28 @@ class Board():
                         squares[side_of_square] = f'{self.files[idx+dir]}{rank}'
                     if side_of_square == 1:
                         break
+
             return squares
 
-        def vertical(file, rank):
-            ...
+        def vertical(file, rank, piece_side):
+            squares = [f'{file}1', f'{file}8']
+            side_of_square = 0
+            
+            for r in self.ranks:
+                if r == rank-1:
+                    side_of_square = 1
+                    continue
+                filled, side, _ = self.check_square_filled(file, r+1)
+                if filled:
+                    if piece_side != side:
+                        squares[side_of_square] = f'{file}{r+1}'
+                    else:
+                        dir = 2 if side_of_square == 0 else 0
+                        squares[side_of_square] = f'{file}{r+dir}'
+                    if side_of_square == 1:
+                        break
+            
+            return squares
             
         def back_diagonal(file, rank):
             ...

@@ -31,7 +31,25 @@ class TestBoundSquares(unittest.TestCase):
         self.assertEqual(bounds_second, ['b2', 'f2'])
 
     def test_vertical(self):
-        ...
+        board = Board()
+        w_rook = Rook('white', 'd4')
+        w_queen = Queen('white', 'g6')
+        w_pawn = Pawn('white', 'd2')
+        b_pawn = Pawn('black', 'd6')
+        w_bishop = Bishop('white', 'g1')
+        pieces = [w_rook, w_queen, w_pawn, b_pawn, w_bishop]
+        
+        for p in pieces:
+            f, r = parse_square(p.square())
+            board.board[f][r-1] = p
+            
+        print(board)
+        
+        bounds_d = board.bound_squares('vertical')('d', 4, 'white')
+        self.assertEqual(bounds_d, ['d3', 'd6'])
+        
+        bounds_g = board.bound_squares('vertical')('g', 6, 'white')
+        self.assertEqual(bounds_g, ['g2', 'g8'])
 
     def test_forward_diagonal(self):
         ...
