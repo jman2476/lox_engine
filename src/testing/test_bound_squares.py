@@ -9,6 +9,7 @@ from src.functions.parse import parse_square
 
 class TestBoundSquares(unittest.TestCase):
     def test_horizontal(self):
+        print('--Test horizontal--')
         board = Board()
         w_rook = Rook('white', 'd4')
         queen = Queen('white', 'f4')
@@ -31,6 +32,7 @@ class TestBoundSquares(unittest.TestCase):
         self.assertEqual(bounds_second, ['b2', 'f2'])
 
     def test_vertical(self):
+        print('--Test vertical--')
         board = Board()
         w_rook = Rook('white', 'd4')
         w_queen = Queen('white', 'g6')
@@ -55,7 +57,29 @@ class TestBoundSquares(unittest.TestCase):
         ...
 
     def test_back_diagonal(self):
-        ...
+        print('--Test back diagonal--')
+        board = Board()
+        w_wbishop = Bishop('white', 'e4')
+        w_bbishop = Bishop('white', 'a1')
+        b_pawn = Pawn('black', 'b7')
+        w_pawn = Pawn('white', 'g2')
+        b_bishop = Bishop('black', 'd6')
+        pieces = [w_wbishop, b_bishop, w_bbishop, b_pawn, w_pawn]
+
+        for p in pieces:
+            f, r = parse_square(p.square())
+            board.board[f][r-1] = p
+            
+        print(board)
+        
+        bounds_wb = board.bound_squares('back_diagonal')('a', 1, 'white')
+        self.assertEqual(bounds_wb, ['a1','a1']) 
+        
+        bounds_ww = board.bound_squares('back_diagonal')('e', 4, 'white')
+        self.assertEqual(bounds_ww, ['b7', 'f3'])
+
+        bounds_b = board.bound_squares('back_diagonal')('d', 6, 'black')
+        self.assertEqual(bounds_b, ['b8', 'h2'])
 
     def test_knight(self):
         ...

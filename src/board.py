@@ -494,13 +494,37 @@ class Board():
             
             return squares
             
-        def back_diagonal(file, rank):
-            ...
+        def back_diagonal(file, rank, piece_side):
+            edges = get_diagonal_edges('back')(file, rank)
+            squares = [f'{edges[0][0]}{edges[0][1]}', 
+                       f'{edges[1][0]}{edges[1][1]}']
+            side_of_square = 0
+            if squares[0] == squares[1]:
+                return squares
+            diag_squares = get_diagonal_squares(*edges)
         
-        def forward_diagonal(file, rank):
+            for i, sq in enumerate(diag_squares):
+                if sq[0] == file:
+                    side_of_square = 1
+                    continue
+                filled, side, _ = self.check_square_filled(sq[0], sq[1])
+                if filled:
+                    if piece_side != side:
+                        squares[side_of_square] = f'{sq[0]}{sq[1]}'
+                    else:
+                        dir = 1 if side_of_square == 0 else -1
+                        nxt_sq = diag_squares[i+dir]
+                        squares[side_of_square] = f'{nxt_sq[0]}{nxt_sq[1]}'
+                    if side_of_square == 1:
+                        break
+            
+            return squares
+
+        
+        def forward_diagonal(file, rank, piece_side):
             ...
 
-        def knight(file, rank):
+        def knight(file, rank, piece_side):
             ...
 
         match direction:
