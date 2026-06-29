@@ -108,4 +108,26 @@ class TestBoundSquares(unittest.TestCase):
         self.assertEqual(bounds_b, ['b8', 'h2'])
 
     def test_knight(self):
-        ...
+        print('--Test knight squares--')
+        board = Board()
+        w_knight = Knight('white', 'd4')
+        b_knight = Knight('black', 'a5')
+        w_queen = Queen('white', 'c6')
+        b_queen = Queen('black', 'e2')
+        w_pawn = Pawn('white', 'c2')
+        b_pawn = Pawn('black', 'f5')
+        pieces = [w_knight, b_knight, w_queen, b_queen, w_pawn, b_pawn]
+        
+        for p in pieces:
+            f, r = parse_square(p.square())
+            board.board[f][r-1] = p
+
+        print(board)
+
+        bounds_wknight = board.bound_squares('knight')('d', 4, 'white')
+        self.assertEqual(bounds_wknight,
+                         ['e6', 'f5', 'f3', 'e2', 'b3', 'b5'])
+        
+        bounds_bknight = board.bound_squares('knight')('a', 5, 'black')
+        self.assertEqual(bounds_bknight, 
+                         ['b7', 'c6', 'c4', 'b3'])

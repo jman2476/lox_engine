@@ -548,7 +548,35 @@ class Board():
             return squares
 
         def knight(file, rank, piece_side):
-            ...
+            squares = []
+            file_ord = ord(file)
+            sq_to_check = [
+                (chr(file_ord + 1), rank + 2), # "+2+1; +1+2" (+up+over)
+                (chr(file_ord + 2), rank + 1),
+                (chr(file_ord + 2), rank - 1), # "-1+2; -2+1"
+                (chr(file_ord + 1), rank - 2),
+                (chr(file_ord - 1), rank - 2), # "-2-1; -1-2"
+                (chr(file_ord - 2), rank - 1),
+                (chr(file_ord - 2), rank + 1), # "+1-2; +2-1"
+                (chr(file_ord - 1), rank + 2),
+            ]
+
+            board_squares = []
+            for sq in sq_to_check:
+                f, r = sq
+                if f not in self.files:
+                    continue
+                if r-1 not in self.ranks:
+                    continue
+                board_squares.append(sq)
+
+            for sq in board_squares:
+                f, r = sq
+                filled, side, _ = self.check_square_filled(f, r)
+                if not filled or side != piece_side:
+                    squares.append(f'{f}{r}')
+                
+            return squares
 
         match direction:
             case 'horizontal':
