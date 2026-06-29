@@ -183,9 +183,8 @@ def find_king_moves(game, king):
     return moves
 
 def find_knight_moves(game, knight):
-    moves = []
-    file, rank = knight.file, knight.rank
-    return moves
+    f, r, s = knight.file, knight.rank, knight.side
+    return game.board.bound_squares('knight')(f, r, s)
 
 def find_queen_moves(game, queen):
     moves = []
