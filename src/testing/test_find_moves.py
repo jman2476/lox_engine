@@ -197,4 +197,27 @@ class TestFindMoves(unittest.TestCase):
                 print_w_bishop_move()
 
     def test_find_queen_moves(self):
-        ...
+        print('==Test: Find queen moves==')
+        game = Game()
+        game.start_new_game()
+        move_list = ['e4', 'd5', 'Qg4', 'dxe4', 'Qxe4']
+
+        def print_b_queen_move():
+            for queen in [q for q in game.board.black()
+                           if isinstance(q, Queen)]:
+                moves = find_queen_moves(game, queen)
+                print(f'moves for {queen}: {moves}')
+
+        def print_w_queen_move():
+            for queen in [q for q in game.board.white()
+                           if isinstance(q, Queen)]:
+                moves = find_queen_moves(game, queen)
+                print(f'moves for {queen}: {moves}')
+
+        for i in range(0, len(move_list)):
+            print(f'--------move: {move_list[i]}-------')
+            game.parse_move(move_list[i])
+            if i%2 == 0:
+                print_b_queen_move()
+            else:
+                print_w_queen_move()

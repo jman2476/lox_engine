@@ -222,9 +222,15 @@ def find_queen_moves(game, queen):
     ])
 
     if b_edges[0] != b_edges[1]:
-        moves.extend(get_diagonal_squares(b_edge_sqs[0], b_edge_sqs[1]))
+        squares = get_diagonal_squares(b_edge_sqs[0], b_edge_sqs[1])
+        moves.extend(
+            [parse_square_reverse(sq) for sq in squares]
+        )
     if f_edges[0] != f_edges[1]:
-        moves.extend(get_diagonal_squares(f_edge_sqs[0], f_edge_sqs[1]))
+        squares = get_diagonal_squares(f_edge_sqs[0], f_edge_sqs[1])
+        moves.extend(
+            [parse_square_reverse(sq) for sq in squares]
+        )
 
     return validate_legal_moves(game, queen, moves)
 
