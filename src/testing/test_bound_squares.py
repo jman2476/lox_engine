@@ -73,13 +73,13 @@ class TestBoundSquares(unittest.TestCase):
             
         print(board)
         
-        bounds_wb = board.bound_squares('forward_diagonal')('a', 1, 'white')
+        bounds_wb = board.bound_squares('diagonal')('a', 1, 'white', 'forward')
         self.assertEqual(bounds_wb, ['a1','h8']) 
         
-        bounds_ww = board.bound_squares('forward_diagonal')('e', 4, 'white')
+        bounds_ww = board.bound_squares('diagonal')('e', 4, 'white', 'forward')
         self.assertEqual(bounds_ww, ['d3', 'g6'])
 
-        bounds_b = board.bound_squares('forward_diagonal')('d', 5, 'black')
+        bounds_b = board.bound_squares('diagonal')('d', 5, 'black', 'forward')
         self.assertEqual(bounds_b, ['c4', 'f7'])
 
     def test_back_diagonal(self):
@@ -98,13 +98,13 @@ class TestBoundSquares(unittest.TestCase):
             
         print(board)
         
-        bounds_wb = board.bound_squares('back_diagonal')('a', 1, 'white')
+        bounds_wb = board.bound_squares('diagonal')('a', 1, 'white', 'back')
         self.assertEqual(bounds_wb, ['a1','a1']) 
         
-        bounds_ww = board.bound_squares('back_diagonal')('e', 4, 'white')
+        bounds_ww = board.bound_squares('diagonal')('e', 4, 'white', 'back')
         self.assertEqual(bounds_ww, ['b7', 'f3'])
 
-        bounds_b = board.bound_squares('back_diagonal')('d', 6, 'black')
+        bounds_b = board.bound_squares('diagonal')('d', 6, 'black', 'back')
         self.assertEqual(bounds_b, ['b8', 'h2'])
 
     def test_knight(self):

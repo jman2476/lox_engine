@@ -3,11 +3,16 @@ from src.game import Game
 from src.functions.find_moves import (
         find_available_moves,
         find_pawn_moves,
-        find_king_moves
+        find_king_moves,
+        find_knight_moves,
+        find_rook_moves,
+        find_bishop_moves,
+        find_queen_moves
         )
 from src.piece import (
         Pawn, King,
-        Queen, Bishop
+        Queen, Bishop,
+        Knight, Rook
         )
 
 class TestFindMoves(unittest.TestCase):
@@ -78,16 +83,13 @@ class TestFindMoves(unittest.TestCase):
             moves = find_pawn_moves(game2, pawn)
             print(f'moves for {pawn}: {moves}')
 
-        game2.parse_move('g3')
+        game2.parse_move('Rh5')
         print(f'FEN: {game2.fen}')
         for pawn in [pawn for pawn in game2.board.black() if isinstance(pawn, Pawn)]:
             moves = find_pawn_moves(game2, pawn)
             print(f'moves for {pawn}: {moves}')
         
         print(game2.board)
-
-        
-        
 
 
     def test_find_king_moves(self):
@@ -121,3 +123,101 @@ class TestFindMoves(unittest.TestCase):
             else:
                 print_w_king_moves()
             white_move = not white_move
+
+    def test_find_knight_moves(self):
+        print('==Test: Find knight moves==')
+        game = Game()
+        game.start_new_game()
+        move_list = ['Nh3', 'e6', 'f3', 'Qh4', 'Nf2', 'b6']
+        
+        def print_w_knight_moves():
+            for knight in [n for n in game.board.white() 
+                           if isinstance(n, Knight)]:
+                moves = find_knight_moves(game, knight)
+                print(f'moves for {knight}: {moves}')
+
+        for i in range(0, len(move_list)):
+            print(f'-----------move: {move_list[i]}-----------')
+            game.parse_move(move_list[i])
+            if i == 3:
+                print_w_knight_moves()
+        
+        print_w_knight_moves()
+
+    def test_find_rook_moves(self):
+        print('==Test: Find rook moves==')
+        game = Game()
+        game.start_new_game()
+        move_list = ['a4', 'a5', 'Ra3', 'Ra6', 'Re3', 'Rd6', 'Rxe7']
+
+        def print_w_rook_move():
+            for rook in [r for r in game.board.white()
+                         if isinstance(r, Rook)]:
+                moves = find_rook_moves(game, rook)
+                print(f'moves for {rook}: {moves}')
+                
+        def print_b_rook_move():
+            for rook in [r for r in game.board.black()
+                         if isinstance(r, Rook)]:
+                moves = find_rook_moves(game, rook)
+                print(f'moves for {rook}: {moves}')
+
+        for i in range(0, len(move_list)):
+            print(f'--------move: {move_list[i]}-------')
+            game.parse_move(move_list[i])
+            if i%2 == 0:
+                print_b_rook_move()
+            else:
+                print_w_rook_move()
+
+    def test_find_bishop_moves(self):
+        print('==Test: Find bishop moves==')
+        game = Game()
+        game.start_new_game()
+        move_list = ['b3', 'g6', 'g3', 'Bg7', 'Bg2', 'b6', 'Bb2', 'Bb7', 'e4', 'h5']
+
+        def print_b_bishop_move():
+            for bishop in [b for b in game.board.black()
+                           if isinstance(b, Bishop)]:
+                moves = find_bishop_moves(game, bishop)
+                print(f'moves for {bishop}: {moves}')
+
+        def print_w_bishop_move():
+            for bishop in [b for b in game.board.white()
+                           if isinstance(b, Bishop)]:
+                moves = find_bishop_moves(game, bishop)
+                print(f'moves for {bishop}: {moves}')
+
+        for i in range(0, len(move_list)):
+            print(f'--------move: {move_list[i]}-------')
+            game.parse_move(move_list[i])
+            if i%2 == 0:
+                print_b_bishop_move()
+            else:
+                print_w_bishop_move()
+
+    def test_find_queen_moves(self):
+        print('==Test: Find queen moves==')
+        game = Game()
+        game.start_new_game()
+        move_list = ['e4', 'd5', 'Qg4', 'dxe4', 'Qxe4']
+
+        def print_b_queen_move():
+            for queen in [q for q in game.board.black()
+                           if isinstance(q, Queen)]:
+                moves = find_queen_moves(game, queen)
+                print(f'moves for {queen}: {moves}')
+
+        def print_w_queen_move():
+            for queen in [q for q in game.board.white()
+                           if isinstance(q, Queen)]:
+                moves = find_queen_moves(game, queen)
+                print(f'moves for {queen}: {moves}')
+
+        for i in range(0, len(move_list)):
+            print(f'--------move: {move_list[i]}-------')
+            game.parse_move(move_list[i])
+            if i%2 == 0:
+                print_b_queen_move()
+            else:
+                print_w_queen_move()
