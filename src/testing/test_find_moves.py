@@ -171,7 +171,30 @@ class TestFindMoves(unittest.TestCase):
                 print_w_rook_move()
 
     def test_find_bishop_moves(self):
-        ...
+        print('==Test: Find bishop moves==')
+        game = Game()
+        game.start_new_game()
+        move_list = ['b3', 'g6', 'g3', 'Bg7', 'Bg2', 'b6', 'Bb2', 'Bg7', 'e4', 'h5']
+
+        def print_b_bishop_move():
+            for bishop in [b for b in game.board.black()
+                           if isinstance(b, Bishop)]:
+                moves = find_bishop_moves(game, bishop)
+                print(f'moves for {bishop}: {moves}')
+
+        def print_w_bishop_move():
+            for bishop in [b for b in game.board.white()
+                           if isinstance(b, Bishop)]:
+                moves = find_bishop_moves(game, bishop)
+                print(f'moves for {bishop}: {moves}')
+
+        for i in range(0, len(move_list)):
+            print(f'--------move: {move_list[i]}-------')
+            game.parse_move(move_list[i])
+            if i%2 == 0:
+                print_b_bishop_move()
+            else:
+                print_w_bishop_move()
 
     def test_find_queen_moves(self):
         ...

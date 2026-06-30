@@ -11,6 +11,9 @@ def parse_square(square_string):
             raise ValueError('parse_square: file not between a and h, or A and H')
         return file.lower(), int(rank)
 
+def parse_sq_tuple_to_str(square_tuple):
+    return f'{square_tuple[0]}{square_tuple[1]}'
+
 def parse_pawn_move(game, string):
     move_board = copy.deepcopy(game.board)
     file, rank = parse_square(string)

@@ -5,11 +5,13 @@ from src.piece import (
     )
 from src.functions.parse import (parse_square,
                                  parse_piece_move, 
+                                 parse_sq_tuple_to_str,
                                  parse_pawn_move,
                                  parse_pawn_capture)
 from src.functions.direction import adjacent_squares
 from src.functions.linears import (get_horizontal_squares,
                                    get_vertical_squares)
+from src.functions.diagonals import get_diagonal_squares
 import copy
 
 def find_available_moves(game, piece):
@@ -206,7 +208,6 @@ def find_queen_moves(game, queen):
     return moves
 
 def find_rook_moves(game, rook):
-    moves = []
     side = rook.side
     file, rank = parse_square(rook.square())
     h_limits = game.board.bound_squares('horizontal')(file, rank, side)
@@ -219,8 +220,22 @@ def find_rook_moves(game, rook):
 
 def find_bishop_moves(game, bishop):
     moves = []
+    side = bishop.side
     file, rank = bishop.file, bishop.rank
-    return moves
+    b_edges = game.board.bound_squares('diagonal')(file, rank, side, 'back')
+    f_edges = game.board.bound_squares('diagonal')(file, rank, side, 'forward')
+    b_edges_sq = [parse_square(sq) for sq in b_edges]
+    f_edges_sq = [parse_square(sq) for sq in f_edges]
+    b_squares, f_squares = [], []
+    if b_edges[0] !=  b_edges[1]:
+        b_squares = get_diagonal_squares(b_edges_sq[0], b_edges_sq[1])
+    if f_edges[0] != f_edges[1]:
+        f_squares = get_diagonal_squares(f_edges_sq[0], f_edges_sq[1])
+
+    moves = [parse_sq_tuple_to_str(sq) 
+             for sq in  [*b_squares, *f_squares]]
+    
+    return validate_legal_moves(game, bishop, moves)
 
 # Take in all possible squares, return list of moves
 # that don't put your king in check
