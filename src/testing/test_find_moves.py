@@ -12,7 +12,7 @@ from src.functions.find_moves import (
 from src.piece import (
         Pawn, King,
         Queen, Bishop,
-        Knight
+        Knight, Rook
         )
 
 class TestFindMoves(unittest.TestCase):
@@ -91,9 +91,6 @@ class TestFindMoves(unittest.TestCase):
         
         print(game2.board)
 
-        
-        
-
 
     def test_find_king_moves(self):
         print('==Test: Find king moves==')
@@ -147,9 +144,31 @@ class TestFindMoves(unittest.TestCase):
         
         print_w_knight_moves()
 
-
     def test_find_rook_moves(self):
-        ...
+        print('==Test: Find rook moves==')
+        game = Game()
+        game.start_new_game()
+        move_list = ['a4', 'a5', 'Ra3', 'Ra6', 'Re3', 'Rd6', 'Rxe7']
+
+        def print_w_rook_move():
+            for rook in [r for r in game.board.white()
+                         if isinstance(r, Rook)]:
+                moves = find_rook_moves(game, rook)
+                print(f'moves for {rook}: {moves}')
+                
+        def print_b_rook_move():
+            for rook in [r for r in game.board.black()
+                         if isinstance(r, Rook)]:
+                moves = find_rook_moves(game, rook)
+                print(f'moves for {rook}: {moves}')
+
+        for i in range(0, len(move_list)):
+            print(f'--------move: {move_list[i]}-------')
+            game.parse_move(move_list[i])
+            if i%2 == 0:
+                print_b_rook_move()
+            else:
+                print_w_rook_move()
 
     def test_find_bishop_moves(self):
         ...

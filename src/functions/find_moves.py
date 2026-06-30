@@ -211,7 +211,7 @@ def find_rook_moves(game, rook):
     file, rank = parse_square(rook.square())
     h_limits = game.board.bound_squares('horizontal')(file, rank, side)
     v_limits = game.board.bound_squares('vertical')(file, rank, side)
-    print(f'Limits for {rook}: horizontal: {h_limits}; vertical: {v_limits}')
+    # print(f'Limits for {rook}: horizontal: {h_limits}; vertical: {v_limits}')
     h_squares = get_horizontal_squares(*h_limits)
     v_squares = get_vertical_squares(*v_limits)
 
