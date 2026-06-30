@@ -7,7 +7,10 @@ from src.functions.parse import (
     parse_pawn_capture,
     parse_piece_move
     )
-from src.functions.find_moves import find_king_moves
+from src.functions.find_moves import (
+    find_king_moves,
+    find_available_moves
+    )
 import copy
 
 class Game():
@@ -59,7 +62,7 @@ class Game():
             fen += '/'
         
         fen = fen[:-1] + ' ' + self.turn[0:1]
-        fen += ' ' + self.__read_castling() + f' {self.en_passent} {self.halfmove} {self.fullmove}'
+        fen += ' ' + self.__read_castling() + f' {self.en_passent} {self.halfmove} {self.fullmove} {self.winner}'
         self.fen = fen
 
     def read_fen(self, fen_string):
@@ -122,7 +125,7 @@ class Game():
         self.__read_castling()
         return self.castling
     
-    def parse_move(self, string):
+    def parse_move(self, string, is_game_loop_call=True):
         notation_array = list(string)
         last_char = notation_array.pop()
         pieces = self.board.white() if self.turn == 'white' else self.board.black()
@@ -189,14 +192,16 @@ class Game():
                     self.fullmove += 1
                 self.turn = 'black' if self.turn == 'white' else 'white'
                 # show checkmate validator
-                # if self.turn == 'white':
-                #     end = self.is_checkmated_naive('white')
-                #     if end:
-                #         print('Looks like black has been checkmated')
-                # else:
-                #     end = self.is_checkmated_naive('black')
-                #     if end:
-                #         print('Looks like white has been checkmated')
+                # if is_game_loop_call:
+                #     print('looking for checkmate')
+                #     if self.turn == 'white':
+                #         end = self.is_checkmated('white')
+                #         if end:
+                #             print('Looks like black has been checkmated')
+                #     else:
+                #         end = self.is_checkmated('black')
+                #         if end:
+                #             print('Looks like white has been checkmated')
                 if not pawn_move:
                     self.halfmove += 1
                 else: 
@@ -222,5 +227,34 @@ class Game():
         moves = find_king_moves(self, king)
 
         if len(checks) > 0 and len(moves) == 0:
+            return True
+        return False
+    
+    # placing this in main game loop causes infinite recursion loop
+    def is_checkmated(self, side:str) -> bool:
+        print('looking for checkmate')
+        from src.piece import King
+        king = None
+        pieces = []
+        if side == 'white':
+            pieces = self.board.white()
+            king = [k for k in pieces if isinstance(k, King)][0]
+        else:
+            pieces = self.board.black()
+            king = [k for k in pieces if isinstance(k, King)][0]
+
+
+
+        checks = self.board.find_checks(king.square(), king.side)
+        move_lists = [find_available_moves(self, p) for p in pieces]
+        moves = []
+        for ls in move_lists:
+            moves.extend(ls)
+
+        if len(checks) > 0 and len(moves) == 0:
+            if side == 'white':
+                self.winner = 'black'
+            else:
+                self.winner = 'white'
             return True
         return False

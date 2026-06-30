@@ -72,9 +72,9 @@ def find_pawn_moves(game, pawn):
                 mv = f'{mv}=Q'
 
             if mv[0] == file:
-                gm.parse_move(mv)
+                gm.parse_move(mv, False)
             else:
-                gm.parse_move(f'{file}x{mv}')
+                gm.parse_move(f'{file}x{mv}', False)
 
             if gm.fen != game.fen:
                 valid_moves.append(mv)
@@ -283,7 +283,7 @@ def validate_legal_moves(game, piece, moves):
         capture, _, __ = gm.board.check_square_filled(*parse_square(mv))
         mv_str = f'{start_sq}{'x' if capture else ''}{mv}'
         try:
-            gm.parse_move(mv_str)
+            gm.parse_move(mv_str, False)
             if gm.fen != game.fen:
                 valid_moves.append(mv)
         except Exception as e:
