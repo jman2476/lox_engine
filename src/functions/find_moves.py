@@ -5,7 +5,7 @@ from src.piece import (
     )
 from src.functions.parse import (parse_square,
                                  parse_piece_move, 
-                                 parse_sq_tuple_to_str,
+                                 parse_square_reverse,
                                  parse_pawn_move,
                                  parse_pawn_capture)
 from src.functions.direction import adjacent_squares
@@ -203,9 +203,30 @@ def find_knight_moves(game, knight):
     return validate_legal_moves(game, knight, moves)
 
 def find_queen_moves(game, queen):
-    moves = []
+    side = queen.side
     file, rank = queen.file, queen.rank
-    return moves
+    moves = []
+    h_edges = game.board.bound_squares('horizontal')(file, rank, side)
+    v_edges = game.board.bound_squares('vertical')(file, rank, side)
+    b_edges = game.board.bound_squares('diagonal')(
+        file, rank, side, 'back')
+    f_edges = game.board.bound_squares('diagonal')(
+        file, rank, side, 'forward')
+
+    b_edge_sqs = [parse_square(sq) for sq in b_edges]
+    f_edge_sqs = [parse_square(sq) for sq in f_edges]
+    
+    moves.extend([
+        *get_horizontal_squares(*h_edges),
+        *get_vertical_squares(*v_edges)
+    ])
+
+    if b_edges[0] != b_edges[1]:
+        moves.extend(get_diagonal_squares(b_edge_sqs[0], b_edge_sqs[1]))
+    if f_edges[0] != f_edges[1]:
+        moves.extend(get_diagonal_squares(f_edge_sqs[0], f_edge_sqs[1]))
+
+    return validate_legal_moves(game, queen, moves)
 
 def find_rook_moves(game, rook):
     side = rook.side
@@ -232,7 +253,7 @@ def find_bishop_moves(game, bishop):
     if f_edges[0] != f_edges[1]:
         f_squares = get_diagonal_squares(f_edges_sq[0], f_edges_sq[1])
 
-    moves = [parse_sq_tuple_to_str(sq) 
+    moves = [parse_square_reverse(sq) 
              for sq in  [*b_squares, *f_squares]]
     
     return validate_legal_moves(game, bishop, moves)
