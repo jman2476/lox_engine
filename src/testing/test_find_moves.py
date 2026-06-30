@@ -174,7 +174,7 @@ class TestFindMoves(unittest.TestCase):
         print('==Test: Find bishop moves==')
         game = Game()
         game.start_new_game()
-        move_list = ['b3', 'g6', 'g3', 'Bg7', 'Bg2', 'b6', 'Bb2', 'Bg7', 'e4', 'h5']
+        move_list = ['b3', 'g6', 'g3', 'Bg7', 'Bg2', 'b6', 'Bb2', 'Bb7', 'e4', 'h5']
 
         def print_b_bishop_move():
             for bishop in [b for b in game.board.black()
