@@ -3,8 +3,13 @@ from src.piece import (
     Queen, Bishop, 
     Knight, Rook
     )
-from src.functions.parse import parse_square, parse_piece_move, parse_pawn_move, parse_pawn_capture
+from src.functions.parse import (parse_square,
+                                 parse_piece_move, 
+                                 parse_pawn_move,
+                                 parse_pawn_capture)
 from src.functions.direction import adjacent_squares
+from src.functions.linears import (get_horizontal_squares,
+                                   get_vertical_squares)
 import copy
 
 def find_available_moves(game, piece):
@@ -48,8 +53,10 @@ def find_pawn_moves(game, pawn):
             moves.append(square)
     
     # check for two square move:
+    # print(f'Checking two square move: {game.board.check_square_filled(file, next_rank + direction)}')
     if (pawn.in_start_pos and
-        game.board.check_square_filled(file, next_rank + direction)[0]):
+        f'{file}{next_rank}' in moves and
+        not game.board.check_square_filled(file, next_rank + direction)[0]):
         moves.append(f'{file}{next_rank+direction}')
 
     # Check if each move causes check
@@ -183,11 +190,15 @@ def find_king_moves(game, king):
     return moves
 
 def find_knight_moves(game, knight):
-    return game.board.bound_squares('knight')(
+    moves = game.board.bound_squares('knight')(
         knight.file,
         knight.rank,
         knight.side
     )
+
+    # Check if moves cause any checks
+
+    return validate_legal_moves(game, knight, moves)
 
 def find_queen_moves(game, queen):
     moves = []
@@ -201,10 +212,22 @@ def find_rook_moves(game, rook):
     h_limits = game.board.bound_squares('horizontal')(file, rank, side)
     v_limits = game.board.bound_squares('vertical')(file, rank, side)
     print(f'Limits for {rook}: horizontal: {h_limits}; vertical: {v_limits}')
-    h_lim_files = [s[0] for s in h_limits]
-    v_lim_ranks = [s[1] for s in v_limits]
-    h_squares = []
-    v_squares = [f'{file}{i}' for i in range(v_lim_ranks[0], v_lim_ranks[1]+1)]
+    h_squares = get_horizontal_squares(*h_limits)
+    v_squares = get_vertical_squares(*v_limits)
+
+    # Check if moves cause any checks
+    for mv in [*h_squares, *v_squares]:
+        if mv == rook.square():
+            continue
+        gm = copy.deepcopy(game)
+        capture, _, __ = gm.board.check_square_filled(*parse_square(mv))
+        mv_str = f'R{file}{rank}{'x' if capture else ''}{mv}'
+        try:
+            gm.parse_move(mv_str)
+            if gm.fen != game.fen:
+                moves.append(mv)
+        except Exception as e:
+            print(f'Move {mv} as {mv_str} failed: {str(e)}')
 
     return moves
 
@@ -212,3 +235,30 @@ def find_bishop_moves(game, bishop):
     moves = []
     file, rank = bishop.file, bishop.rank
     return moves
+
+# Take in all possible squares, return list of moves
+# that don't put your king in check
+def validate_legal_moves(game, piece, moves):
+    letter = {
+        'queen': 'Q',
+        'rook': 'R',
+        'knight': 'N',
+        'bishop': 'B'
+    }
+    valid_moves = []
+    start_sq = f'{letter[piece.name]}{piece.file}{piece.rank}'
+
+    for mv in moves:
+        if mv == start_sq[1:]:
+            continue
+        gm = copy.deepcopy(game)
+        capture, _, __ = gm.board.check_square_filled(*parse_square(mv))
+        mv_str = f'{start_sq}{'x' if capture else ''}{mv}'
+        try:
+            gm.parse_move(mv_str)
+            if gm.fen != game.fen:
+                valid_moves.append(mv)
+        except Exception as e:
+            print(f'Move {mv} as {mv_str} failed: {str(e)}')
+
+    return valid_moves
