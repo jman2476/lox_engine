@@ -215,21 +215,7 @@ def find_rook_moves(game, rook):
     h_squares = get_horizontal_squares(*h_limits)
     v_squares = get_vertical_squares(*v_limits)
 
-    # Check if moves cause any checks
-    for mv in [*h_squares, *v_squares]:
-        if mv == rook.square():
-            continue
-        gm = copy.deepcopy(game)
-        capture, _, __ = gm.board.check_square_filled(*parse_square(mv))
-        mv_str = f'R{file}{rank}{'x' if capture else ''}{mv}'
-        try:
-            gm.parse_move(mv_str)
-            if gm.fen != game.fen:
-                moves.append(mv)
-        except Exception as e:
-            print(f'Move {mv} as {mv_str} failed: {str(e)}')
-
-    return moves
+    return validate_legal_moves(game, rook, [*h_squares, *v_squares])
 
 def find_bishop_moves(game, bishop):
     moves = []
