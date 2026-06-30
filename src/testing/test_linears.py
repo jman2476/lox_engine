@@ -33,6 +33,10 @@ class TestLinears(unittest.TestCase):
             ['b4', 'c4', 'd4']
         )
 
+        with self.assertRaises(ValueError):
+            squares_5 = get_vertical_squares('d4', 'g8')
+            print(squares_5)
+
 
     def test_get_vertical_squares(self):
         edges_1 = ['a1', 'a8']
@@ -63,3 +67,7 @@ class TestLinears(unittest.TestCase):
             squares_4, 
             [ 'd4', 'd5', 'd6', 'd7']
         )
+        
+        with self.assertRaises(ValueError):
+            squares_5 = get_vertical_squares('d4', 'g8')
+            print(squares_5)
