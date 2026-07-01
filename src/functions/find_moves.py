@@ -13,10 +13,13 @@ from src.functions.linears import (get_horizontal_squares,
                                    get_vertical_squares)
 from src.functions.diagonals import get_diagonal_squares
 import copy
+import logging
+logger = logging.getLogger('race condition')
 
 def find_available_moves(game, piece):
     moves = set()
   
+    logger.debug(f'{piece} {game}')
     match piece:
         case Pawn():
             moves.update(find_pawn_moves(game, piece))
@@ -99,10 +102,15 @@ def find_king_moves(game, king):
         game.board, king.file, king.rank)
     for square in squares_to_check:
         file, rank = parse_square(square)
+        move_str = ''
         dst_occupied, dst_side, _ = game.board.check_square_filled(file, rank)
-        if dst_occupied and dst_side == king.side: continue;
-
-        move_board = parse_piece_move(game, f'K{square}')
+        if dst_occupied:
+            if dst_side == king.side: continue
+            else: 
+                move_str = f'Kx{square}'
+        else:
+            move_str = f'K{square}'
+        move_board = parse_piece_move(game, move_str)
         checks = move_board.find_checks(square, king.side)
         if len(checks) == 0:
             moves.append(square)
@@ -284,9 +292,15 @@ def validate_legal_moves(game, piece, moves):
         mv_str = f'{start_sq}{'x' if capture else ''}{mv}'
         try:
             gm.parse_move(mv_str, False)
-            if gm.fen != game.fen:
+            # if gm.fen != game.fen:
+            if not fen_compare(game.fen, gm.fen):
+                print(f'Pre move: {game.fen}, post move: {gm.fen}')
                 valid_moves.append(mv)
         except Exception as e:
             print(f'Move {mv} as {mv_str} failed: {str(e)}')
 
     return valid_moves
+
+# Compare fen strings on character at a time:
+def fen_compare(pre_move:str, post_move:str) -> bool:
+    return pre_move == post_move

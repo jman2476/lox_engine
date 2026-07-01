@@ -5,6 +5,7 @@ from src.graphics.error_box import ErrorBox
 from src.graphics.button import ExitButton
 from src.graphics.mouse import get_square, move_notation, play_move
 import datetime
+import logging
 
 pygame.init()
 pygame.mouse.set_visible(True)
@@ -16,6 +17,11 @@ elapsed = 0
 game_board = GUI_Board()
 piece_font = pygame.font.Font("./fonts/nishiki-teki/NishikiTeki-MVxaJ.ttf", 30)
 error_box = ErrorBox()
+
+# Logging
+logger = logging.getLogger('find_moves')
+logging.basicConfig(filename='find_moves.log', level=logging.DEBUG)
+logger.info(f'Starting log {datetime.datetime.now()}')
 
 # mouse handlers
 dragging = False

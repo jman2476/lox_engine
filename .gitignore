@@ -11,3 +11,6 @@ wheels/
 
 # Code Counter
 .VSCodeCounter
+
+# Logging
+find_moves.log

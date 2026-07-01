@@ -140,7 +140,7 @@ class Board():
                     else:
                         if 'k' in castle_rights and piece.square() == 'h8':
                             continue
-                        elif 'q' in castle_rights and piece.square() == 'h1':
+                        elif 'q' in castle_rights and piece.square() == 'a8':
                             continue
                         else:
                             piece.in_start_pos = False
