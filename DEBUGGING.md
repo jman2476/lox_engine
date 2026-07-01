@@ -20,4 +20,8 @@ Tried so far: (safe/unsafe)
 8. in conditional above -> unsafe
 9. in conditional below -> unsafe
 
-So the issue appears to happen during the line `if gm.fen != game.fen:`
+So the issue appears to happen during the line `if gm.fen != game.fen:`. 
+To verify, lets put it in the compare fen funcion, and see if we get a partial block of invalid moves.
+    - Looks like putting the log in between the definition and return (short function) does not stop the error part way through
+What about putting it in the validate_legal_moves function before call to fen_compare?
+    - This does stop the functionality part way

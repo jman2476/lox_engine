@@ -78,7 +78,7 @@ def find_pawn_moves(game, pawn):
             else:
                 gm.parse_move(f'{file}x{mv}', False)
 
-            logger.debug(f'{pawn} {game}')
+            logger.debug(f'{game} {pawn}')
             if gm.fen != game.fen:
                 valid_moves.append(mv)
         except Exception as e:
@@ -294,6 +294,7 @@ def validate_legal_moves(game, piece, moves):
         try:
             gm.parse_move(mv_str, False)
             # if gm.fen != game.fen:
+            logger.debug(f'{game} {piece} {moves}')
             if not fen_compare(game.fen, gm.fen):
                 print(f'Pre move: {game.fen}, post move: {gm.fen}')
                 valid_moves.append(mv)
@@ -304,4 +305,6 @@ def validate_legal_moves(game, piece, moves):
 
 # Compare fen strings on character at a time:
 def fen_compare(pre_move:str, post_move:str) -> bool:
+    logger.debug(f'Comparing fen strings {pre_move} and {post_move}')
+
     return pre_move == post_move
