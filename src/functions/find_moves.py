@@ -19,7 +19,6 @@ logger = logging.getLogger('race condition')
 def find_available_moves(game, piece):
     moves = set()
   
-    logger.debug(f'{piece} {game}')
     match piece:
         case Pawn():
             moves.update(find_pawn_moves(game, piece))
@@ -79,6 +78,7 @@ def find_pawn_moves(game, pawn):
             else:
                 gm.parse_move(f'{file}x{mv}', False)
 
+            logger.debug(f'{pawn} {game}')
             if gm.fen != game.fen:
                 valid_moves.append(mv)
         except Exception as e:
@@ -93,6 +93,7 @@ def find_pawn_moves(game, pawn):
         if mv[-1] == 'Q':
             for p in promotions:
                 all_valid.append(f'{mv[:2]}={p}')
+    
     return all_valid
 
 
