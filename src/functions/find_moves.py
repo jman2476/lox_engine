@@ -78,18 +78,24 @@ def find_pawn_moves(game, pawn):
             if mv[1] == back_rank:
                 mv = f'{mv}=Q'
 
+            print(f'Current pawn: {pawn}\nBefore move')
+            print(f'Print fens \nOrig: {game.fen} \nCopy: {gm.fen}')
+
             if mv[0] == file:
                 gm.parse_move(mv, False)
             else:
                 gm.parse_move(f'{file}x{mv}', False)
 
-            print(f'{game} {gm}')
+            print(f'Current pawn: {pawn}\nAfter move')
+            print(f'Print fens \nOrig: {game.fen} \nCopy: {gm.fen}')
+            # print(f'Print games \nOrig: {game} \nCopy: {gm}')
             if gm.fen != game.fen:
                 # logger.debug(f'Fen compare: {gm.fen[:-4]}, {game.fen[:-4]}')
                 valid_moves.append(mv)
         except Exception as e:
             print(f'Move {mv} failed: {str(e)}')
             continue
+        gm = None
 
     # Check for promotions
     all_valid = []

@@ -183,6 +183,7 @@ class Game():
             new_pieces = move_board.white() if self.turn == 'white' else move_board.black()
             new_king = next((piece for piece in new_pieces if piece.name == 'king'))
             new_checks = move_board.find_checks(new_king.square(), new_king.side)
+            move_happened = False
             if move_board == self.board:
                 print('No move happened')
                 self.en_passent = initial_ep
@@ -192,21 +193,11 @@ class Game():
                 self.en_passent = initial_ep
             else: # move succeeds
                 self.board = move_board
-
+                move_happened = True
                 if self.turn == 'black':
                     self.fullmove += 1
                 self.turn = 'black' if self.turn == 'white' else 'white'
                 # show checkmate validator
-                if is_game_loop_call:
-                    print('is_game_loop=True')
-                    if self.turn == 'white':
-                        end = self.is_checkmated('white')
-                        if end:
-                            print('Looks like white has been checkmated')
-                    else:
-                        end = self.is_checkmated('black')
-                        if end:
-                            print('Looks like black has been checkmated')
                 if not pawn_move:
                     self.halfmove += 1
                 else: 
@@ -214,6 +205,16 @@ class Game():
                 if self.en_passent != '-' and self.en_passent == initial_ep:
                     self.en_passent = '-'
             self.set_fen()
+            if is_game_loop_call and move_happened:
+                print('is_game_loop=True')
+                if self.turn == 'white':
+                    end = self.is_checkmated('white')
+                    if end:
+                        print('Looks like white has been checkmated')
+                else:
+                    end = self.is_checkmated('black')
+                    if end:
+                        print('Looks like black has been checkmated')
     
     # Function is currently naive: doesn't account for blocking
     def is_checkmated_naive(self, side:str) -> bool:
