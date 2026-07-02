@@ -206,15 +206,16 @@ class Game():
                     self.en_passent = '-'
             self.set_fen()
             if is_game_loop_call and move_happened:
-                print('is_game_loop=True')
                 if self.turn == 'white':
                     end = self.is_checkmated('white')
                     if end:
                         print('Looks like white has been checkmated')
+                        self.winner = '0-1'
                 else:
                     end = self.is_checkmated('black')
                     if end:
                         print('Looks like black has been checkmated')
+                        self.winner = '1-0'
     
     # Function is currently naive: doesn't account for blocking
     def is_checkmated_naive(self, side:str) -> bool:
@@ -256,10 +257,7 @@ class Game():
         move_lists = [find_available_moves(game_copy, p) for p in pieces]
         moves = []
         for ls in move_lists:
-            print('moves: ',ls)
             moves.extend(ls)
-        print(f'moves: {moves}')
-        print(f'checks: {checks}')
         if len(checks) > 0 and len(moves) == 0:
             if side == 'white':
                 self.winner = 'black'
