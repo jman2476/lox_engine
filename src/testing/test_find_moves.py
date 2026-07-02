@@ -243,20 +243,20 @@ class TestFindMoves(unittest.TestCase):
         game = Game()
         game.start_new_game()
         move_list = ['e3', 'f6', 'f4', 'g5', 'Qh5']
-        moves = []
 
         for mv in move_list:
             game.parse_move(mv)
-            moves.extend(mv)
 
-        self.assertEqual(len(moves), 0)
 
-        # b_pieces = game.board.black()
-        # moves = []
-        # for piece in b_pieces:
-        #     moves.append([piece, find_available_moves(game, piece)])
-
-        # print("---Available moves:---")
-        # for piece_moves in moves:
-        #     print(piece_moves[0], piece_moves[1])
+        b_pieces = game.board.black()
+        moves = []
+        for piece in b_pieces:
+            moves.append([piece, find_available_moves(game, piece)])
+        results = []
+        print("---Available moves:---")
+        for piece_moves in moves:
+            print(piece_moves[0], piece_moves[1])
+            results.extend(piece_moves[1])
          
+        print(f'moves: {results}')
+        self.assertEqual(len(results), 0)
