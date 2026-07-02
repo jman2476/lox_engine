@@ -13,6 +13,13 @@ from src.functions.linears import (get_horizontal_squares,
                                    get_vertical_squares)
 from src.functions.diagonals import get_diagonal_squares
 import copy
+import logging
+from time import sleep
+from datetime import datetime
+logger = logging.getLogger('race condition')
+logging.basicConfig(filename='find_moves.log', level=logging.DEBUG)
+logger.info(f'Starting log {datetime.now()}')
+
 
 def find_available_moves(game, piece):
     moves = set()
@@ -71,16 +78,24 @@ def find_pawn_moves(game, pawn):
             if mv[1] == back_rank:
                 mv = f'{mv}=Q'
 
-            if mv[0] == file:
-                gm.parse_move(mv)
-            else:
-                gm.parse_move(f'{file}x{mv}')
+            print(f'Current pawn: {pawn}\nBefore move')
+            print(f'Print fens \nOrig: {game.fen} \nCopy: {gm.fen}')
 
+            if mv[0] == file:
+                gm.parse_move(mv, False)
+            else:
+                gm.parse_move(f'{file}x{mv}', False)
+
+            print(f'Current pawn: {pawn}\nAfter move')
+            print(f'Print fens \nOrig: {game.fen} \nCopy: {gm.fen}')
+            # print(f'Print games \nOrig: {game} \nCopy: {gm}')
             if gm.fen != game.fen:
+                # logger.debug(f'Fen compare: {gm.fen[:-4]}, {game.fen[:-4]}')
                 valid_moves.append(mv)
         except Exception as e:
             print(f'Move {mv} failed: {str(e)}')
             continue
+        gm = None
 
     # Check for promotions
     all_valid = []
@@ -90,6 +105,7 @@ def find_pawn_moves(game, pawn):
         if mv[-1] == 'Q':
             for p in promotions:
                 all_valid.append(f'{mv[:2]}={p}')
+    
     return all_valid
 
 
@@ -99,10 +115,15 @@ def find_king_moves(game, king):
         game.board, king.file, king.rank)
     for square in squares_to_check:
         file, rank = parse_square(square)
+        move_str = ''
         dst_occupied, dst_side, _ = game.board.check_square_filled(file, rank)
-        if dst_occupied and dst_side == king.side: continue;
-
-        move_board = parse_piece_move(game, f'K{square}')
+        if dst_occupied:
+            if dst_side == king.side: continue
+            else: 
+                move_str = f'Kx{square}'
+        else:
+            move_str = f'K{square}'
+        move_board = parse_piece_move(game, move_str)
         checks = move_board.find_checks(square, king.side)
         if len(checks) == 0:
             moves.append(square)
@@ -283,10 +304,20 @@ def validate_legal_moves(game, piece, moves):
         capture, _, __ = gm.board.check_square_filled(*parse_square(mv))
         mv_str = f'{start_sq}{'x' if capture else ''}{mv}'
         try:
-            gm.parse_move(mv_str)
-            if gm.fen != game.fen:
+            gm.parse_move(mv_str, False)
+            # if gm.fen != game.fen:
+            # logger.debug(f'{game} {piece} {moves}')
+            
+            if not fen_compare(game.fen, gm.fen):
+                print(f'Pre move: {game.fen}, post move: {gm.fen}')
                 valid_moves.append(mv)
         except Exception as e:
             print(f'Move {mv} as {mv_str} failed: {str(e)}')
 
     return valid_moves
+
+# Compare fen strings on character at a time:
+def fen_compare(pre_move:str, post_move:str) -> bool:
+    logger.debug(f'Comparing fen strings {pre_move} and {post_move}')
+
+    return pre_move == post_move

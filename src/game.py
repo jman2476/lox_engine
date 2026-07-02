@@ -7,7 +7,10 @@ from src.functions.parse import (
     parse_pawn_capture,
     parse_piece_move
     )
-from src.functions.find_moves import find_king_moves
+from src.functions.find_moves import (
+    find_king_moves,
+    find_available_moves
+    )
 import copy
 
 class Game():
@@ -111,6 +114,11 @@ class Game():
                 and a_eight.name == 'rook' 
                 and a_eight.in_start_pos):
                 castle_str += 'q'
+            else:
+                print('--Black Queen side castling read--')
+                print(f'a8: {a_eight}')
+                if a_eight is not None:
+                    print(f'Name: {a_eight.name}, in start position: {a_eight.in_start_pos}')
 
         if len(castle_str) == 0:
             castle_str = '-'
@@ -122,7 +130,7 @@ class Game():
         self.__read_castling()
         return self.castling
     
-    def parse_move(self, string):
+    def parse_move(self, string, is_game_loop_call=True):
         notation_array = list(string)
         last_char = notation_array.pop()
         pieces = self.board.white() if self.turn == 'white' else self.board.black()
@@ -175,28 +183,21 @@ class Game():
             new_pieces = move_board.white() if self.turn == 'white' else move_board.black()
             new_king = next((piece for piece in new_pieces if piece.name == 'king'))
             new_checks = move_board.find_checks(new_king.square(), new_king.side)
+            move_happened = False
             if move_board == self.board:
                 print('No move happened')
                 self.en_passent = initial_ep
             elif new_checks != []:
-                print(f'New king: {new_king}, {new_king.square()}')
-                print(f'This move would cause checks at {new_checks}. Undoing move')
+                # print(f'New king: {new_king}, {new_king.square()}')
+                print(f'Move {string} would cause checks at {new_checks}. Undoing move')
                 self.en_passent = initial_ep
             else: # move succeeds
                 self.board = move_board
-
+                move_happened = True
                 if self.turn == 'black':
                     self.fullmove += 1
                 self.turn = 'black' if self.turn == 'white' else 'white'
                 # show checkmate validator
-                # if self.turn == 'white':
-                #     end = self.is_checkmated_naive('white')
-                #     if end:
-                #         print('Looks like black has been checkmated')
-                # else:
-                #     end = self.is_checkmated_naive('black')
-                #     if end:
-                #         print('Looks like white has been checkmated')
                 if not pawn_move:
                     self.halfmove += 1
                 else: 
@@ -204,6 +205,16 @@ class Game():
                 if self.en_passent != '-' and self.en_passent == initial_ep:
                     self.en_passent = '-'
             self.set_fen()
+            if is_game_loop_call and move_happened:
+                print('is_game_loop=True')
+                if self.turn == 'white':
+                    end = self.is_checkmated('white')
+                    if end:
+                        print('Looks like white has been checkmated')
+                else:
+                    end = self.is_checkmated('black')
+                    if end:
+                        print('Looks like black has been checkmated')
     
     # Function is currently naive: doesn't account for blocking
     def is_checkmated_naive(self, side:str) -> bool:
@@ -222,5 +233,37 @@ class Game():
         moves = find_king_moves(self, king)
 
         if len(checks) > 0 and len(moves) == 0:
+            return True
+        return False
+    
+    # placing this in main game loop causes infinite recursion loop
+    def is_checkmated(self, side:str) -> bool:
+        
+        print('looking for checkmate')
+        from src.piece import King
+        king = None
+        pieces = []
+        if side == 'white':
+            pieces = self.board.white()
+            king = [k for k in pieces if isinstance(k, King)][0]
+        else:
+            pieces = self.board.black()
+            king = [k for k in pieces if isinstance(k, King)][0]
+
+
+        game_copy = copy.deepcopy(self)
+        checks = self.board.find_checks(king.square(), king.side)
+        move_lists = [find_available_moves(game_copy, p) for p in pieces]
+        moves = []
+        for ls in move_lists:
+            print('moves: ',ls)
+            moves.extend(ls)
+        print(f'moves: {moves}')
+        print(f'checks: {checks}')
+        if len(checks) > 0 and len(moves) == 0:
+            if side == 'white':
+                self.winner = 'black'
+            else:
+                self.winner = 'white'
             return True
         return False
