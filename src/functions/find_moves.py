@@ -14,7 +14,12 @@ from src.functions.linears import (get_horizontal_squares,
 from src.functions.diagonals import get_diagonal_squares
 import copy
 import logging
+from time import sleep
+from datetime import datetime
 logger = logging.getLogger('race condition')
+logging.basicConfig(filename='find_moves.log', level=logging.DEBUG)
+logger.info(f'Starting log {datetime.now()}')
+
 
 def find_available_moves(game, piece):
     moves = set()
@@ -78,8 +83,9 @@ def find_pawn_moves(game, pawn):
             else:
                 gm.parse_move(f'{file}x{mv}', False)
 
-            logger.debug(f'{game} {pawn}')
+            print(f'{game} {gm}')
             if gm.fen != game.fen:
+                # logger.debug(f'Fen compare: {gm.fen[:-4]}, {game.fen[:-4]}')
                 valid_moves.append(mv)
         except Exception as e:
             print(f'Move {mv} failed: {str(e)}')
@@ -294,7 +300,8 @@ def validate_legal_moves(game, piece, moves):
         try:
             gm.parse_move(mv_str, False)
             # if gm.fen != game.fen:
-            logger.debug(f'{game} {piece} {moves}')
+            # logger.debug(f'{game} {piece} {moves}')
+            
             if not fen_compare(game.fen, gm.fen):
                 print(f'Pre move: {game.fen}, post move: {gm.fen}')
                 valid_moves.append(mv)
