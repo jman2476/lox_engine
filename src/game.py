@@ -262,4 +262,9 @@ class Game():
             else:
                 self.winner = 'white'
             return True
+        elif len(checks) == 0 and len(moves) == 0:
+            self.handle_stalemate()
         return False
+    
+    def handle_stalemate(self):
+        self.winner = '1/2-1/2'
