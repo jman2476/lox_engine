@@ -1,5 +1,5 @@
 # lox_engine
->Version 0.2.6.1
+>Version 0.2.7
 
 Lox engine is a rudimentary chess engine and game platform where you can play against Lox, a basic chess engine, or against your friends in timed or untimed games.
 
@@ -10,11 +10,8 @@ Currently, lox_engine is a terminal based chess game that parses algebraic notat
 ### What are the limitations?
 As of the current version, lox_engine lacks these key features that many a complete chess engine would have:
     
-    - Detecting stalemate
-    - Detecting checkmate
     - Detecting 50 move rule draws
     - Exporting game to PGN
-    - Graphic user interface for games
     - Ability to play against you
 
 **That last point is key:** the whole idea of lox_engine is to play against you. It might never be a challenger to the likes of Stockfish or Leela Chess Zero, in fact it would probably get smoked, but I plan to write an engine that can play to at least a 2000 Elo level.
@@ -71,6 +68,9 @@ The move prompt will indicate whose turn it is, and all moves should be input us
 Any incorrectly encoded or invalid moves will raise an error and you will be prompted again to make that move. If you are in check and your move doesn't remove the threat, or if your move would put you in check, the move gets reverted, an error will be raised, and you will be prompted again to make a move.
 
 Because lox_engine currently cannot detect if there is checkmate or stalemate on the board, the game is over if there are no moves that can be made.
+
+## Graphic Interface
+``` instructions coming soon ```
 
 ## About
 

@@ -77,20 +77,13 @@ def find_pawn_moves(game, pawn):
 
             if mv[1] == back_rank:
                 mv = f'{mv}=Q'
-
-            print(f'Current pawn: {pawn}\nBefore move')
-            print(f'Print fens \nOrig: {game.fen} \nCopy: {gm.fen}')
-
+    
             if mv[0] == file:
                 gm.parse_move(mv, False)
             else:
                 gm.parse_move(f'{file}x{mv}', False)
 
-            print(f'Current pawn: {pawn}\nAfter move')
-            print(f'Print fens \nOrig: {game.fen} \nCopy: {gm.fen}')
-            # print(f'Print games \nOrig: {game} \nCopy: {gm}')
             if gm.fen != game.fen:
-                # logger.debug(f'Fen compare: {gm.fen[:-4]}, {game.fen[:-4]}')
                 valid_moves.append(mv)
         except Exception as e:
             print(f'Move {mv} failed: {str(e)}')
@@ -218,9 +211,6 @@ def find_knight_moves(game, knight):
         knight.rank,
         knight.side
     )
-
-    # Check if moves cause any checks
-
     return validate_legal_moves(game, knight, moves)
 
 def find_queen_moves(game, queen):
@@ -258,9 +248,10 @@ def find_queen_moves(game, queen):
 def find_rook_moves(game, rook):
     side = rook.side
     file, rank = parse_square(rook.square())
+
     h_limits = game.board.bound_squares('horizontal')(file, rank, side)
     v_limits = game.board.bound_squares('vertical')(file, rank, side)
-    # print(f'Limits for {rook}: horizontal: {h_limits}; vertical: {v_limits}')
+
     h_squares = get_horizontal_squares(*h_limits)
     v_squares = get_vertical_squares(*v_limits)
 
@@ -308,8 +299,7 @@ def validate_legal_moves(game, piece, moves):
             # if gm.fen != game.fen:
             # logger.debug(f'{game} {piece} {moves}')
             
-            if not fen_compare(game.fen, gm.fen):
-                print(f'Pre move: {game.fen}, post move: {gm.fen}')
+            if game.fen != gm.fen:
                 valid_moves.append(mv)
         except Exception as e:
             print(f'Move {mv} as {mv_str} failed: {str(e)}')
