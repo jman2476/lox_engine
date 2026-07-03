@@ -188,8 +188,6 @@ class Game():
                 print('No move happened')
                 self.en_passent = initial_ep
             elif new_checks != []:
-                # print(f'New king: {new_king}, {new_king.square()}')
-                print(f'Move {string} would cause checks at {new_checks}. Undoing move')
                 self.en_passent = initial_ep
             else: # move succeeds
                 self.board = move_board

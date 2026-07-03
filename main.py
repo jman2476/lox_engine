@@ -20,6 +20,10 @@ def main():
         print(game.fen)
         move = input(f'{game.turn}\'s next move>> ')
         game.parse_move(move)
+    if game.winner == '0-1':
+        print("Black wins!")
+    elif game.winner == '1-0':
+        print("White wins!")
 
 
 if __name__ == "__main__":
