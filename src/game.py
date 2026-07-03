@@ -256,6 +256,7 @@ class Game():
         moves = []
         for ls in move_lists:
             moves.extend(ls)
+        print(f'moves: {moves}\nchecks: {checks}')
         if len(checks) > 0 and len(moves) == 0:
             if side == 'white':
                 self.winner = 'black'

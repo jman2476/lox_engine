@@ -216,7 +216,7 @@ class Board():
             'vertical',
             'back_diagonal',
             'forward_diagonal',
-            'knight'
+            'knight', 'king'
         ]
         # Iterate through all directions
         for dir in directions:
