@@ -27,6 +27,7 @@ class Game():
         self.castling = '-'
         self.winner = None
         self.set_fen()
+        self.board_states = {}
 
     def __repr__(self):
         self.set_fen()
@@ -35,6 +36,7 @@ class Game():
     def start_new_game(self):
         self.board.setup_new()
         self.set_fen()
+        self.__add_board_state()
 
     def set_fen(self):
         game_board = self.board.board
@@ -75,6 +77,14 @@ class Game():
         self.fullmove = int(fen_arr[5])
         self.board.setup_by_fen(fen_string)
 
+    def __add_board_state(self):
+        board_fen = self.fen.split()[0]
+        if board_fen in self.board_states:
+            self.board_states[board_fen] += 1
+            if self.board_states[board_fen] >=3:
+                self.winner = '1/2-1/2'
+        else:
+            self.board_states[board_fen] = 1
 
     def __read_castling(self):
         game_board = self.board.board
@@ -204,17 +214,19 @@ class Game():
                 if self.en_passent != '-' and self.en_passent == initial_ep:
                     self.en_passent = '-'
             self.set_fen()
-            if is_game_loop_call and move_happened:
-                if self.turn == 'white':
-                    end = self.is_checkmated('white')
-                    if end:
-                        print('Looks like white has been checkmated')
-                        self.winner = '0-1'
-                else:
-                    end = self.is_checkmated('black')
-                    if end:
-                        print('Looks like black has been checkmated')
-                        self.winner = '1-0'
+            if move_happened:
+                self.__add_board_state()
+                if is_game_loop_call:
+                    if self.turn == 'white':
+                        end = self.is_checkmated('white')
+                        if end:
+                            print('Looks like white has been checkmated')
+                            self.winner = '0-1'
+                    else:
+                        end = self.is_checkmated('black')
+                        if end:
+                            print('Looks like black has been checkmated')
+                            self.winner = '1-0'
     
     # placing this in main game loop causes infinite recursion loop
     def is_checkmated(self, side:str) -> bool:
@@ -257,4 +269,4 @@ class Game():
         if self.halfmove >= 50:
             self.winner = '1/2-1/2'
     
-        
+    
