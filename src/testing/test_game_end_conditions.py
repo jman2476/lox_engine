@@ -146,9 +146,10 @@ class TestGameEnd(unittest.TestCase):
         game.parse_move('e4')
         game.parse_move('e5')
 
-        while game.halfmove < 50:
+        while game.winner is None:
             for move in move_list:
                 game.parse_move(move)
+            game.board_states = {}
 
         self.assertEqual(
             game.winner, '1/2-1/2'
@@ -166,6 +167,7 @@ class TestGameEnd(unittest.TestCase):
         while game.halfmove < 48:
             for move in move_list:
                 game.parse_move(move)
+            game.board_states = {}
         
         game.parse_move('d4')
 
@@ -175,4 +177,26 @@ class TestGameEnd(unittest.TestCase):
 
         self.assertEqual(
             game.halfmove, 0
+        )
+
+    def test_threefold_repetition(self):
+        print('--Test threefold repetition--')
+        game = Game()
+        game.start_new_game()
+        move_list = ['Qh5', 'Qh4', 'Qd1', 'Qd8']
+        move = 0
+
+        game.parse_move('e4')
+        game.parse_move('e5')
+
+        while game.winner is None:
+            game.parse_move(move_list[move%4])
+            move += 1
+            print(move_list[move%4], game.winner)
+            print(game.board_states)
+        
+
+
+        self.assertEqual(
+            game.winner, '1/2-1/2'
         )
