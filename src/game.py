@@ -268,7 +268,7 @@ class Game():
     
     def handle_stalemate(self, checks, moves):
         if (len(checks) == 0 and len(moves) == 0
-            or not self.board.sufficient_material):
+            or not self.board.sufficient_material()):
             self.winner = '1/2-1/2'
             return
 

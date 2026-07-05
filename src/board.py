@@ -563,8 +563,13 @@ class Board():
             
     def sufficient_material(self, w_timeout=False, b_timeout=False) -> bool:
         can_mate = False
-        w_pieces = self.white() if not w_timeout else [King()]
-        b_pieces = self.black() if not b_timeout else [King()]
+        w_pieces = self.white()
+        b_pieces = self.black()
+
+        if w_timeout:
+            w_pieces = [k for k in w_pieces if k.name == 'king']
+        if b_timeout:
+            b_pieces = [k for k in b_pieces if k.name == 'king']
 
         def find_minor_piece(pieces):
             minor_piece = [p for p in pieces 
