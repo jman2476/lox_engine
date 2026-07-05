@@ -216,7 +216,7 @@ class Board():
             'vertical',
             'back_diagonal',
             'forward_diagonal',
-            'knight'
+            'knight', 'king'
         ]
         # Iterate through all directions
         for dir in directions:
@@ -560,3 +560,31 @@ class Board():
                 return diagonal
             case 'knight':
                 return knight
+            
+    def sufficient_material(self, w_timeout=False, b_timeout=False) -> bool:
+        can_mate = False
+        w_pieces = self.white()
+        b_pieces = self.black()
+
+        if w_timeout:
+            w_pieces = [k for k in w_pieces if k.name == 'king']
+        if b_timeout:
+            b_pieces = [k for k in b_pieces if k.name == 'king']
+
+        def find_minor_piece(pieces):
+            minor_piece = [p for p in pieces 
+                           if p.name == 'bishop' or p.name == 'knight']
+            if len(minor_piece) == 0:
+                return False
+            else:
+                return True
+
+        if len(b_pieces) == 1 and len(w_pieces) <= 2:
+            if len(w_pieces) == 1:
+                return False
+            return not find_minor_piece(w_pieces)
+        elif len(b_pieces) <= 2 and len(w_pieces) == 1:
+            if len(b_pieces) == 1:
+                return False
+            return not find_minor_piece(b_pieces)
+        return True

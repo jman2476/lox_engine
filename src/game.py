@@ -256,15 +256,22 @@ class Game():
         moves = []
         for ls in move_lists:
             moves.extend(ls)
+        print(f'moves: {moves}\nchecks: {checks}')
         if len(checks) > 0 and len(moves) == 0:
             if side == 'white':
                 self.winner = 'black'
             else:
                 self.winner = 'white'
             return True
-        elif len(checks) == 0 and len(moves) == 0:
-            self.handle_stalemate()
+        self.handle_stalemate(checks, moves)
         return False
     
-    def handle_stalemate(self):
-        self.winner = '1/2-1/2'
+    def handle_stalemate(self, checks, moves):
+        if (len(checks) == 0 and len(moves) == 0
+            or not self.board.sufficient_material()):
+            self.winner = '1/2-1/2'
+            return
+
+
+    
+        
