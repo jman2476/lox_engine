@@ -116,7 +116,7 @@ def find_king_moves(game, king):
                 move_str = f'Kx{square}'
         else:
             move_str = f'K{square}'
-        move_board = parse_piece_move(game, move_str)
+        move_board, _ = parse_piece_move(game, move_str)
         checks = move_board.find_checks(square, king.side)
         if len(checks) == 0:
             moves.append(square)

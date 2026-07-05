@@ -304,7 +304,7 @@ def parse_piece_move(game, string):
     else:
         raise ValueError(f'Piece move error: No destination square found')
 
-    return move_board
+    return move_board, capture == 'x'
 
 def piece_lookback(board, piece_letter, square):
     directions = {
