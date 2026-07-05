@@ -40,6 +40,62 @@ def find_available_moves(game, piece):
 
     return moves
 
+def find_move_notation(game, piece):
+    notation = []
+
+    match piece:
+        case Pawn():
+            squares = find_pawn_moves(game, piece)
+            for sq in squares:
+                file, rank = parse_square(sq)
+                if game.board.check_square_filled(file, rank)[0]:
+                    notation.append(f'{piece.file}x{sq}')
+                else:
+                    notation.append(sq)
+        case King():
+            squares = find_king_moves(game, piece)
+            for sq in squares:
+                file, rank = parse_square(sq)
+                if game.board.check_square_filled(file, rank)[0]:
+                    notation.append(f'Kx{sq}')
+                else:
+                    notation.append(f'K{sq}')
+        case Queen():
+            squares = find_queen_moves(game, piece)
+            for sq in squares:
+                file, rank = parse_square(sq)
+                if game.board.check_square_filled(file, rank)[0]:
+                    notation.append(f'Q{piece.square()}x{sq}')
+                else:
+                    notation.append(f'Q{piece.square()}{sq}')
+        case Bishop():
+            squares = find_bishop_moves(game,piece)
+            for sq in squares:
+                file, rank = parse_square(sq)
+                if game.board.check_square_filled(file, rank)[0]:
+                    notation.append(f'B{piece.square()}x{sq}')
+                else:
+                    notation.append(f'B{piece.square()}{sq}')
+        case Rook():
+            squares = find_rook_moves(game, piece)
+            for sq in squares:
+                file, rank = parse_square(sq)
+                if game.board.check_square_filled(file, rank)[0]:
+                    notation.append(f'R{piece.square()}x{sq}')
+                else:
+                    notation.append(f'R{piece.square()}{sq}')
+        case Knight():
+            squares = find_knight_moves(game, piece)
+            for sq in squares:
+                file, rank = parse_square(sq)
+                if game.board.check_square_filled(file, rank)[0]:
+                    notation.append(f'N{piece.square()}x{sq}')
+                else:
+                    notation.append(f'N{piece.square()}{sq}') 
+
+    return notation 
+
+
 def find_pawn_moves(game, pawn):
     moves = []
     file, rank = pawn.file, pawn.rank
