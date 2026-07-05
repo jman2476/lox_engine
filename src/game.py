@@ -218,8 +218,7 @@ class Game():
     
     # placing this in main game loop causes infinite recursion loop
     def is_checkmated(self, side:str) -> bool:
-        
-        print('looking for checkmate')
+        # print('looking for checkmate')
         from src.piece import King
         king = None
         pieces = []
@@ -237,7 +236,7 @@ class Game():
         moves = []
         for ls in move_lists:
             moves.extend(ls)
-        print(f'moves: {moves}\nchecks: {checks}')
+        # print(f'moves: {moves}\nchecks: {checks}')
         if len(checks) > 0 and len(moves) == 0:
             if side == 'white':
                 self.winner = 'black'

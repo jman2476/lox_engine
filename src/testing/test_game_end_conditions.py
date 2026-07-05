@@ -129,7 +129,7 @@ class TestGameEnd(unittest.TestCase):
         fen = 'kq6/6QK/8/8/8/8/8/8 w - - 49 1'
         game.read_fen(fen)
         game.set_fen()
-        print(game.board)
+        # print(game.board)
 
         game.parse_move('Qf8')
 
@@ -152,4 +152,27 @@ class TestGameEnd(unittest.TestCase):
 
         self.assertEqual(
             game.winner, '1/2-1/2'
+        )
+
+    def test_fifty_move_from_start(self):
+        print('--Test 50 move: from start--')
+        game = Game()
+        game.start_new_game()
+        move_list = ['Qh5', 'Qh4', 'Qd1', 'Qd8']
+
+        game.parse_move('e4')
+        game.parse_move('e5')
+
+        while game.halfmove < 48:
+            for move in move_list:
+                game.parse_move(move)
+        
+        game.parse_move('d4')
+
+        self.assertEqual(
+            game.winner, None
+        )
+
+        self.assertEqual(
+            game.halfmove, 0
         )
