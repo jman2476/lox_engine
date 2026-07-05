@@ -560,3 +560,9 @@ class Board():
                 return diagonal
             case 'knight':
                 return knight
+            
+    def sufficient_material(self):
+        can_mate = False
+        w_pieces = self.white()
+        b_pieces = self.black()
+        
