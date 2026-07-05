@@ -138,6 +138,7 @@ class Game():
         checks = self.board.find_checks(king.square(), king.side)
         move_board = self.board
         pawn_move = False
+        capture_move = False
         initial_ep = self.en_passent
 
         try:
@@ -171,7 +172,7 @@ class Game():
                     pawn_move = True
                 elif string[0] in move_board._fen_piece:
                     # parse piece move
-                    move_board = parse_piece_move(self, string)
+                    move_board, capture_move = parse_piece_move(self, string)
                 
             else:
                 print('Some unknown move')
@@ -196,7 +197,7 @@ class Game():
                     self.fullmove += 1
                 self.turn = 'black' if self.turn == 'white' else 'white'
                 # show checkmate validator
-                if not pawn_move:
+                if not (pawn_move or capture_move):
                     self.halfmove += 1
                 else: 
                     self.halfmove = 0
@@ -215,30 +216,9 @@ class Game():
                         print('Looks like black has been checkmated')
                         self.winner = '1-0'
     
-    # Function is currently naive: doesn't account for blocking
-    def is_checkmated_naive(self, side:str) -> bool:
-        print('checking for checkmate naively')
-        from src.piece import King
-        # Cannot be complete until all find_move functions are completed
-
-        king = None
-        if side == 'white':
-            king = [k for k in self.board.white() if isinstance(k, King)][0]
-        else:
-            king = [k for k in self.board.black() if isinstance(k, King)][0]
-        
-        checks = self.board.find_checks(king.square(), king.side)
-        print(f'Checks found: {checks}')
-        moves = find_king_moves(self, king)
-
-        if len(checks) > 0 and len(moves) == 0:
-            return True
-        return False
-    
     # placing this in main game loop causes infinite recursion loop
     def is_checkmated(self, side:str) -> bool:
-        
-        print('looking for checkmate')
+        # print('looking for checkmate')
         from src.piece import King
         king = None
         pieces = []
@@ -256,7 +236,7 @@ class Game():
         moves = []
         for ls in move_lists:
             moves.extend(ls)
-        print(f'moves: {moves}\nchecks: {checks}')
+        # print(f'moves: {moves}\nchecks: {checks}')
         if len(checks) > 0 and len(moves) == 0:
             if side == 'white':
                 self.winner = 'black'
@@ -264,14 +244,17 @@ class Game():
                 self.winner = 'white'
             return True
         self.handle_stalemate(checks, moves)
+        self.handle_fifty_move_rule()
         return False
     
     def handle_stalemate(self, checks, moves):
         if (len(checks) == 0 and len(moves) == 0
             or not self.board.sufficient_material()):
             self.winner = '1/2-1/2'
-            return
+            
 
-
+    def handle_fifty_move_rule(self):
+        if self.halfmove >= 50:
+            self.winner = '1/2-1/2'
     
         
