@@ -5,6 +5,7 @@ from src.graphics.error_box import ErrorBox
 from src.graphics.button import ExitButton, SetFenButton
 from src.graphics.mouse import get_square, move_notation, play_move
 from src.engines.fool import FoolEngine
+from src.engines.naive import NaiveEngine
 from src.graphics.fen_box import FenBox
 import datetime
 import logging
@@ -20,7 +21,10 @@ elapsed = 0
 game_board = GUI_Board()
 piece_font = pygame.font.Font("./fonts/nishiki-teki/NishikiTeki-MVxaJ.ttf", 30)
 error_box = ErrorBox()
+
+# Engine setup
 engine = FoolEngine(game_board.game, 'black')
+engine_eval = NaiveEngine(game_board.game, 'white')
 
 # Logging
 logger = logging.getLogger('find_moves')
@@ -100,6 +104,8 @@ while running:
             dragging = False
             fin_sq = get_square(game_board.game.turn,100, (50,50), pygame.mouse.get_pos())
 
+            # Naive Engine evaluation, prints to console
+            engine_eval.choose_move()
             if game_board.promoting['current'] and game_board.promoting['new'] != '':
                 print("about to execute promotion")
                 move, err = move_notation(*(game_board.promoting['move']))
@@ -133,9 +139,14 @@ while running:
                 game_board.drag_square = (None, None)
                 move_piece = None
  
+    # Engine implementation
     if game_board.game.turn == 'black' and game_board.game.winner is None:
+        engine_eval.choose_move()
         engine.pick_and_play_move()
+        # Naive Engine evaluation, prints to console
+        engine_eval.choose_move()
             
+
     if len(mouse_msgs) > 0:
         print("Mouse messages:", mouse_msgs)
     mouse_msgs = []
