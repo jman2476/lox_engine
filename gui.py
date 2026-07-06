@@ -122,7 +122,7 @@ while running:
                     move_piece.set_drag_coords((-100, -100))
                 game_board.drag_square = (None, None)
                 move_piece = None
-    if game_board.game.turn == 'black':
+    if game_board.game.turn == 'black' and game_board.game.winner is None:
         engine.pick_and_play_move()
             
     if len(mouse_msgs) > 0:
