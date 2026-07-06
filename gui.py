@@ -4,7 +4,7 @@ from src.graphics.clock import Clock
 from src.graphics.error_box import ErrorBox
 from src.graphics.button import ExitButton
 from src.graphics.mouse import get_square, move_notation, play_move
-from src.engines.idiot import IdiotEngine
+from src.engines.fool import FoolEngine
 import datetime
 import logging
 
@@ -18,7 +18,7 @@ elapsed = 0
 game_board = GUI_Board()
 piece_font = pygame.font.Font("./fonts/nishiki-teki/NishikiTeki-MVxaJ.ttf", 30)
 error_box = ErrorBox()
-engine = IdiotEngine(game_board.game, 'black')
+engine = FoolEngine(game_board.game, 'black')
 
 # Logging
 logger = logging.getLogger('find_moves')
