@@ -2,11 +2,13 @@ import pygame
 from src.graphics.board import GUI_Board, Color, PromotionOptions
 from src.graphics.clock import Clock
 from src.graphics.error_box import ErrorBox
-from src.graphics.button import ExitButton
+from src.graphics.button import ExitButton, SetFenButton
 from src.graphics.mouse import get_square, move_notation, play_move
 from src.engines.fool import FoolEngine
+from src.graphics.fen_box import FenBox
 import datetime
 import logging
+import sys
 
 pygame.init()
 pygame.mouse.set_visible(True)
@@ -24,6 +26,15 @@ engine = FoolEngine(game_board.game, 'black')
 logger = logging.getLogger('find_moves')
 logging.basicConfig(filename='find_moves.log', level=logging.DEBUG)
 logger.info(f'Starting log {datetime.datetime.now()}')
+
+# FenBox
+fen_box = FenBox()
+fen_button = SetFenButton(fen_box, game_board.game)
+fen_box.set_text(game_board.game.fen)
+
+if len(sys.argv) > 1:
+    fen_box.set_text(sys.argv[1])
+    fen_button.on_click()
 
 # mouse handlers
 dragging = False
@@ -51,7 +62,6 @@ while running:
             mouse_pos = pygame.mouse.get_pos()
             if mouse_pos[0] > 1180 and mouse_pos[1] < 20:
                 exit_button.on_click()
-
             if game_board.promoting['current']:
                 if mouse_pos[0] > 50 and mouse_pos[0] < 150:
                     p = ''
@@ -122,6 +132,7 @@ while running:
                     move_piece.set_drag_coords((-100, -100))
                 game_board.drag_square = (None, None)
                 move_piece = None
+ 
     if game_board.game.turn == 'black' and game_board.game.winner is None:
         engine.pick_and_play_move()
             
@@ -131,7 +142,8 @@ while running:
     screen.fill("purple")
     w_clock = Clock(datetime.timedelta(minutes=5), Color.WHITE)
     b_clock = Clock(datetime.timedelta(minutes=5), Color.BLACK)
-    
+    fen_box.set_text(game_board.game.fen)
+    fen_box.render()
     
     w_clock.render()
     b_clock.render()
@@ -152,7 +164,9 @@ while running:
     if move_piece is not None:
         screen.blit(move_piece, (move_piece.x_pos, move_piece.y_pos))
     screen.blit(piece_font.render("Hello, chess. Time: %.3f, Turn: %s"%(elapsed, game_board.game.turn), 0, "black"), (10,10))
-    screen.blit(piece_font.render("Fen: %s"%(game_board.game.fen), 0, "black"), (10,850))
+    # screen.blit(piece_font.render("Fen: %s"%(game_board.game.fen), 0, "black"), (10,850))
+    screen.blit(fen_box, (50, 855))
+    screen.blit(fen_button, (950, 855))
     
     pygame.display.flip()
 
