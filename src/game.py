@@ -124,11 +124,11 @@ class Game():
                 and a_eight.name == 'rook' 
                 and a_eight.in_start_pos):
                 castle_str += 'q'
-            else:
-                print('--Black Queen side castling read--')
-                print(f'a8: {a_eight}')
-                if a_eight is not None:
-                    print(f'Name: {a_eight.name}, in start position: {a_eight.in_start_pos}')
+            # else:
+            #     print('--Black Queen side castling read--')
+            #     print(f'a8: {a_eight}')
+            #     if a_eight is not None:
+            #         print(f'Name: {a_eight.name}, in start position: {a_eight.in_start_pos}')
 
         if len(castle_str) == 0:
             castle_str = '-'
