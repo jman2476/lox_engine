@@ -13,7 +13,7 @@ class FoolEngine(Engine):
         for piece in pieces:
             moves.extend(find_move_notation(self.game, piece))
         # Debugging: print moves w/ notation
-        print(f'Moves: {moves}')
+        print(f'Available engine moves: {moves}')
         return moves
     
     def choose_moves(self):

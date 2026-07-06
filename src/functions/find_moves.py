@@ -48,7 +48,8 @@ def find_move_notation(game, piece):
             moves = find_pawn_moves(game, piece)
             for mv in moves:
                 file, rank = parse_square(mv[:2])
-                if game.board.check_square_filled(file, rank)[0]:
+                if (game.board.check_square_filled(file, rank)[0]
+                    or mv == game.en_passent):
                     notation.append(f'{piece.file}x{mv}')
                 else:
                     notation.append(mv)
