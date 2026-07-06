@@ -299,7 +299,7 @@ def parse_piece_move(game, string):
             else:
                 piece.move(move_board, square)
         else:
-            raise ValueError(f'Piece move error: No {piece_type} found that can move to {square}')
+            raise ValueError(f'Piece move error: No {game.turn} {piece_type} found that can move to {square}')
             
     else:
         raise ValueError(f'Piece move error: No destination square found')
