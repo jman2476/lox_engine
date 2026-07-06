@@ -9,7 +9,7 @@ class IdiotEngine(Engine):
 
     def find_moves(self):
         moves = []
-        pieces = self.get_black() if self.game.turn == 'black' else self.get_white()
+        pieces = self.white if self.game.turn == 'white' else self.black
         for piece in pieces:
             moves.extend(find_move_notation(self.game, piece))
         return moves
@@ -18,6 +18,8 @@ class IdiotEngine(Engine):
         # This engine is meant to play randomly, so it will randomly choose 3 moves
         selection = set()
         moves = self.find_moves()
+        if len(moves) < 5:
+            return moves
         max = len(moves)
         while len(selection) < 5 and len(selection) < max:
             selection.add(random.choice(moves))
@@ -27,6 +29,10 @@ class IdiotEngine(Engine):
     def pick_and_play_move(self):
         print(self.game.board)
         move = random.choice(self.choose_moves())
-        self.game.parse_move(move)
-        print(self.game.board)
-            
+        self.white = self.game.board.white()
+        self.black = self.game.board.black()
+        try:
+            self.game.parse_move(move)
+            print(self.game.board)
+        except Exception as e:
+            print(f'Engine error: could not play move {move} because {e}')
