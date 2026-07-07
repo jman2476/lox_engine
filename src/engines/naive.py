@@ -64,7 +64,7 @@ class NaiveEngine(Engine):
                 case '1/2-1/2':
                     eval = 0.0
                 case _:
-                    eval = get_evaluation(game_copy.board)
+                    eval = get_evaluation(game_copy)
             move_evaluation.append((move, eval))
         logger.info(f'evaluate_moves end {datetime.now()}')
         return move_evaluation
