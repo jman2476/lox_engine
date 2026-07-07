@@ -13,4 +13,4 @@ wheels/
 .VSCodeCounter
 
 # Logging
-find_moves.log
+*.log
