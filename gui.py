@@ -23,13 +23,13 @@ piece_font = pygame.font.Font("./fonts/nishiki-teki/NishikiTeki-MVxaJ.ttf", 30)
 error_box = ErrorBox()
 
 # Engine setup
-engine = FoolEngine(game_board.game, 'black')
-engine_eval = NaiveEngine(game_board.game, 'white')
+engine_fool = FoolEngine(game_board.game, 'black')
+engine_naive = NaiveEngine(game_board.game, 'black')
 
 # Logging
-logger = logging.getLogger('find_moves')
-logging.basicConfig(filename='find_moves.log', level=logging.DEBUG)
-logger.info(f'Starting log {datetime.datetime.now()}')
+# logger = logging.getLogger('find_moves')
+# logging.basicConfig(filename='find_moves.log', level=logging.DEBUG)
+# logger.info(f'Starting log {datetime.datetime.now()}')
 
 # FenBox
 fen_box = FenBox()
@@ -105,7 +105,7 @@ while running:
             fin_sq = get_square(game_board.game.turn,100, (50,50), pygame.mouse.get_pos())
 
             # Naive Engine evaluation, prints to console
-            engine_eval.choose_move()
+            # engine_eval.choose_move()
             if game_board.promoting['current'] and game_board.promoting['new'] != '':
                 print("about to execute promotion")
                 move, err = move_notation(*(game_board.promoting['move']))
@@ -141,10 +141,10 @@ while running:
  
     # Engine implementation
     if game_board.game.turn == 'black' and game_board.game.winner is None:
-        engine_eval.choose_move()
+        # engine_eval.choose_move()
         engine.pick_and_play_move()
         # Naive Engine evaluation, prints to console
-        engine_eval.choose_move()
+        
             
 
     if len(mouse_msgs) > 0:
