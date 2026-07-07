@@ -15,7 +15,7 @@ def get_square(turn:str, side_len:int, corner:tuple[int,int], mouse_pos:tuple[in
     board_pos = (mouse_pos[0] - corner[0] - 1, mouse_pos[1] - corner[1] - 1)
     file_idx, rank_idx = int(board_pos[0]/side_len), int(board_pos[1]/side_len)
     
-    print(f'file: {file_idx}, row: {rank_idx}')
+    # print(f'file: {file_idx}, row: {rank_idx}') 
     if file_idx >= 8 or rank_idx >= 8:
         return None, None
 
@@ -48,11 +48,11 @@ def move_notation(board:GUI_Board, piece:Piece, i_sqr:tuple[str, int], f_sqr:tup
 
     def pawn_move():
         try:
-            print("---Pawn Debugging---")
-            print(f'Init sq: {i_sqr[0]}{i_sqr[1]}')
-            print(f'Fin_sq: {f_sqr[0]}{f_sqr[1]}')
-            print(f'Pawn sq: {piece.square()}')
-            print('--------------------')
+            # print("---Pawn Debugging---")
+            # print(f'Init sq: {i_sqr[0]}{i_sqr[1]}')
+            # print(f'Fin_sq: {f_sqr[0]}{f_sqr[1]}')
+            # print(f'Pawn sq: {piece.square()}')
+            # print('--------------------')
             ep = game.en_passent == f'{f_sqr[0]}{f_sqr[1]}'
             if piece.move_valid(f_sqr[1], f_sqr[0], game.board, ep):
                 if (
@@ -119,7 +119,7 @@ def move_notation(board:GUI_Board, piece:Piece, i_sqr:tuple[str, int], f_sqr:tup
         case 'pawn':
             mv, err = pawn_move()
         
-            print(f'move pawn: mv = {mv}{err}')
+            # print(f'move pawn: mv = {mv}{err}')
             if err == 'promotion':
                 return mv, None
             if mv is not None: return mv + move_sq, None
@@ -145,6 +145,6 @@ def play_move(game: Game, move:str) -> str:
         game.parse_move(move)
         return move
     except Exception as e:
-        print(f'Play move exception: {e}')
+        # print(f'Play move exception: {e}')
         return e
     

@@ -88,7 +88,7 @@ while running:
                     move_piece = game_board.clear_square(init_sq)
                     init_tracker = init_sq
                 
-                print(f'init_sq {init_sq}, move_piece {move_piece}')
+                # print(f'init_sq {init_sq}, move_piece {move_piece}')
                 if move_piece is not None:
                     dragging = True
                     move_piece.set_drag_coords(mouse_pos)
