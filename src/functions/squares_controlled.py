@@ -11,17 +11,17 @@ def find_squares_controlled(board, piece):
 
     match piece:
         case Pawn():
-            pass
+            moves.update(pawn_squares_controlled(board, piece))
         case King():
-            pass
+            moves.update(king_squares_controlled(board, piece))
         case Queen():
-            pass
+            moves.update(queen_squares_controlled(board, piece))
         case Bishop():
-            pass
+            moves.update(bishop_squares_controlled(board, piece))
         case Rook():
-            pass
+            moves.update(rook_squares_controlled(board, piece))
         case Knight():
-            pass
+            moves.update(knight_squares_controlled(board, piece))
     return moves
 
 def pawn_squares_controlled(board, piece):
@@ -43,6 +43,6 @@ def bishop_squares_controlled(board, piece):
 def knight_squares_controlled(board, piece):
     ...
 
-    
+
 def rook_squares_controlled(board, piece):
     ...
