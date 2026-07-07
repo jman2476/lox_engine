@@ -141,11 +141,12 @@ while running:
     # Engine implementation
     if game_board.game.winner is None and elapsed > 5.0:
         if game_board.game.turn == 'white':
-           engine_fool.pick_and_play_move()
+            time.sleep(1)
+            engine_fool.pick_and_play_move()
 
         if game_board.game.turn == 'black':
-           time.sleep(1)
-           engine_naive.play_best_move()
+            time.sleep(1)
+            engine_naive.play_best_move()
         
             
     screen.fill("purple")

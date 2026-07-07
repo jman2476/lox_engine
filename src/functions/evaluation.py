@@ -19,6 +19,11 @@ def get_evaluation(board):
     w_pieces = board.white()
     b_pieces = board.black()
     eval = count_material(w_pieces, b_pieces)
+    sq_black = space_control(board, 'black')
+    sq_white = space_control(board, 'white')
+    opp_sq_balance = sq_white[0] - sq_black[1]
+    own_sq_balance = (sq_white[1]-sq_white[0]) + (sq_black[1]-sq_black[0])
+    eval += 0.5 * opp_sq_balance + 0.25 * own_sq_balance
     return eval
 
 def count_material(w_pieces, b_pieces):

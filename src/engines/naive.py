@@ -5,6 +5,7 @@ from src.functions.evaluation import get_evaluation
 import copy
 import logging
 from datetime import datetime
+import random
 
 logger = logging.getLogger('naive-engine-timing')
 logging.basicConfig(filename='naive-engine.log', level=logging.INFO)
@@ -73,9 +74,12 @@ class NaiveEngine(Engine):
     
     def play_best_move(self):
         logger.info(f'play-best-move for {self.game.turn} start {datetime.now()}')
-        move = self.rank_moves()[0]
-        if move is not None:
-            self.game.parse_move(move[0])
+        moves = self.rank_moves()
+        choice = None
+        if len(moves) != 0:
+            best_moves = [mv for mv in moves if mv[1] == moves[0][1]]
+            choice = random.choice(best_moves)
+            self.game.parse_move(choice)
         else:
             print('No moves found')
-        logger.info(f'play-best-move for {self.game.turn} end: {move} {datetime.now()}')
+        logger.info(f'play-best-move for {self.game.turn} end: {choice} {datetime.now()}')
