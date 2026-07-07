@@ -38,7 +38,9 @@ class NaiveEngine(Engine):
             print('No available moves')
             logger.info(f'choose_move escape {datetime.now()}')
             return []
-        ranked_moves = sorted(available, key=self.__eval_from_tuple__, reverse=True)
+        ranked_moves = (sorted(available, key=self.__eval_from_tuple__, reverse=True) 
+                        if self.game.turn == 'white' else
+                        sorted(available, key=self.__eval_from_tuple__, reverse=False))
         print(f'Ranked engine moves for {self.game.turn}: {ranked_moves[:10]}')
         logger.info(f'choose_move end {datetime.now()}')
         if len(ranked_moves) > 10:
@@ -72,5 +74,8 @@ class NaiveEngine(Engine):
     def play_best_move(self):
         logger.info(f'play-best-move for {self.game.turn} start {datetime.now()}')
         move = self.rank_moves()[0]
-        self.game.parse_move(move)
-        logger.info(f'play-best-move for {self.game.turn} end {datetime.now()}')
+        if move is not None:
+            self.game.parse_move(move[0])
+        else:
+            print('No moves found')
+        logger.info(f'play-best-move for {self.game.turn} end: {move} {datetime.now()}')

@@ -104,8 +104,6 @@ while running:
             dragging = False
             fin_sq = get_square(game_board.game.turn,100, (50,50), pygame.mouse.get_pos())
 
-            # Naive Engine evaluation, prints to console
-            # engine_eval.choose_move()
             if game_board.promoting['current'] and game_board.promoting['new'] != '':
                 print("about to execute promotion")
                 move, err = move_notation(*(game_board.promoting['move']))
@@ -142,8 +140,8 @@ while running:
     # Engine implementation
     if game_board.game.turn == 'black' and game_board.game.winner is None:
         # engine_eval.choose_move()
-        engine.pick_and_play_move()
-        # Naive Engine evaluation, prints to console
+        # engine_fool.pick_and_play_move()
+        engine_naive.play_best_move()
         
             
 
