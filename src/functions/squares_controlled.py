@@ -10,33 +10,55 @@ from src.functions.linears import (get_horizontal_squares,
 from src.functions.parse import (parse_square,
                                  parse_square_reverse)
 from src.functions.diagonals import get_diagonal_squares
+import logging
+logger = logging.getLogger(__name__)
+
 class ControlledSquares():
     def __init__(self):
         self.squares = {}
 
+    def __repr__(self):
+        string = '{'
+        for key in self.squares:
+            string += f'{key}: {self.squares[key]}\n'
+        return string + '}'
+
     def add(self, squares:list[str]):
         for sq in squares:
+            logger.debug(f'Index: {sq}')
             if sq in self.squares:
+                logger.debug(f'Index {sq} found, current value: {self.squares[sq]}')
                 self.squares[sq] += 1
             else:
                 self.squares[sq] = 1
+            logger.debug(f'Index: {sq}, value: {self.squares[sq]}')
+
+    def __add__(self, other):
+        #write in overload to combine two objects
+        sum = ControlledSquares()
+        keys = list(self.squares) + list(other.squares)
+        for key in keys:
+            sum.squares[key] = (self.squares.get(key, 0) 
+                                + other.squares.get(key, 0))
+        return sum
 
 def find_squares_controlled(board, piece):
     moves = ControlledSquares()
 
     match piece:
         case Pawn():
+            print(f'pawn squares controlled: {pawn_squares_controlled(board, piece)}')
             moves.add(pawn_squares_controlled(board, piece))
         case King():
-            moves.update(king_squares_controlled(board, piece))
+            moves.add(king_squares_controlled(board, piece))
         case Queen():
-            moves.update(queen_squares_controlled(board, piece))
+            moves.add(queen_squares_controlled(board, piece))
         case Bishop():
-            moves.update(bishop_squares_controlled(board, piece))
+            moves.add(bishop_squares_controlled(board, piece))
         case Rook():
-            moves.update(rook_squares_controlled(board, piece))
+            moves.add(rook_squares_controlled(board, piece))
         case Knight():
-            moves.update(knight_squares_controlled(board, piece))
+            moves.add(knight_squares_controlled(board, piece))
     return moves
 
 def pawn_squares_controlled(board, pawn) -> list[str]:
@@ -46,6 +68,7 @@ def pawn_squares_controlled(board, pawn) -> list[str]:
     files_to_check = [board.files[j] for j in 
                       [i + f_idx for i in range(-1,2) 
                        if i != 0] if j in range(0,8)]
+    logger.debug(f'{pawn}, {files_to_check}, {rank+direction}, {[f'{f}{rank+direction}' for f in files_to_check]}')
     return [f'{f}{rank+direction}' for f in files_to_check]
 
 def king_squares_controlled(board, king) -> list[str]:
@@ -111,7 +134,7 @@ def knight_squares_controlled(board, knight) -> list[str]:
 
 
 def rook_squares_controlled(board, rook) -> list[str]:
-    file, rank, side = parse_square(rook.square()), rook.side
+    file, rank, side = rook.file, rook.rank, rook.side
 
     h_limits = board.bound_squares('horizontal', True)(file, rank, side)
     v_limits = board.bound_squares('vertical', True)(file, rank, side)
