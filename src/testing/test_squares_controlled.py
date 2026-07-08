@@ -15,6 +15,7 @@ from src.piece import (
     Queen, Rook,
     Bishop, Knight
 )
+from src.functions.evaluation import space_control
 import logging
 logger = logging.getLogger(__name__)
 
@@ -38,8 +39,15 @@ class TestControlledSquares(unittest.TestCase):
                 logger.debug(f'current: {attacked}')
 
         print('all attacked squares', attacked.squares)
-        self.assertEqual({'d5': 1, 'f5': 1}, attacked.squares)
+        self.assertEqual(
+            {'b3': 2, 'a3': 1, 'c3': 2, 'd3': 1, 'e3': 2,
+             'd5': 1, 'f5': 1, 'g3': 2, 'f3': 1, 'h3': 1}, 
+            attacked.squares)
 
+        self.assertEqual(
+            {'d5': 1, 'f5': 1, 'a6': 1, 'b5': 1, 'h5': 1},
+            space_control(game.board, 'white').squares
+        )
         
 
     def test_find_king_control(self):

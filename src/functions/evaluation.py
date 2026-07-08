@@ -11,6 +11,8 @@ from src.functions.squares_controlled import (
     ControlledSquares, 
     find_squares_controlled
 )
+import logging
+logger = logging.getLogger(__name__)
 
 # Order of evaluating chess position, according to Gotham:
 #   1. Material count
@@ -26,10 +28,10 @@ def get_evaluation(board):
     sq_black = space_control(board, 'black')
     sq_white = space_control(board, 'white')
     opp_sq_balance = 0
-    for sq in sq_white:
-        opp_sq_balance += sq_white[sq]
-    for sq in sq_black:
-        opp_sq_balance -= sq_black[sq]
+    for sq in sq_white.squares:
+        opp_sq_balance += sq_white.squares[sq] 
+    for sq in sq_black.squares:
+        opp_sq_balance -= sq_black.squares[sq]
     eval += 0.5 * opp_sq_balance
     return eval
 
@@ -74,7 +76,7 @@ def space_control(board, side):
     #   enemy pieces attacked
     pieces = board.white() if side == "white" else board.black()
     all_squares = ControlledSquares() # convert to controlled squares obj
-    opponent_squares = {} # convert to controlled squares obj
+    opponent_squares = ControlledSquares() # convert to controlled squares obj
 
     for piece in pieces:
         # look forward for each piece, and see all available moves
@@ -82,9 +84,10 @@ def space_control(board, side):
         all_squares += find_squares_controlled(board, piece)
     
     for sq in all_squares.squares:
+        logger.debug(sq)
         _, rank = parse_square(sq)
         if rank > 4 and side == 'white':
-            opponent_squares[sq] = all_squares.squares[sq]
+            opponent_squares.squares[sq] = all_squares.squares[sq]
         elif rank < 5 and side == 'black':
             opponent_squares.add(sq)
         

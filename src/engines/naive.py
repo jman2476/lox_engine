@@ -79,7 +79,7 @@ class NaiveEngine(Engine):
         if len(moves) != 0:
             best_moves = [mv for mv in moves if mv[1] == moves[0][1]]
             choice = random.choice(best_moves)
-            self.game.parse_move(choice)
+            self.game.parse_move(choice[0])
         else:
             print('No moves found')
         logger.info(f'play-best-move for {self.game.turn} end: {choice} {datetime.now()}')

@@ -185,7 +185,7 @@ class Game():
                     move_board, capture_move = parse_piece_move(self, string)
                 
             else:
-                print('Some unknown move')
+                print(f'Some unknown move: {string}')
         except Exception as e:
             print(f'Error found: {e}')
             raise e

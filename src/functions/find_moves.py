@@ -16,8 +16,8 @@ import copy
 import logging
 from time import sleep
 from datetime import datetime
-logger = logging.getLogger('race condition')
-logging.basicConfig(filename='find_moves.log', level=logging.DEBUG)
+logger = logging.getLogger('__name__')
+logging.basicConfig(filename='lox_engine.log', level=logging.DEBUG)
 logger.info(f'Starting log {datetime.now()}')
 
 

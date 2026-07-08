@@ -20,14 +20,14 @@ class ControlledSquares():
     def __repr__(self):
         string = '{'
         for key in self.squares:
-            string += f'{key}: {self.squares[key]}\n'
+            string += f'{key}: {self.squares[key]}, '
         return string + '}'
 
     def add(self, squares:list[str]):
         for sq in squares:
-            logger.debug(f'Index: {sq}')
+            # logger.debug(f'Index: {sq}')
             if sq in self.squares:
-                logger.debug(f'Index {sq} found, current value: {self.squares[sq]}')
+                # logger.debug(f'Index {sq} found, current value: {self.squares[sq]}')
                 self.squares[sq] += 1
             else:
                 self.squares[sq] = 1
@@ -36,7 +36,10 @@ class ControlledSquares():
     def __add__(self, other):
         #write in overload to combine two objects
         sum = ControlledSquares()
-        keys = list(self.squares) + list(other.squares)
+        keys = set(list(self.squares) + list(other.squares))
+        logger.debug(f'keys: {keys}')
+        logger.debug(f'keys self: {list(self.squares)}')
+        logger.debug(f'keys other: {list(other.squares)}')
         for key in keys:
             sum.squares[key] = (self.squares.get(key, 0) 
                                 + other.squares.get(key, 0))
@@ -47,9 +50,9 @@ def find_squares_controlled(board, piece):
 
     match piece:
         case Pawn():
-            print(f'pawn squares controlled: {pawn_squares_controlled(board, piece)}')
             moves.add(pawn_squares_controlled(board, piece))
         case King():
+            logger.debug(f'King squares controlled: {king_squares_controlled(board, piece)}')
             moves.add(king_squares_controlled(board, piece))
         case Queen():
             moves.add(queen_squares_controlled(board, piece))
@@ -75,8 +78,10 @@ def king_squares_controlled(board, king) -> list[str]:
     file, rank = king.file, king.rank
     f_idx = board.files.index(file)
     return [f'{board.files[f]}{r}' for f in [f_idx+i for i in range(-1,2)] 
-               for r in [r+i for i in range(-1,2)]
-               if f != f_idx or r != rank]
+               for r in [rank+i for i in range(-1,2)]
+               if ((f != f_idx or r != rank)
+                   and f in range(0,8)
+                   and r in range(1,9))]
 
 
 def queen_squares_controlled(board, queen) -> list[str]:
@@ -98,16 +103,16 @@ def queen_squares_controlled(board, queen) -> list[str]:
     ])
 
     if b_edges[0] != b_edges[1]:
-        squares = get_diagonal_squares(b_edge_sqs[0], b_edge_sqs[1])
+        b_squares = get_diagonal_squares(b_edge_sqs[0], b_edge_sqs[1])
         squares.extend(
-            [parse_square_reverse(sq) for sq in squares]
+            [parse_square_reverse(sq) for sq in b_squares]
         )
     if f_edges[0] != f_edges[1]:
-        squares = get_diagonal_squares(f_edge_sqs[0], f_edge_sqs[1])
+        f_squares = get_diagonal_squares(f_edge_sqs[0], f_edge_sqs[1])
         squares.extend(
-            [parse_square_reverse(sq) for sq in squares]
+            [parse_square_reverse(sq) for sq in f_squares]
         )
-    
+    logger.debug(f'Queen squares: {squares}')
     return squares
 
 def bishop_squares_controlled(board, bishop) -> list[str]:
@@ -122,6 +127,8 @@ def bishop_squares_controlled(board, bishop) -> list[str]:
     if f_edges[0] != f_edges[1]:
         f_squares = get_diagonal_squares(f_edges_sq[0], f_edges_sq[1])
 
+    logger.debug(f'bishop squares: {[parse_square_reverse(sq) 
+             for sq in  [*b_squares, *f_squares]]}')
     return [parse_square_reverse(sq) 
              for sq in  [*b_squares, *f_squares]]
 
