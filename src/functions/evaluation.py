@@ -7,6 +7,12 @@ from src.piece import (
     )
 from src.functions.parse import parse_square
 from src.functions.find_moves import find_available_moves
+from src.functions.squares_controlled import (
+    ControlledSquares, 
+    find_squares_controlled
+)
+import logging
+logger = logging.getLogger(__name__)
 
 # Order of evaluating chess position, according to Gotham:
 #   1. Material count
@@ -19,6 +25,14 @@ def get_evaluation(board):
     w_pieces = board.white()
     b_pieces = board.black()
     eval = count_material(w_pieces, b_pieces)
+    sq_black = space_control(board, 'black')
+    sq_white = space_control(board, 'white')
+    opp_sq_balance = 0
+    for sq in sq_white.squares:
+        opp_sq_balance += sq_white.squares[sq] 
+    for sq in sq_black.squares:
+        opp_sq_balance -= sq_black.squares[sq]
+    eval += 0.5 * opp_sq_balance
     return eval
 
 def count_material(w_pieces, b_pieces):
@@ -61,21 +75,20 @@ def space_control(board, side):
     # Include squares occupied, empty squares, and 
     #   enemy pieces attacked
     pieces = board.white() if side == "white" else board.black()
-    all_squares = set()
-    opponent_squares = set()
+    all_squares = ControlledSquares() # convert to controlled squares obj
+    opponent_squares = ControlledSquares() # convert to controlled squares obj
 
     for piece in pieces:
         # look forward for each piece, and see all available moves
         # if a square is on opponent's side of board, add to set
-        all_squares.add(piece.square())
-        moves = find_available_moves(board, piece) #this is the wrong function to use for pawns
-        all_squares.update(moves)
+        all_squares += find_squares_controlled(board, piece)
     
-    for square in all_squares:
-        _, rank = parse_square(square)
+    for sq in all_squares.squares:
+        logger.debug(sq)
+        _, rank = parse_square(sq)
         if rank > 4 and side == 'white':
-            opponent_squares.add(square)
+            opponent_squares.squares[sq] = all_squares.squares[sq]
         elif rank < 5 and side == 'black':
-            opponent_squares.add(square)
+            opponent_squares.add(sq)
         
-    return opponent_squares, all_squares
+    return opponent_squares

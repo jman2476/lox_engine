@@ -18,5 +18,5 @@ class Engine():
     def choose_move(self):
         ...
 
-    def get_evaluation(self):
+    def evaluate_moves(self):
         ...

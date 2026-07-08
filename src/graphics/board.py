@@ -59,7 +59,7 @@ class GUI_Board(pygame.Surface):
         self.promoting['options'] = PromotionOptions(turn)
         self.blit(self.promoting['options'], (0,0))
             
-    def render_board(self, turn:Color, font:pygame.font.FontType):
+    def render_board(self, turn:Color, font:pygame.font.FontType, static:bool=False):
         self.set_squares()
         self.pieces = self.set_pieces()
         drag_piece = None
@@ -99,11 +99,13 @@ class GUI_Board(pygame.Surface):
                 p.set_coords(turn)
                 self.blit(p, (p.x_pos, p.y_pos))
 
-        match turn:
-            case Color.WHITE:
-                render_w_view()
-            case Color.BLACK:
-                render_b_view()
+        if static: render_w_view()
+        else:
+            match turn:
+                case Color.WHITE:
+                    render_w_view()
+                case Color.BLACK:
+                    render_b_view()
         
         if self.promoting['current']:
             self.render_promotion(turn)

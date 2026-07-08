@@ -453,7 +453,7 @@ class Board():
     # Nested function to return what squares 
     # a specific piece has eyes on
     # Note: Contrast with next_piece() function
-    def bound_squares(self, direction: str) -> list[str]:
+    def bound_squares(self, direction: str, control_check:bool=False) -> list[str]:
         def horizontal(file, rank, piece_side):
             squares = [f'a{rank}', f'h{rank}']
             side_of_square = 0
@@ -464,7 +464,7 @@ class Board():
                     continue
                 filled, side, _ = self.check_square_filled(f, rank)
                 if filled:
-                    if piece_side != side:
+                    if piece_side != side or control_check:
                         squares[side_of_square] = f'{f}{rank}'
                     else:
                         dir = 1 if side_of_square == 0 else -1
@@ -484,7 +484,7 @@ class Board():
                     continue
                 filled, side, _ = self.check_square_filled(file, r+1)
                 if filled:
-                    if piece_side != side:
+                    if piece_side != side or control_check:
                         squares[side_of_square] = f'{file}{r+1}'
                     else:
                         dir = 2 if side_of_square == 0 else 0
@@ -509,7 +509,7 @@ class Board():
                     continue
                 filled, side, _ = self.check_square_filled(sq[0], sq[1])
                 if filled:
-                    if piece_side != side:
+                    if piece_side != side or control_check:
                         squares[side_of_square] = f'{sq[0]}{sq[1]}'
                     else:
                         dir = 1 if side_of_square == 0 else -1
@@ -546,7 +546,7 @@ class Board():
             for sq in board_squares:
                 f, r = sq
                 filled, side, _ = self.check_square_filled(f, r)
-                if not filled or side != piece_side:
+                if not filled or side != piece_side or control_check:
                     squares.append(f'{f}{r}')
                 
             return squares

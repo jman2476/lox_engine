@@ -5,6 +5,7 @@ from src.graphics.error_box import ErrorBox
 from src.graphics.button import ExitButton, SetFenButton
 from src.graphics.mouse import get_square, move_notation, play_move
 from src.engines.fool import FoolEngine
+from src.engines.naive import NaiveEngine
 from src.graphics.fen_box import FenBox
 import datetime
 import logging
@@ -20,12 +21,15 @@ elapsed = 0
 game_board = GUI_Board()
 piece_font = pygame.font.Font("./fonts/nishiki-teki/NishikiTeki-MVxaJ.ttf", 30)
 error_box = ErrorBox()
-engine = FoolEngine(game_board.game, 'black')
+
+# Engine setup
+engine_fool = FoolEngine(game_board.game, 'black')
+engine_naive = NaiveEngine(game_board.game, 'black')
 
 # Logging
-logger = logging.getLogger('find_moves')
-logging.basicConfig(filename='find_moves.log', level=logging.DEBUG)
-logger.info(f'Starting log {datetime.datetime.now()}')
+# logger = logging.getLogger('find_moves')
+# logging.basicConfig(filename='find_moves.log', level=logging.DEBUG)
+# logger.info(f'Starting log {datetime.datetime.now()}')
 
 # FenBox
 fen_box = FenBox()
@@ -84,7 +88,7 @@ while running:
                     move_piece = game_board.clear_square(init_sq)
                     init_tracker = init_sq
                 
-                print(f'init_sq {init_sq}, move_piece {move_piece}')
+                # print(f'init_sq {init_sq}, move_piece {move_piece}')
                 if move_piece is not None:
                     dragging = True
                     move_piece.set_drag_coords(mouse_pos)
@@ -133,9 +137,14 @@ while running:
                 game_board.drag_square = (None, None)
                 move_piece = None
  
+    # Engine implementation
     if game_board.game.turn == 'black' and game_board.game.winner is None:
-        engine.pick_and_play_move()
+        # engine_eval.choose_move()
+        # engine_fool.pick_and_play_move()
+        engine_naive.play_best_move()
+        
             
+
     if len(mouse_msgs) > 0:
         print("Mouse messages:", mouse_msgs)
     mouse_msgs = []
