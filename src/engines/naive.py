@@ -55,17 +55,20 @@ class NaiveEngine(Engine):
             logger.info(f'evaluate_moves loop start {datetime.now()}')
             eval = 0
             game_copy = copy.deepcopy(self.game)
-            game_copy.parse_move(move)
-            match game_copy.winner:
-                case '1-0':
-                    eval = 1000.0
-                case '0-1':
-                    eval = -1000.0
-                case '1/2-1/2':
-                    eval = 0.0
-                case _:
-                    eval = get_evaluation(game_copy.board)
-            move_evaluation.append((move, eval))
+            try: 
+                game_copy.parse_move(move)
+                match game_copy.winner:
+                    case '1-0':
+                        eval = 1000.0
+                    case '0-1':
+                        eval = -1000.0
+                    case '1/2-1/2':
+                        eval = 0.0
+                    case _:
+                        eval = get_evaluation(game_copy.board)
+                move_evaluation.append((move, eval))
+            except:
+                continue
         logger.info(f'evaluate_moves end {datetime.now()}')
         return move_evaluation
             

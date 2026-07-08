@@ -26,7 +26,8 @@ error_box = ErrorBox()
 
 # Engine setup
 engine_fool = FoolEngine(game_board.game, 'white')
-engine_naive = NaiveEngine(game_board.game, 'black')
+engine_naive_b = NaiveEngine(game_board.game, 'black')
+engine_naive_w = NaiveEngine(game_board.game, 'white')
 
 # Logging
 # logger = logging.getLogger('find_moves')
@@ -70,15 +71,19 @@ while running:
                 exit_button.on_click()
  
     # Engine implementation
-    if (game_board.game.winner is None and elapsed > 2.0 
-        and elapsed - last_move > 2.0):
+    if (game_board.game.winner is None and elapsed > 2.0):
         if game_board.game.turn == 'white':
-            engine_fool.pick_and_play_move()
-            last_move = clock.tick(60)/1000
+            # time.sleep(2)
+            # engine_fool.pick_and_play_move()
+            # last_move = clock.tick(60)/1000
+            engine_naive_w.play_best_move()
+            print(game_board.game.board)
+
         elif game_board.game.turn == 'black':
-            time.sleep(2)
-            engine_naive.play_best_move()
-            last_move = clock.tick(60)/1000
+            engine_naive_b.play_best_move()
+            print(game_board.game.board)
+
+            # last_move = clock.tick(60)/1000
         
             
     screen.fill("purple")
@@ -107,7 +112,6 @@ while running:
     # screen.blit(piece_font.render("Fen: %s"%(game_board.game.fen), 0, "black"), (10,850))
     screen.blit(fen_box, (50, 855))
     screen.blit(fen_button, (950, 855))
-    
     pygame.display.flip()
 
     dt = clock.tick(60)/1000
