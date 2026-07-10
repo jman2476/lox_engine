@@ -11,6 +11,8 @@ import datetime
 import time
 import logging
 import sys
+import matplotlib.pyplot as plt
+import numpy as np
 
 pygame.init()
 pygame.mouse.set_visible(True)
@@ -29,6 +31,9 @@ engine_fool = FoolEngine(game_board.game, 'white')
 engine_naive_b = NaiveEngine(game_board.game, 'black')
 # engine for white will use multprocessing
 engine_naive_w = NaiveEngine(game_board.game, 'white')
+
+b_engine_d_t = []
+w_engine_d_t = []
 
 # Logging
 logger = logging.getLogger('elapsed move time')
@@ -74,21 +79,20 @@ while running:
     # Engine implementation
     if (game_board.game.winner is None and elapsed > 2.0):
         if game_board.game.turn == 'white':
-            start = time.perf_counter()
+            start = time.perf_counter_ns()
             mv = engine_naive_w.play_move_multi_proc()
-            end = time.perf_counter()
+            end = time.perf_counter_ns()
             logger.info(f'white move {mv} took {end - start}s')
+            w_engine_d_t.append(end - start)
             print(game_board.game.board)
 
         elif game_board.game.turn == 'black':
-            start = time.perf_counter()
+            start = time.perf_counter_ns()
             mv = engine_naive_b.play_best_move()
-            end = time.perf_counter()
+            end = time.perf_counter_ns()
             logger.info(f'black move {mv} took {end - start}s')
+            b_engine_d_t.append(end - start)
             print(game_board.game.board)
-
-            # last_move = clock.tick(60)/1000
-        
             
     screen.fill("purple")
     w_clock = Clock(datetime.timedelta(minutes=5), Color.WHITE)
@@ -120,5 +124,22 @@ while running:
 
     dt = clock.tick(60)/1000
     elapsed += dt
-
+    
+    if game_board.game.winner is not None:
+        running = False
+        w_x = range(1, len(w_engine_d_t) + 1)
+        b_x = range(1, len(b_engine_d_t) + 1)
+        plt.plot(w_x, w_engine_d_t, 'ro-', label="white")
+        plt.plot(b_x, b_engine_d_t, 'bx-', label='black')
+        plt.xlabel('move')
+        plt.ylabel('elapsed time (ns)')
+        plt.xticks(range(1,len(w_engine_d_t), 5))
+        plt.autoscale(True, 'y')
+        plt.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
+        # plt.axis((0, len(w_engine_d_t), min(b_engine_d_t), max(b_engine_d_t)))
+        plt.minorticks_on()
+        plt.suptitle(f'Naive Engine: Multi vs Single Process Move Time\nResult: {game_board.game.winner}\nFinal FEN: {game_board.game.fen}')
+        print(f'Max time for black: {max(b_engine_d_t)}s')
+        print(f'Min times: white {min(w_engine_d_t)}s, black {min(b_engine_d_t)}s')
+        plt.show()
 pygame.quit()
