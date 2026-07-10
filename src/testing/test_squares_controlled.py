@@ -36,7 +36,7 @@ class TestControlledSquares(unittest.TestCase):
         for p in game.board.white():
             if isinstance(p,Pawn):
                 attacked += find_squares_controlled(game.board, p)
-                logger.debug(f'current: {attacked}')
+                # logger.debug(f'current: {attacked}')
 
         print('all attacked squares', attacked.squares)
         self.assertEqual(

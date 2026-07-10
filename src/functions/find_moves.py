@@ -368,6 +368,6 @@ def validate_legal_moves(game, piece, moves):
 
 # Compare fen strings on character at a time:
 def fen_compare(pre_move:str, post_move:str) -> bool:
-    logger.debug(f'Comparing fen strings {pre_move} and {post_move}')
+    # logger.debug(f'Comparing fen strings {pre_move} and {post_move}')
 
     return pre_move == post_move

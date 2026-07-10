@@ -4,7 +4,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 def parse_square(square_string):
-        logger.debug(square_string)
+        # logger.debug(square_string)
         if len(square_string) > 2:
              raise ValueError('parse_square: square_string is too long, should be 2 characters')
         (file, rank) = (square_string[0], square_string[1])
