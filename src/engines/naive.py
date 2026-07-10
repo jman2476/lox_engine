@@ -50,7 +50,7 @@ class NaiveEngine(Engine):
         return ranked_moves 
     
     
-    def rank_moves_parallelized(self):
+    def rank_moves_process(self):
         # logger.info(f'choose_move start {datetime.now()}')
         moves = self.eval_moves_mp(self.find_moves())
         if moves is None:
@@ -98,7 +98,8 @@ class NaiveEngine(Engine):
     def eval_moves_mp(self, move_list:list[str]) -> list[tuple[str, float]]:
         # In future, may need to migrate to passing game state directly, and use starmap instead of imap
         move_evaluation = []
-        with Pool(16) as p:
+        pieces = self.white if self.game.turn == 'white' else self.black
+        with Pool(self.set_threads(pieces)) as p:
             move_evaluation = list(p.imap_unordered(
                 self.eval_move, move_list
             ))
@@ -147,11 +148,11 @@ class NaiveEngine(Engine):
         self.rank_moves()
         # loggerinfo(f'End rank_moves: {datetime.now()}')
         # loggerinfo(f'Start rank_moves_mp: {datetime.now()}')
-        self.rank_moves_parallelized()
+        self.rank_moves_process()
         # loggerinfo(f'End rank_moves_mp: {datetime.now()}')
 
     def play_move_multi_proc(self):
-        moves = self.rank_moves_parallelized()
+        moves = self.rank_moves_process()
         choice = None
         if len(moves) != 0:
             best_moves = [m for m in moves 
@@ -162,3 +163,5 @@ class NaiveEngine(Engine):
             print('No moves found')
         return choice
         
+    def set_threads(self, pieces):
+        return len(pieces)
