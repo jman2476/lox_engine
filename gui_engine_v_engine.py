@@ -27,10 +27,11 @@ error_box = ErrorBox()
 # Engine setup
 engine_fool = FoolEngine(game_board.game, 'white')
 engine_naive_b = NaiveEngine(game_board.game, 'black')
+# engine for white will use multprocessing
 engine_naive_w = NaiveEngine(game_board.game, 'white')
 
 # Logging
-# logger = logging.getLogger('find_moves')
+logger = logging.getLogger('elapsed move time')
 # logging.basicConfig(filename='find_moves.log', level=logging.DEBUG)
 # logger.info(f'Starting log {datetime.datetime.now()}')
 
@@ -73,14 +74,17 @@ while running:
     # Engine implementation
     if (game_board.game.winner is None and elapsed > 2.0):
         if game_board.game.turn == 'white':
-            # time.sleep(2)
-            # engine_fool.pick_and_play_move()
-            # last_move = clock.tick(60)/1000
-            engine_naive_w.play_best_move()
+            start = time.perf_counter()
+            mv = engine_naive_w.play_move_multi_proc()
+            end = time.perf_counter()
+            logger.info(f'white move {mv} took {end - start}s')
             print(game_board.game.board)
 
         elif game_board.game.turn == 'black':
-            engine_naive_b.play_best_move()
+            start = time.perf_counter()
+            mv = engine_naive_b.play_best_move()
+            end = time.perf_counter()
+            logger.info(f'black move {mv} took {end - start}s')
             print(game_board.game.board)
 
             # last_move = clock.tick(60)/1000

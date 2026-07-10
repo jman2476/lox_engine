@@ -18,7 +18,7 @@ from time import sleep
 from datetime import datetime
 logger = logging.getLogger('__name__')
 logging.basicConfig(filename='lox_engine.log', level=logging.DEBUG)
-logger.info(f'Starting log {datetime.now()}')
+# loggerinfo(f'Starting log {datetime.now()}')
 
 
 def find_available_moves(game, piece):

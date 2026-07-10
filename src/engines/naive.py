@@ -15,7 +15,7 @@ class NaiveEngine(Engine):
     def __init__(self, game:Game, side:str, depth:int=4):
         super().__init__(game, side, 'naive', depth)
         self.move_map = {}
-        logger.info('Naive engine instantiated')
+        # loggerinfo('Naive engine instantiated')
 
     def find_moves(self, game=None):
         # logger.info(f'find_moves {self.game.turn} start {datetime.now()}')
@@ -71,7 +71,7 @@ class NaiveEngine(Engine):
         # logger.info(f'evaluate_moves start {datetime.now()}')
         move_evaluation = []
         for move in move_list:
-            logger.info(f'evaluate_moves loop start {datetime.now()}')
+            # loggerinfo(f'evaluate_moves loop start {datetime.now()}')
             eval = 0
             game_copy = copy.deepcopy(self.game)
             try: 
@@ -88,7 +88,7 @@ class NaiveEngine(Engine):
                 move_evaluation.append((move, eval))
             except:
                 continue
-        logger.info(f'evaluate_moves end {datetime.now()}')
+        # loggerinfo(f'evaluate_moves end {datetime.now()}')
         return move_evaluation
             
     def __eval_from_tuple__(self, tuple:tuple[str,float]) -> float:
@@ -128,7 +128,7 @@ class NaiveEngine(Engine):
     
 
     def play_best_move(self):
-        logger.info(f'play-best-move for {self.game.turn} start {datetime.now()}')
+        # loggerinfo(f'play-best-move for {self.game.turn} start {datetime.now()}')
         moves = self.rank_moves()
         choice = None
         if len(moves) != 0:
@@ -137,14 +137,28 @@ class NaiveEngine(Engine):
             self.game.parse_move(choice[0])
         else:
             print('No moves found')
-        logger.info(f'play-best-move for {self.game.turn} end: {choice} {datetime.now()}')
+        # loggerinfo(f'play-best-move for {self.game.turn} end: {choice} {datetime.now()}')
+        return choice
 
 
     def compare_rank_moves(self):
-        logger.info(f'Start compare_rank_moves:')
-        logger.info(f'Start rank_moves: {datetime.now()}')
+        # loggerinfo(f'Start compare_rank_moves:')
+        # loggerinfo(f'Start rank_moves: {datetime.now()}')
         self.rank_moves()
-        logger.info(f'End rank_moves: {datetime.now()}')
-        logger.info(f'Start rank_moves_mp: {datetime.now()}')
+        # loggerinfo(f'End rank_moves: {datetime.now()}')
+        # loggerinfo(f'Start rank_moves_mp: {datetime.now()}')
         self.rank_moves_parallelized()
-        logger.info(f'End rank_moves_mp: {datetime.now()}')
+        # loggerinfo(f'End rank_moves_mp: {datetime.now()}')
+
+    def play_move_multi_proc(self):
+        moves = self.rank_moves_parallelized()
+        choice = None
+        if len(moves) != 0:
+            best_moves = [m for m in moves 
+                          if m[1] == moves[0][1]]
+            choice = random.choice(best_moves)
+            self.game.parse_move(choice[0])
+        else:
+            print('No moves found')
+        return choice
+        
