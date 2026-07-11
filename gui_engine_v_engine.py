@@ -11,6 +11,8 @@ import datetime
 import time
 import logging
 import sys
+
+logging.getLogger('matplotlib').setLevel(logging.WARNING)
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -36,9 +38,9 @@ b_engine_d_t = []
 w_engine_d_t = []
 
 # Logging
-logger = logging.getLogger('elapsed move time')
 # logging.basicConfig(filename='find_moves.log', level=logging.DEBUG)
 # logger.info(f'Starting log {datetime.datetime.now()}')
+logger = logging.getLogger('elapsed move time')
 
 # FenBox
 fen_box = FenBox()
