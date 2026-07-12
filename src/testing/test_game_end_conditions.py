@@ -50,6 +50,14 @@ class TestGameEnd(unittest.TestCase):
 
         self.assertEqual(game.winner, '1-0')
 
+    def test_not_checkmate(self):
+        print('--Test position isn\'t checkmate--')
+        game = Game()
+        fen = '6R1/8/2B5/4Q3/P1k2P1P/8/3K4/8 w - - 3 34'
+        game.read_fen(fen)
+        game.set_fen()
+        
+
     def test_insufficient_material_knight(self):
         print("--Test insufficient: knight only--")
         game = Game()
