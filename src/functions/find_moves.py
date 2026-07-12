@@ -17,7 +17,7 @@ import logging
 from time import sleep
 from datetime import datetime
 logger = logging.getLogger('__name__')
-logging.basicConfig(filename='lox_engine.log', level=logging.DEBUG)
+logging.basicConfig(filename='lox_engine.log', level=logging.DEBUG, filemode='w')
 # loggerinfo(f'Starting log {datetime.now()}')
 
 
