@@ -84,7 +84,7 @@ def space_control(board, side):
         all_squares += find_squares_controlled(board, piece)
     
     for sq in all_squares.squares:
-        logger.debug(sq)
+        # logger.debug(sq)
         _, rank = parse_square(sq)
         if rank > 4 and side == 'white':
             opponent_squares.squares[sq] = all_squares.squares[sq]
