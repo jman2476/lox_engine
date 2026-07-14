@@ -1,6 +1,7 @@
 import os
 import datetime as dt
-
+import logging
+logger = logging.getLogger(__name__)
 
 class PGNWriter():
     def __init__(self, game, dir:str='./recent_games'):
@@ -34,11 +35,12 @@ class PGNWriter():
             f'[Round "{self.round}"]',
             f'[White "{self.white}"]',
             f'[Black "{self.black}"]',
-            f'[Result "{self.result}"]\n'
+            f'[Result "{self.result}"]\n\n'
         ]
         return '\n'.join(header)
 
     def add_move(self, move:str):
+        # logger.debug(f'adding move {move}')
         with open(self.path, 'a', encoding='UTF-8') as f:
             if self.game.turn == 'white':
                 f.write(f'{self.game.fullmove}. {move} ')
@@ -53,7 +55,7 @@ class PGNWriter():
         with open(self.path, 'r') as f:
             contents = f.read()
         
-        move_list = contents.split('"]').pop()
+        move_list = contents.split('"]\n\n').pop()
 
         with open(self.path, 'w', encoding='UTF-8') as f:
             f.write(f'{new_header}{move_list} {self.result}')

@@ -75,7 +75,7 @@ class NaiveEngine(Engine):
             eval = 0
             game_copy = copy.deepcopy(self.game)
             try: 
-                game_copy.parse_move(move)
+                game_copy.parse_move(move, False)
                 match game_copy.winner:
                     case '1-0':
                         eval = 1000.0

@@ -16,7 +16,7 @@ import copy
 import logging
 from time import sleep
 from datetime import datetime
-logger = logging.getLogger('__name__')
+logger = logging.getLogger(__name__)
 logging.basicConfig(filename='lox_engine.log', level=logging.DEBUG, filemode='w')
 # loggerinfo(f'Starting log {datetime.now()}')
 
@@ -139,8 +139,10 @@ def find_pawn_moves(game, pawn):
                 mv = f'{mv}=Q'
     
             if mv[0] == file:
+                # logger.debug(f'find pawn move: {mv}')
                 gm.parse_move(mv, False)
             else:
+                # logger.debug(f'find pawn move: {file}x{mv}')
                 gm.parse_move(f'{file}x{mv}', False)
 
             if gm.fen != game.fen:
@@ -355,6 +357,7 @@ def validate_legal_moves(game, piece, moves):
         capture, _, __ = gm.board.check_square_filled(*parse_square(mv))
         mv_str = f'{start_sq}{'x' if capture else ''}{mv}'
         try:
+            # logger.debug(f'validate legal moves: {mv_str}')
             gm.parse_move(mv_str, False)
             # if gm.fen != game.fen:
             # logger.debug(f'{game} {piece} {moves}')
