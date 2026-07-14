@@ -15,7 +15,7 @@ class PGNWriter():
         self.result = '-'
         self.title = f'{self.white} v {self.black}-{self.date.date()}-{self.date.time()}.pgn'
         self.path = os.path.join(self.set_path(dir), self.title)
-        self.turn = 1
+        self.line_length = 0
 
     def create_file(self):
         with open(self.path, 'w', encoding='UTF-8') as file:
@@ -41,11 +41,17 @@ class PGNWriter():
 
     def add_move(self, move:str):
         # logger.debug(f'adding move {move}')
+        append = (f'{self.game.fullmove} {move} '
+                  if self.game.turn == 'white'
+                  else f'{move} ')
+        chars = len(append)
         with open(self.path, 'a', encoding='UTF-8') as f:
-            if self.game.turn == 'white':
-                f.write(f'{self.game.fullmove}. {move} ')
+            if chars + self.line_length > 60:
+                f.write(f'\n{append}')
+                self.line_length = 0
             else:
-                f.write(f'{move} ')
+                f.write(append)
+                self.line_length += chars
 
     
     def final_result(self):
