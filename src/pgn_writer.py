@@ -39,12 +39,18 @@ class PGNWriter():
         ]
         return '\n'.join(header)
 
-    def add_move(self, move:str):
+    def add_move(self, move:str, is_check:bool=False, is_mate:bool=False):
         # logger.debug(f'adding move {move}')
         append = (f'{self.game.fullmove}.{move} '
                   if self.game.turn == 'white'
                   else f'{move} ')
         chars = len(append)
+
+        if is_mate:
+            append = append.strip() + '# '
+        elif is_check:
+            append = append.strip() + '+ '
+
         with open(self.path, 'a', encoding='UTF-8') as f:
             if chars + self.line_length > 60:
                 f.write(f'\n{append}')
