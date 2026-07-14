@@ -11,6 +11,7 @@ from src.functions.find_moves import (
     find_king_moves,
     find_available_moves
     )
+from src.pgn_writer import PGNWriter
 import copy
 
 class Game():
@@ -19,7 +20,7 @@ class Game():
         self.w_player = w_player
         self.b_player = b_player
         self.fen = ''
-        self.pgn = ''
+        self.pgnw = PGNWriter(self)
         self.turn = 'white'
         self.halfmove = 0
         self.fullmove = 1
@@ -37,6 +38,7 @@ class Game():
         self.board.setup_new()
         self.set_fen()
         self.__add_board_state()
+        self.pgnw.create_file()
 
     def set_fen(self):
         game_board = self.board.board
@@ -203,6 +205,8 @@ class Game():
             else: # move succeeds
                 self.board = move_board
                 move_happened = True
+                if is_game_loop_call:
+                    self.pgnw.add_move(string)
                 if self.turn == 'black':
                     self.fullmove += 1
                 self.turn = 'black' if self.turn == 'white' else 'white'
@@ -222,11 +226,13 @@ class Game():
                         if end:
                             print('Looks like white has been checkmated')
                             self.winner = '0-1'
+                            self.pgnw.final_result()
                     else:
                         end = self.is_checkmated('black')
                         if end:
                             print('Looks like black has been checkmated')
                             self.winner = '1-0'
+                            self.pgnw.final_result()
     
     # placing this in main game loop causes infinite recursion loop
     def is_checkmated(self, side:str) -> bool:
@@ -263,10 +269,11 @@ class Game():
         if (len(checks) == 0 and len(moves) == 0
             or not self.board.sufficient_material()):
             self.winner = '1/2-1/2'
-            
+            self.pgnw.final_result()
 
     def handle_fifty_move_rule(self):
         if self.halfmove >= 50:
             self.winner = '1/2-1/2'
+            self.pgnw.final_result()
     
     

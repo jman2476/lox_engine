@@ -1,5 +1,5 @@
 import unittest
-from src.functions.game_writer import PGNWriter
+from src.pgn_writer import PGNWriter
 from src.game import Game
 
 class TestPGNWriter(unittest.TestCase):

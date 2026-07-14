@@ -34,6 +34,8 @@ def main():
     engine_naive_b = NaiveEngine(game_board.game, 'black')
     # engine for white will use multprocessing
     engine_naive_w = NaiveEngine(game_board.game, 'white')
+    game_board.game.b_player = 'Naive Single Proc'
+    game_board.game.w_player = 'Naive Multi Proc'
 
     b_engine_d_t = []
     w_engine_d_t = []
