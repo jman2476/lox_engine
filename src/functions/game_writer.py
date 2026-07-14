@@ -1,5 +1,6 @@
 from src.game import Game
 import os, re
+import datetime as dt
 
 # write and read PGN files
 def write_pgn(game, move=None, dir=None):
@@ -47,3 +48,38 @@ def extract_moves(moves_string):
 
 def remove_newline(moves_block):
     return ' '.join(moves_block.split('\n'))
+
+class PGNWriter():
+    def __init__(self, game, dir:str='./recent_games'):
+        self.event = ''
+        self.site = 'Lox Engine'
+        self.date = dt.date.today()
+        self.round = '1'
+        self.white = game.w_player
+        self.black = game.b_player
+        self.result = game.winner
+        self.title = f'{self.white} v {self.black}-{self.date}.pgn'
+        self.path = os.path.join(self.set_path(dir), self.title)
+
+    def create_file(self):
+
+        with open(self.path, 'w', encoding='UTF-8') as file:
+            ...
+
+    def set_path(self, dir:str):
+        abs_dir_path = os.path.abspath(dir)
+        if not os.path.exists(abs_dir_path):
+            os.mkdir(abs_dir_path)
+        return abs_dir_path
+    
+    def format_header(self):
+        return f'''[Event "{self.event}"]
+        [Site "{self.site}"]
+        [Date "{self.date}"]
+        [Round "{self.round}"]
+        [White "{self.white}"]
+        [Black "{self.black}"]
+        [Result "{self.result}"]
+
+        
+        '''
