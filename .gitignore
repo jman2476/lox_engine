@@ -14,3 +14,6 @@ wheels/
 
 # Logging
 *.log
+
+# Testing files
+pgn-writer-testing/*
