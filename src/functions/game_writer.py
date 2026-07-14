@@ -61,9 +61,9 @@ class PGNWriter():
         self.result = game.winner
         self.title = f'{self.white} v {self.black}-{self.date.date()}-{self.date.time()}.pgn'
         self.path = os.path.join(self.set_path(dir), self.title)
+        self.turn = 1
 
     def create_file(self):
-
         with open(self.path, 'w', encoding='UTF-8') as file:
             file.write(self.format_header())
 
@@ -81,6 +81,27 @@ class PGNWriter():
             f'[Round "{self.round}"]',
             f'[White "{self.white}"]',
             f'[Black "{self.black}"]',
-            f'[Result "{self.result}"]\n\n'
+            f'[Result "{self.result}"]\n'
         ]
-        return '\n'.join(header) + 'end'
+        return '\n'.join(header)
+
+    def add_move(self, side:str, move:str):
+        with open(self.path, 'a', encoding='UTF-8') as f:
+            if side == 'white':
+                f.write(f'{self.turn}. {move} ')
+            else:
+                f.write(f'{move} ')
+                self.turn += 1
+
+    
+    def final_result(self, result):
+        self.result = result
+        new_header = self.format_header()
+        
+        with open(self.path, 'r') as f:
+            contents = f.read()
+        
+        move_list = contents.split('"]').pop()
+
+        with open(self.path, 'w', encoding='UTF-8') as f:
+            f.write(f'{new_header}{move_list} {result}')
