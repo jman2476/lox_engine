@@ -39,16 +39,14 @@ class PGNWriter():
         ]
         return '\n'.join(header)
 
-    def add_move(self, move:str, is_check:bool=False, is_mate:bool=False):
+    def add_move(self, move:str, is_check:bool=False):
         # logger.debug(f'adding move {move}')
         append = (f'{self.game.fullmove}.{move} '
                   if self.game.turn == 'white'
                   else f'{move} ')
         chars = len(append)
 
-        if is_mate:
-            append = append.strip() + '# '
-        elif is_check:
+        if is_check:
             append = append.strip() + '+ '
 
         with open(self.path, 'a', encoding='UTF-8') as f:
@@ -63,11 +61,11 @@ class PGNWriter():
     def final_result(self):
         self.result = self.game.winner
         new_header = self.format_header()
-        
+
         with open(self.path, 'r') as f:
             contents = f.read()
         
         move_list = contents.split('"]\n\n').pop()
 
         with open(self.path, 'w', encoding='UTF-8') as f:
-            f.write(f'{new_header}{move_list} {self.result}')
+            f.write(f'{new_header}{move_list.strip(' +')}{'#' if self.result in ['1-0', '0-1'] else ''} {self.result}')

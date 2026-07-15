@@ -206,7 +206,10 @@ class Game():
                 self.board = move_board
                 move_happened = True
                 if is_game_call:
-                    self.pgnw.add_move(string)
+                    opp_pieces = self.board.white() if self.turn == 'black' else self.board.black()
+                    opp_king = next((p for p in opp_pieces if p.name == 'king'))
+                    check = 0 < len(self.board.find_checks(opp_king.square(), opp_king.side))
+                    self.pgnw.add_move(string, check)
                 if self.turn == 'black':
                     self.fullmove += 1
                 self.turn = 'black' if self.turn == 'white' else 'white'
