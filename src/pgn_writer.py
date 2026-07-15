@@ -27,7 +27,12 @@ class PGNWriter():
             os.mkdir(abs_dir_path)
         return abs_dir_path
     
+    def __reset_players__(self):
+        self.white = self.game.w_player
+        self.black = self.game.b_player
+    
     def format_header(self):
+        self.__reset_players__()
         header = [
             f'[Event "{self.event}"]',
             f'[Site "{self.site}"]',
