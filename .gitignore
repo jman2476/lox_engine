@@ -14,3 +14,7 @@ wheels/
 
 # Logging
 *.log
+
+# PGN files
+pgn-writer-testing/
+recent_games/

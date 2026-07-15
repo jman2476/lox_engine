@@ -1,4 +1,4 @@
-from src.game import Game
+
 import os, re
 
 # write and read PGN files
@@ -47,3 +47,4 @@ def extract_moves(moves_string):
 
 def remove_newline(moves_block):
     return ' '.join(moves_block.split('\n'))
+

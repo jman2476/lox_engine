@@ -11,6 +11,7 @@ from src.functions.find_moves import (
     find_king_moves,
     find_available_moves
     )
+from src.pgn_writer import PGNWriter
 import copy
 
 class Game():
@@ -19,7 +20,7 @@ class Game():
         self.w_player = w_player
         self.b_player = b_player
         self.fen = ''
-        self.pgn = ''
+        self.pgnw = PGNWriter(self)
         self.turn = 'white'
         self.halfmove = 0
         self.fullmove = 1
@@ -37,6 +38,7 @@ class Game():
         self.board.setup_new()
         self.set_fen()
         self.__add_board_state()
+        self.pgnw.create_file()
 
     def set_fen(self):
         game_board = self.board.board
@@ -140,7 +142,7 @@ class Game():
         self.__read_castling()
         return self.castling
     
-    def parse_move(self, string, is_game_loop_call=True):
+    def parse_move(self, string, is_game_call=True, is_eval_call=False):
         notation_array = list(string)
         last_char = notation_array.pop()
         pieces = self.board.white() if self.turn == 'white' else self.board.black()
@@ -203,6 +205,11 @@ class Game():
             else: # move succeeds
                 self.board = move_board
                 move_happened = True
+                if is_game_call:
+                    opp_pieces = self.board.white() if self.turn == 'black' else self.board.black()
+                    opp_king = next((p for p in opp_pieces if p.name == 'king'))
+                    check = 0 < len(self.board.find_checks(opp_king.square(), opp_king.side))
+                    self.pgnw.add_move(string, check)
                 if self.turn == 'black':
                     self.fullmove += 1
                 self.turn = 'black' if self.turn == 'white' else 'white'
@@ -216,20 +223,24 @@ class Game():
             self.set_fen()
             if move_happened:
                 self.__add_board_state()
-                if is_game_loop_call:
+                if is_game_call or is_eval_call:
                     if self.turn == 'white':
-                        end = self.is_checkmated('white')
+                        end = self.is_checkmated('white', is_eval_call)
                         if end:
                             print('Looks like white has been checkmated')
                             self.winner = '0-1'
+                            if is_game_call:
+                                self.pgnw.final_result()
                     else:
-                        end = self.is_checkmated('black')
+                        end = self.is_checkmated('black', is_eval_call)
                         if end:
                             print('Looks like black has been checkmated')
                             self.winner = '1-0'
+                            if is_game_call:
+                                self.pgnw.final_result()
     
     # placing this in main game loop causes infinite recursion loop
-    def is_checkmated(self, side:str) -> bool:
+    def is_checkmated(self, side:str, is_eval:bool=False) -> bool:
         # print('looking for checkmate')
         from src.piece import King
         king = None
@@ -255,18 +266,21 @@ class Game():
             else:
                 self.winner = 'white'
             return True
-        self.handle_stalemate(checks, moves)
-        self.handle_fifty_move_rule()
+        self.handle_stalemate(checks, moves, is_eval)
+        self.handle_fifty_move_rule(is_eval)
         return False
     
-    def handle_stalemate(self, checks, moves):
+    def handle_stalemate(self, checks, moves, is_eval=False):
         if (len(checks) == 0 and len(moves) == 0
             or not self.board.sufficient_material()):
             self.winner = '1/2-1/2'
-            
+            if not is_eval:
+                self.pgnw.final_result()
 
-    def handle_fifty_move_rule(self):
+    def handle_fifty_move_rule(self, is_eval=False):
         if self.halfmove >= 50:
             self.winner = '1/2-1/2'
+            if not is_eval:
+                self.pgnw.final_result()
     
     

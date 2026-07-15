@@ -139,11 +139,11 @@ def main():
                     game_board.drag_square = (None, None)
                     move_piece = None
     
-        if game_turn != game_board.game.turn:
-            # engine_naive.find_move_multiprocessor()
-            engine_naive.compare_rank_moves()
-            print('turn switch')
-            game_turn == game_board.game.turn
+        # if game_turn != game_board.game.turn:
+        #     # engine_naive.find_move_multiprocessor()
+        #     engine_naive.compare_rank_moves()
+        #     print('turn switch')
+        #     game_turn == game_board.game.turn
 
         # Engine implementation
         if game_board.game.turn == 'black' and game_board.game.winner is None:
