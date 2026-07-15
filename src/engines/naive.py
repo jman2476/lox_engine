@@ -146,6 +146,19 @@ class NaiveEngine(Engine):
             print('No moves found')
         # loggerinfo(f'play-best-move for {self.game.turn} end: {choice} {datetime.now()}')
         return choice
+    
+    # Function to go through the standard evaluation process, but play a pre-selected move
+    # Main usage: replaying a game w/ engine analyis, debugging
+    def play_move_override(self, move:str):
+        moves = self.rank_moves()
+        choice = None
+        if len(moves) != 0:
+            best_moves = [mv for mv in moves if mv[1] == moves[0][1]]
+            choice = random.choice(best_moves)
+            self.game.parse_move(move)
+        else:
+            print('No moves found')
+        return choice
 
 
     def compare_rank_moves(self):
