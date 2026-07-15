@@ -32,14 +32,18 @@ def main():
     game_board.game.b_player = 'Naive Single Proc'
     game_board.game.w_player = 'Naive Multi Proc'
     move_list = []
+    move_num = 0
     ply_num = 0
 
+    print(f'Argv: {sys.argv}')
     if len(sys.argv) > 2:
         pgn_file = sys.argv[2]
         pgn_dir = sys.argv[1]
         move_list, _ = read_pgn(pgn_file, pgn_dir)
     else:
         raise RuntimeError('gui_engine_replay requires a directory and pgn file to run')
+    
+    print(f'Move list: {move_list}')
 
     b_engine_d_t = []
     w_engine_d_t = []
@@ -66,24 +70,35 @@ def main():
                 mouse_pos = pygame.mouse.get_pos()
                 if mouse_pos[0] > 1180 and mouse_pos[1] < 20:
                     exit_button.on_click()
+
+        if move_list[move_num][ply_num] in ['1-0', '0-1', '1/2-1/2']:
+            game_board.game.winner = move_list[move_num][ply_num]
     
         # Engine implementation
         if (game_board.game.winner is None and elapsed > 2.0):
             if game_board.game.turn == 'white':
                 start = time.perf_counter_ns()
-                mv = engine_naive_w.play_move_mp_override(move_list[ply_num])
+                mv = engine_naive_w.play_move_mp_override(move_list[move_num][ply_num])
                 end = time.perf_counter_ns()
                 logger.info(f'white move {mv} took {end - start}s')
                 w_engine_d_t.append(end - start)
                 print(game_board.game.board)
+                ply_num += 1
+                ply_num %= 2
+                if ply_num == 0:
+                    move_num += 1
 
             elif game_board.game.turn == 'black':
                 start = time.perf_counter_ns()
-                mv = engine_naive_b.play_move_override(move_list[ply_num])
+                mv = engine_naive_b.play_move_override(move_list[move_num][ply_num])
                 end = time.perf_counter_ns()
                 logger.info(f'black move {mv} took {end - start}s')
                 b_engine_d_t.append(end - start)
                 print(game_board.game.board)
+                ply_num += 1
+                ply_num %= 2
+                if ply_num == 0:
+                    move_num += 1
                 
         screen.fill("purple")
         w_clock = Clock(datetime.timedelta(minutes=5), Color.WHITE)
@@ -116,7 +131,7 @@ def main():
         dt = clock.tick(60)/1000
         elapsed += dt
         
-        ply_num += 1
+        
         if game_board.game.winner is not None:
             running = False
             w_x = range(1, len(w_engine_d_t) + 1)
@@ -134,6 +149,7 @@ def main():
             print(f'Max time for black: {max(b_engine_d_t)}s')
             print(f'Min times: white {min(w_engine_d_t)}s, black {min(b_engine_d_t)}s')
             plt.show()
+            break
         
     pygame.quit()
 

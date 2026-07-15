@@ -155,6 +155,7 @@ class NaiveEngine(Engine):
         if len(moves) != 0:
             best_moves = [mv for mv in moves if mv[1] == moves[0][1]]
             choice = random.choice(best_moves)
+            print(f'Move override playing: {move}')
             self.game.parse_move(move)
         else:
             print('No moves found')
@@ -167,6 +168,7 @@ class NaiveEngine(Engine):
             best_moves = [m for m in moves 
                           if m[1] == moves[0][1]]
             choice = random.choice(best_moves)
+            print(f'Move override playing: {move}')
             self.game.parse_move(move)
         else:
             print('No moves found')
