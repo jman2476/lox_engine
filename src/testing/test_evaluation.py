@@ -10,7 +10,7 @@ from src.piece import *
 class TestEvaluation(unittest.TestCase):
     def test_king_safety(self):
         board = Board()
-        board.setup_by_fen('KQ6/8/8/8/8/8/8/k7 w - - 0 1')
+        board.setup_by_fen('KQ6/8/8/8/8/8/8/k5b1 w - - 0 1')
         sides = ['white', 'black']
         k_safety = []
         for s in sides:

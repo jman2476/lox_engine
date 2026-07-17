@@ -79,7 +79,6 @@ def space_control(board, side):
     (pieces, opp_pieces) = (board.white(), board.black()) if side == "white" else (board.black(), board.white())
     all_squares = ControlledSquares()
     opponent_squares = ControlledSquares()
-
     # For calculating king safety concurrent to space_controlled
     opp_king = next((p for p in opp_pieces if p.name == 'king'))
     king_attacks = ControlledSquares() # squares attacked around enemy king are counted again, and count double
@@ -98,7 +97,7 @@ def space_control(board, side):
         all_squares += find_squares_controlled(board, piece)
     
     for sq in all_squares.squares:
-        # logger.debug(sq)
+        logger.debug(sq)
         _, rank = parse_square(sq)
         if rank > 4 and side == 'white':
             opponent_squares.squares[sq] = all_squares.squares[sq]
@@ -107,7 +106,8 @@ def space_control(board, side):
 
         # king safety calculation
         if sq in king_adj:
-            king_attacks.add(sq)
-            king_attacks.add(sq)
+            logger.debug(f'square in adjacent to enemy king: {sq}')
+            king_attacks.add([sq, sq])
+
         
     return opponent_squares, king_attacks
