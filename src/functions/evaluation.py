@@ -25,8 +25,8 @@ def get_evaluation(board):
     w_pieces = board.white()
     b_pieces = board.black()
     eval = count_material(w_pieces, b_pieces)
-    sq_black = space_control(board, 'black')
-    sq_white = space_control(board, 'white')
+    sq_black, k_atk_black = space_control(board, 'black')
+    sq_white, k_atk_white = space_control(board, 'white')
     opp_sq_balance = 0
     for sq in sq_white.squares:
         opp_sq_balance += sq_white.squares[sq] 
@@ -53,6 +53,8 @@ def calc_king_safety(board, side):
     # by enemy side minus how many times is the square defended?
     # If squaes attacked, how many squares are free for the king to move into?
     # From those free squares, how many more squares are free in the path?
+    
+    ## Currently folded into space_control function as second return
     pass
 
 def piece_activity(board, piece):
@@ -74,9 +76,19 @@ def space_control(board, side):
     #   can you attack? 
     # Include squares occupied, empty squares, and 
     #   enemy pieces attacked
-    pieces = board.white() if side == "white" else board.black()
-    all_squares = ControlledSquares() # convert to controlled squares obj
-    opponent_squares = ControlledSquares() # convert to controlled squares obj
+    (pieces, opp_pieces) = (board.white(), board.black()) if side == "white" else (board.black(), board.white())
+    opp_king = next((p for p in opp_pieces if p.name == 'king'))
+    all_squares = ControlledSquares()
+    opponent_squares = ControlledSquares()
+    king_attacks = ControlledSquares() # squares attacked around enemy king are counted again, and count double
+    k_file_idx, k_rank_idx = (board.files.index(opp_king.file),
+                              opp_king.rank)
+    king_adj = [f'{board.files[f]}{r}' for f in 
+                [k_file_idx+i for i in range(-1,2)] 
+               for r in [k_rank_idx+i for i in range(-1,2)]
+               if ((f != k_file_idx or r != k_rank_idx)
+                   and f in range(0,8)
+                   and r in range(1,9))]
 
     for piece in pieces:
         # look forward for each piece, and see all available moves
@@ -90,5 +102,8 @@ def space_control(board, side):
             opponent_squares.squares[sq] = all_squares.squares[sq]
         elif rank < 5 and side == 'black':
             opponent_squares.add(sq)
+        if sq in king_adj:
+            king_attacks.add(sq)
+            king_attacks.add(sq)
         
-    return opponent_squares
+    return opponent_squares, king_attacks
