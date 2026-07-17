@@ -77,9 +77,11 @@ def space_control(board, side):
     # Include squares occupied, empty squares, and 
     #   enemy pieces attacked
     (pieces, opp_pieces) = (board.white(), board.black()) if side == "white" else (board.black(), board.white())
-    opp_king = next((p for p in opp_pieces if p.name == 'king'))
     all_squares = ControlledSquares()
     opponent_squares = ControlledSquares()
+
+    # For calculating king safety concurrent to space_controlled
+    opp_king = next((p for p in opp_pieces if p.name == 'king'))
     king_attacks = ControlledSquares() # squares attacked around enemy king are counted again, and count double
     k_file_idx, k_rank_idx = (board.files.index(opp_king.file),
                               opp_king.rank)
