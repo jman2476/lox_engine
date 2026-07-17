@@ -35,7 +35,7 @@ class TestControlledSquares(unittest.TestCase):
 
         for p in game.board.white():
             if isinstance(p,Pawn):
-                attacked += find_squares_controlled(game.board, p)
+                attacked += find_squares_controlled(game.board, p)  
                 # logger.debug(f'current: {attacked}')
 
         print('all attacked squares', attacked.squares)
@@ -46,7 +46,7 @@ class TestControlledSquares(unittest.TestCase):
 
         self.assertEqual(
             {'d5': 1, 'f5': 1, 'a6': 1, 'b5': 1, 'h5': 1},
-            space_control(game.board, 'white').squares
+            space_control(game.board, 'white')[0].squares
         )
         
 
@@ -58,7 +58,17 @@ class TestControlledSquares(unittest.TestCase):
 
     def test_find_queen_control(self):
         print('-----Test: queen squares controlled-----')
+        game = Game()
+        game.start_new_game()
+        game.parse_move('e4')
+        attacked = ControlledSquares()
 
+        for p in game.board.white():
+            if isinstance(p, Queen):
+                attacked += find_squares_controlled(game.board, p)
+
+        print('Queen squares attacked: ')
+        print(attacked)
         self.assertEqual(0,1)
 
 

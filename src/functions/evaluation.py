@@ -104,6 +104,8 @@ def space_control(board, side):
             opponent_squares.squares[sq] = all_squares.squares[sq]
         elif rank < 5 and side == 'black':
             opponent_squares.add(sq)
+
+        # king safety calculation
         if sq in king_adj:
             king_attacks.add(sq)
             king_attacks.add(sq)
