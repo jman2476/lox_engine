@@ -46,12 +46,3 @@ class TestEvaluation(unittest.TestCase):
                     k_s.squares[key] == equality_asserts[i][key]
                 )
 
-        # self.assertEqual(k_safety[0].squares,
-        #                  {'b1': 2, 'b2': 2})
-        # self.assertEqual(k_safety[1].squares,
-        #                  {'a7': 2})
-        # self.assertEqual(k_safety[2].squares,
-        #                  {'b1': 4, 'b2': 2, 'a2': 2})
-        # self.assertEqual(k_safety[3].squares,
-        #                  {'a7': 2,'a8': 2, 'b7': 2})
-        
