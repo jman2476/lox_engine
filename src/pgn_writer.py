@@ -46,7 +46,7 @@ class PGNWriter():
 
     def add_move(self, move:str, is_check:bool=False):
         # logger.debug(f'adding move {move}')
-        append = (f'{self.game.fullmove}.{move} '
+        append = (f'{self.game.fullmove}. {move} '
                   if self.game.turn == 'white'
                   else f'{move} ')
         chars = len(append)

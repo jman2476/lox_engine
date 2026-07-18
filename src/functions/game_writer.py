@@ -1,5 +1,6 @@
-
 import os, re
+import logging
+logger = logging.getLogger(__name__)
 
 # write and read PGN files
 def write_pgn(game, move=None, dir=None):
