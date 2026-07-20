@@ -103,18 +103,11 @@ def space_control(board, side):
         if rank > 4 and side == 'white':
             opponent_squares.squares[sq] = all_squares.squares[sq]
         elif rank < 5 and side == 'black':
-            # opponent_squares.add([sq])
             opponent_squares.squares[sq] = all_squares.squares[sq]
-            # logger.debug(f'get opponent squares controlled check: {opponent_squares.squares}')
 
         # king safety calculation
         if sq in king_adj:
-            # logger.debug(f'square in adjacent to enemy king: {sq},\nking_attacks: {king_attacks.squares}')
-            # if sq in king_attacks.squares:
-            #     logger.debug(f'Square {sq} exists in king_attacks squares')
             for _ in range(all_squares.squares[sq]):
                 king_attacks.add([sq, sq])
-            # logger.debug(f'king_attacks: {king_attacks}')
 
-    # logger.debug(f'End of space control:\nopponent_sq: {opponent_squares}\nking attacks: {king_attacks}')
     return opponent_squares, king_attacks
