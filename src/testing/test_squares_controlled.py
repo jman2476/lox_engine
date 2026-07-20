@@ -35,7 +35,7 @@ class TestControlledSquares(unittest.TestCase):
 
         for p in game.board.white():
             if isinstance(p,Pawn):
-                attacked += find_squares_controlled(game.board, p)
+                attacked += find_squares_controlled(game.board, p)  
                 # logger.debug(f'current: {attacked}')
 
         print('all attacked squares', attacked.squares)
@@ -46,7 +46,7 @@ class TestControlledSquares(unittest.TestCase):
 
         self.assertEqual(
             {'d5': 1, 'f5': 1, 'a6': 1, 'b5': 1, 'h5': 1},
-            space_control(game.board, 'white').squares
+            space_control(game.board, 'white')[0].squares
         )
         
 
@@ -58,7 +58,17 @@ class TestControlledSquares(unittest.TestCase):
 
     def test_find_queen_control(self):
         print('-----Test: queen squares controlled-----')
+        game = Game()
+        game.start_new_game()
+        game.parse_move('e4')
+        attacked = ControlledSquares()
 
+        for p in game.board.white():
+            if isinstance(p, Queen):
+                attacked += find_squares_controlled(game.board, p)
+
+        print('Queen squares attacked: ')
+        print(attacked)
         self.assertEqual(0,1)
 
 
@@ -70,9 +80,29 @@ class TestControlledSquares(unittest.TestCase):
 
     def test_find_knight_control(self):
         print('-----Test: knight squares controlled-----')
+        game = Game()
+        game.start_new_game()
+        attacked = ControlledSquares()
 
-        self.assertEqual(0,1)
+        for p in game.board.white():
+            if isinstance(p, Knight):
+                attacked += find_squares_controlled(game.board, p)
+        
+        print('Knight squares attacked: ')
+        print(attacked)
+        expected = {
+            'a3': 1, 'c3': 1,
+            'f3': 1, 'h3': 1,
+            'e2': 1, 'd2': 1
+        }
 
+        for sq in attacked.squares:
+            self.assertTrue(sq in expected)
+            self.assertTrue(
+                attacked.squares[sq] == expected[sq]
+            )
+        # self.assertEqual(0,1)
+        
 
     def test_find_rook_control(self):
         print('-----Test: rook squares controlled-----')

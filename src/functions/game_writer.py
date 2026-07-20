@@ -42,17 +42,14 @@ def extract_moves(moves_string):
         logger.debug(f'Move split: {split}')
         if len(split) <= 2: continue
         ply = split.split(' ')
-        logger.debug(f'plys: {ply}')
+        print(split)
         clean_ply = []
         for p in ply:
-            if p != '':
+            if p != '': 
                 clean_ply.append(p)
-
-        logger.debug(f'clean ply: {clean_ply}')
-        # moves.append([ply[1], ply[2]]) # ply[1] -> white ply, ply[2] -> black ply
-        moves.append([clean_ply[0], clean_ply[1]])
-        if len(ply) == 4 and '-' in ply[3]:
-            moves.append([ply[3]])
+        moves.append([clean_ply[0], clean_ply[1]]) # ply[0] -> white ply, ply[1] -> black ply
+        if len(clean_ply) == 3 and '-' in clean_ply[2]:
+            moves.append([clean_ply[2]])
     return moves
 
 def remove_newline(moves_block):

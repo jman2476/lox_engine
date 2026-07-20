@@ -45,7 +45,7 @@ class ControlledSquares():
                                 + other.squares.get(key, 0))
         return sum
 
-def find_squares_controlled(board, piece):
+def find_squares_controlled(board, piece) -> ControlledSquares:
     moves = ControlledSquares()
 
     match piece:
