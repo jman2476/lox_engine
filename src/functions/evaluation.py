@@ -5,6 +5,8 @@ from src.piece import (
     Queen, Bishop, 
     Knight, Rook
     )
+import copy
+from src.game import Game
 from src.functions.parse import parse_square
 from src.functions.find_moves import find_available_moves
 from src.functions.squares_controlled import (
@@ -88,7 +90,18 @@ def piece_activity(board, piece):
     # Check 1,2,3,4,5 moves, piece that can be captured is value/10 points
     # Each multi move calculated as capture._value/(10*moves)
     # Return array
+    dummy_game = Game()
+    dummy_game.board = copy.deepcopy(board)
+    dummy_game.turn = piece.side
+    dummy_piece = dummy_game.board[piece.file][piece.rank]
+    next_moves = find_available_moves(dummy_game, dummy_piece)
+
     pass
+
+def piece_activity_recursion(game, piece, moves, depth:int=0):
+    if depth > 5: return moves
+    new_moves = []
+    return piece_activity_recursion(game, piece, new_moves, depth+1)
 
 def pawn_structure(board, side):
     # How many gaps are in the pawn structure?
