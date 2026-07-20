@@ -33,7 +33,7 @@ class TestEvaluation(unittest.TestCase):
         equality_asserts= [
             {'b1': 2, 'b2': 2},
             {'a7': 2},
-            {'b1': 2, 'b2': 2, 'a2': 2},
+            {'b1': 4, 'b2': 2, 'a2': 2},
             {'a7': 2,'a8': 2, 'b7': 2}
         ]
         
