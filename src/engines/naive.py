@@ -100,6 +100,7 @@ class NaiveEngine(Engine):
         logging.info(f'start eval moves mp for {self.game.turn}')
         move_evaluation = []
         pieces = self.white if self.game.turn == 'white' else self.black
+
         with Pool() as p:
             move_evaluation = list(p.imap_unordered(
                 self.eval_move, move_list

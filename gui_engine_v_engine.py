@@ -10,7 +10,9 @@ import datetime
 import time
 import logging
 import sys
-
+import multiprocessing as mp
+import matplotlib
+matplotlib.use('QtAgg')
 logging.getLogger('matplotlib').setLevel(logging.WARNING)
 import matplotlib.pyplot as plt
 import numpy as np
@@ -149,4 +151,5 @@ def main():
     pygame.quit()
 
 if __name__ == '__main__':
+    mp.set_start_method('spawn')
     main()

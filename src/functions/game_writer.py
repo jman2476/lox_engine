@@ -1,5 +1,6 @@
-
 import os, re
+import logging
+logger = logging.getLogger(__name__)
 
 # write and read PGN files
 def write_pgn(game, move=None, dir=None):
@@ -38,6 +39,7 @@ def extract_moves(moves_string):
     moves = []
     for split in split_moves:
         # print(f'Move "{split}"')
+        logger.debug(f'Move split: {split}')
         if len(split) <= 2: continue
         ply = split.split(' ')
         print(split)

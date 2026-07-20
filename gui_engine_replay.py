@@ -40,6 +40,7 @@ def main():
         pgn_file = sys.argv[2]
         pgn_dir = sys.argv[1]
         move_list, _ = read_pgn(pgn_file, pgn_dir)
+        print(f'Game move list: {move_list}')
     else:
         raise RuntimeError('gui_engine_replay requires a directory and pgn file to run')
     

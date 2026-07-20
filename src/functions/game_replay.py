@@ -1,6 +1,7 @@
 from src.functions.game_writer import read_pgn
 from src.game import Game
 
+
 def game_replay(pgn_file, dir='.'):
     move_list, result = read_pgn(pgn_file, dir)
     game = Game()
