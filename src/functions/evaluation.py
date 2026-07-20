@@ -103,6 +103,7 @@ def space_control(board, side):
             opponent_squares.squares[sq] = all_squares.squares[sq]
         elif rank < 5 and side == 'black':
             opponent_squares.add(sq)
+            logger.debug(f'get opponent squares controlled check: {opponent_squares.squares}')
 
         # king safety calculation
         if sq in king_adj:
