@@ -45,7 +45,7 @@ def extract_moves(moves_string):
         for p in ply:
             if p != '': 
                 clean_ply.append(p)
-        moves.append([clean_ply[0], clean_ply[1]]) # ply[1] -> white ply, ply[2] -> black ply
+        moves.append([clean_ply[0], clean_ply[1]]) # ply[0] -> white ply, ply[1] -> black ply
         if len(clean_ply) == 3 and '-' in clean_ply[2]:
             moves.append([clean_ply[2]])
     return moves
