@@ -110,5 +110,5 @@ def space_control(board, side):
             logger.debug(f'square in adjacent to enemy king: {sq}')
             king_attacks.add([sq, sq])
 
-        
+    logger.debug(f'End of space control:\nopponent_sq: {opponent_squares}\nking attacks: {king_attacks}')
     return opponent_squares, king_attacks
