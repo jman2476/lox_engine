@@ -21,4 +21,4 @@ class TestPGNWriter(unittest.TestCase):
             pgnw.add_move(game.turn, mv)
             game.parse_move(mv)
 
-        pgnw.final_result(game.winner)
+        pgnw.final_result()
