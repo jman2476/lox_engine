@@ -28,11 +28,16 @@ def get_evaluation(board):
     sq_black, k_atk_black = space_control(board, 'black')
     sq_white, k_atk_white = space_control(board, 'white')
     opp_sq_balance = 0
+    king_attack = 0
     for sq in sq_white.squares:
         opp_sq_balance += sq_white.squares[sq] 
     for sq in sq_black.squares:
         opp_sq_balance -= sq_black.squares[sq]
-    eval += 0.5 * opp_sq_balance
+    for sq in k_atk_black.squares:
+        king_attack -= k_atk_black.squares[sq]
+    for sq in k_atk_white.squares:
+        king_attack += k_atk_white.squares[sq]
+    eval += 0.5 * opp_sq_balance + king_attack
     return eval
 
 def count_material(w_pieces, b_pieces):
