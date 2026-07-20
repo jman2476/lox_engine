@@ -80,9 +80,29 @@ class TestControlledSquares(unittest.TestCase):
 
     def test_find_knight_control(self):
         print('-----Test: knight squares controlled-----')
+        game = Game()
+        game.start_new_game()
+        attacked = ControlledSquares()
 
-        self.assertEqual(0,1)
+        for p in game.board.white():
+            if isinstance(p, Knight):
+                attacked += find_squares_controlled(game.board, p)
+        
+        print('Knight squares attacked: ')
+        print(attacked)
+        expected = {
+            'a3': 1, 'c3': 1,
+            'f3': 1, 'h3': 1,
+            'e2': 1, 'd2': 1
+        }
 
+        for sq in attacked.squares:
+            self.assertTrue(sq in expected)
+            self.assertTrue(
+                attacked.squares[sq] == expected[sq]
+            )
+        # self.assertEqual(0,1)
+        
 
     def test_find_rook_control(self):
         print('-----Test: rook squares controlled-----')

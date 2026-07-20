@@ -22,9 +22,11 @@ class TestEvaluation(unittest.TestCase):
         print(f'black: {k_safety[1].squares}')
         
         board.setup_by_fen('KQ6/8/8/8/8/2N5/6b1/k5b1 w - - 0 1')
+        print(board)
         for s in sides:
             _, k_atk = space_control(board, s)
             k_safety.append(k_atk)
+            print(f'side: {s}, {k_atk}')
         
         print('King attacks: ')
         print(f'white: {k_safety[2].squares}')
