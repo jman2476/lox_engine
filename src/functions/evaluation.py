@@ -28,11 +28,18 @@ def get_evaluation(board):
     sq_black, k_atk_black = space_control(board, 'black')
     sq_white, k_atk_white = space_control(board, 'white')
     opp_sq_balance = 0
+    king_attack = 0
     for sq in sq_white.squares:
         opp_sq_balance += sq_white.squares[sq] 
     for sq in sq_black.squares:
         opp_sq_balance -= sq_black.squares[sq]
-    eval += 0.5 * opp_sq_balance
+    king_attack += calc_king_safety(board, 'white', k_atk_white)
+    king_attack -= calc_king_safety(board, 'black', k_atk_black)
+    # for sq in k_atk_black.squares:
+    #     king_attack -= k_atk_black.squares[sq]
+    # for sq in k_atk_white.squares:
+    #     king_attack += k_atk_white.squares[sq]
+    eval += 0.5 * (opp_sq_balance + king_attack)
     return eval
 
 def count_material(w_pieces, b_pieces):
@@ -48,14 +55,33 @@ def count_material(w_pieces, b_pieces):
 
     return w_material - b_material
      
-def calc_king_safety(board, side):
+def calc_king_safety(board, side, k_attack:ControlledSquares):
     # For each square around the king, how many times is each attacked
     # by enemy side minus how many times is the square defended?
     # If squaes attacked, how many squares are free for the king to move into?
     # From those free squares, how many more squares are free in the path?
-    
     ## Currently folded into space_control function as second return
-    pass
+    sq_atk_count = 0
+    for sq in k_attack.squares:
+        sq_atk_count += k_attack.squares[sq]
+    opp_pieces = board.black() if side == 'white' else board.white()
+    opp_king = next((p for p in opp_pieces if p.name == 'king'))
+    k_file_idx, k_rank_idx = (board.files.index(opp_king.file),
+                              opp_king.rank)
+    king_adj = [(board.files[f], r) for f in 
+                [k_file_idx+i for i in range(-1,2)] 
+               for r in [k_rank_idx+i for i in range(-1,2)]
+               if ((f != k_file_idx or r != k_rank_idx)
+                   and f in range(0,8)
+                   and r in range(1,9))]
+    open_squares = 1
+    for sq in king_adj:
+        if board.check_square_filled(sq[0], sq[1])[0]:
+            open_squares += 1
+    coefficient = open_squares/len(king_adj)
+    logger.info(f'Calc {side} king safety:\nsq_atk_cnt: {sq_atk_count}\nopen_squares: {open_squares} of {len(king_adj)}\ncoefficient: {coefficient}\nresult: {sq_atk_count/coefficient}')
+
+    return sq_atk_count/coefficient
 
 def piece_activity(board, piece):
     # What can this piece do if it could make multiple moves?
