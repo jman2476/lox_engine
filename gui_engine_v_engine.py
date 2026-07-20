@@ -11,7 +11,8 @@ import time
 import logging
 import sys
 import multiprocessing as mp
-
+import matplotlib
+matplotlib.use('QtAgg')
 logging.getLogger('matplotlib').setLevel(logging.WARNING)
 import matplotlib.pyplot as plt
 import numpy as np

@@ -1,4 +1,6 @@
-from matplotlib import pyplot as plt
+import matplotlib
+matplotlib.use('QtAgg')
+import matplotlib.pyplot as plt
 
 x = range(0,10)
 y = range(0,10)
