@@ -37,7 +37,7 @@ def get_evaluation(board):
         king_attack -= k_atk_black.squares[sq]
     for sq in k_atk_white.squares:
         king_attack += k_atk_white.squares[sq]
-    eval += 0.5 * opp_sq_balance + king_attack
+    eval += 0.5 * (opp_sq_balance + king_attack)
     return eval
 
 def count_material(w_pieces, b_pieces):
