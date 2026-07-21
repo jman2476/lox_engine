@@ -85,25 +85,40 @@ def calc_king_safety(board, side, k_attack:ControlledSquares):
 
     return sq_atk_count/coefficient
 
+# Currently not in use: Do not use
+# I'm not sure what I want to do with this, how to calculate it
+# and I think my time is better spent elsewhere
 def piece_activity(board, piece):
     # What can this piece do if it could make multiple moves?
     # Check 1,2,3,4,5 moves, piece that can be captured is value/10 points
     # Each multi move calculated as capture._value/(10*moves)
     # Return array
+    from src.game import Game
     dummy_game = Game()
     dummy_game.board = copy.deepcopy(board)
     dummy_game.turn = piece.side
-    dummy_piece = dummy_game.board[piece.file][piece.rank]
     next_moves = find_available_moves(dummy_game, dummy_piece)
+    captures = 0
+    capture_value = 0
     
     if len(next_moves) == 0:
         print(f'{piece} has no moves')
         return []
     for mv in next_moves:
-        ...
+        if 'x' in mv or 'X' in mv:
+            captures += 1
+        dummy_piece = dummy_game.board[piece.file][piece.rank]
+        dummy_game_cp = copy.deepcopy(dummy_game)
+        dummy_game_cp.parse_move(mv)
+        dummy_game_cp.turn = piece.side
+        file, rank = dummy_piece.file, dummy_piece.rank
+        new_dummy_piece = dummy_game_cp.board[file, rank]
+        next_next_moves = find_available_moves(dummy_game_cp, new_dummy_piece)
 
     pass
-
+# Currently not in use: Do not use
+# I'm not sure what I want to do with this, how to calculate it
+# and I think my time is better spent elsewhere
 def piece_activity_recursion(game, piece, moves, depth:int=0):
     if depth > 3: return moves
     new_moves = []
