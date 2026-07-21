@@ -199,3 +199,6 @@ class NaiveEngine(Engine):
         
     def set_threads(self, pieces):
         return len(pieces)
+    
+    def depth_search(self):
+        return
