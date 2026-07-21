@@ -6,7 +6,7 @@ from src.piece import (
     Knight, Rook
     )
 import copy
-from src.game import Game
+# from src.game import Game
 from src.functions.parse import parse_square
 from src.functions.find_moves import find_available_moves
 from src.functions.squares_controlled import (
@@ -41,7 +41,7 @@ def get_evaluation(board):
     #     king_attack -= k_atk_black.squares[sq]
     # for sq in k_atk_white.squares:
     #     king_attack += k_atk_white.squares[sq]
-    eval += 0.5 * (opp_sq_balance + king_attack)
+    eval += 0.1 * (opp_sq_balance + king_attack)
     return eval
 
 def count_material(w_pieces, b_pieces):
@@ -95,11 +95,17 @@ def piece_activity(board, piece):
     dummy_game.turn = piece.side
     dummy_piece = dummy_game.board[piece.file][piece.rank]
     next_moves = find_available_moves(dummy_game, dummy_piece)
+    
+    if len(next_moves) == 0:
+        print(f'{piece} has no moves')
+        return []
+    for mv in next_moves:
+        ...
 
     pass
 
 def piece_activity_recursion(game, piece, moves, depth:int=0):
-    if depth > 5: return moves
+    if depth > 3: return moves
     new_moves = []
     return piece_activity_recursion(game, piece, new_moves, depth+1)
 
