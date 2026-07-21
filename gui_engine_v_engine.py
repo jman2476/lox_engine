@@ -16,6 +16,7 @@ matplotlib.use('QtAgg')
 logging.getLogger('matplotlib').setLevel(logging.WARNING)
 import matplotlib.pyplot as plt
 import numpy as np
+from src.functions.save_game import save_game
 
 def main():
     pygame.init()
@@ -147,6 +148,12 @@ def main():
             plt.suptitle(f'Naive Engine: Multi vs Single Process Move Time\nResult: {game_board.game.winner}\nFinal FEN: {game_board.game.fen}')
             print(f'Max time for black: {max(b_engine_d_t)}s')
             print(f'Min times: white {min(w_engine_d_t)}s, black {min(b_engine_d_t)}s')
+            # fig_num = plt.get_fignums()
+            # print(f'Fig nums: {fig_num}')
+            save_game(game_board.game.pgnw.path,
+                      game_board.game.pgnw.title, 
+                      plt.figure(num=1),
+                      f'{game_board.game.w_player} v {game_board.game.b_player}-{game_board.game.pgnw.date}')
             plt.show()
     pygame.quit()
 
