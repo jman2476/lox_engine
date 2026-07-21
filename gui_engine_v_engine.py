@@ -37,7 +37,8 @@ def main():
     # engine for white will use multprocessing
     engine_naive_w = NaiveEngine(game_board.game, 'white')
     game_board.game.b_player = 'Naive Single Proc'
-    game_board.game.w_player = 'Naive Multi Proc'
+    game_board.game.w_player = 'Naive Single Proc'
+    # game_board.game.w_player = 'Naive Multi Proc'
 
     b_engine_d_t = []
     w_engine_d_t = []
@@ -87,7 +88,8 @@ def main():
         if (game_board.game.winner is None and elapsed > 2.0):
             if game_board.game.turn == 'white':
                 start = time.perf_counter_ns()
-                mv = engine_naive_w.play_move_multi_proc()
+                # mv = engine_naive_w.play_move_multi_proc()
+                mv = engine_naive_w.play_best_move()
                 end = time.perf_counter_ns()
                 logger.info(f'white move {mv} took {end - start}s')
                 w_engine_d_t.append(end - start)
