@@ -37,6 +37,8 @@ def get_evaluation(board):
         opp_sq_balance -= sq_black.squares[sq]
     king_attack += calc_king_safety(board, 'white', k_atk_white)
     king_attack -= calc_king_safety(board, 'black', k_atk_black)
+    # for p in board.white():
+    #     piece_activity(board, p)
     # for sq in k_atk_black.squares:
     #     king_attack -= k_atk_black.squares[sq]
     # for sq in k_atk_white.squares:
@@ -97,6 +99,7 @@ def piece_activity(board, piece):
     dummy_game = Game()
     dummy_game.board = copy.deepcopy(board)
     dummy_game.turn = piece.side
+    dummy_piece = dummy_game.board.board[piece.file][piece.rank]
     next_moves = find_available_moves(dummy_game, dummy_piece)
     captures = 0
     capture_value = 0
@@ -107,12 +110,11 @@ def piece_activity(board, piece):
     for mv in next_moves:
         if 'x' in mv or 'X' in mv:
             captures += 1
-        dummy_piece = dummy_game.board[piece.file][piece.rank]
         dummy_game_cp = copy.deepcopy(dummy_game)
         dummy_game_cp.parse_move(mv)
         dummy_game_cp.turn = piece.side
         file, rank = dummy_piece.file, dummy_piece.rank
-        new_dummy_piece = dummy_game_cp.board[file, rank]
+        new_dummy_piece = dummy_game_cp.board.board[file][rank]
         next_next_moves = find_available_moves(dummy_game_cp, new_dummy_piece)
 
     pass
