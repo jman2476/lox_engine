@@ -12,6 +12,6 @@ def save_game(pgn_path, pgn_title, plt_Figure:Figure, game_title):
         dir_path = os.path.abspath(f'./tmp_played_games/{game_title}')
     os.mkdir(dir_path)
     pgn_abs_path = os.path.join(dir_path, pgn_title)
-    plt_abs_path = os.path.join(dir_path, f'{pgn_title[-4:]}-plot.png')
+    plt_abs_path = os.path.join(dir_path, f'{pgn_title[:-4]}-plot.png')
     shutil.copy(pgn_path, pgn_abs_path)
     plt_Figure.savefig(plt_abs_path)
