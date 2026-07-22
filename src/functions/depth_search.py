@@ -36,7 +36,12 @@ def depth_search(engine:Engine, depth:int=3, breadth:int=5, level:int=0, moves:l
         for i, mv in enumerate(move_list):
             if i >= breadth: break
             moves.append(DepthChart(mv[0], mv[1], level, engine.game.turn))
+    i = 0
+    total = len(moves)
     for mv in moves:
+        if level == 0:
+            logger.info(f'Move {i} of {total}')
+            i += 1
         engine_copy = copy.deepcopy(engine)
         engine_copy.game.parse_move(mv.move)
         ranked_moves = get_ranked_moves(engine_copy)
