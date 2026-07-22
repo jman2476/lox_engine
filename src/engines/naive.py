@@ -114,7 +114,7 @@ class NaiveEngine(Engine):
 
 
     def eval_move(self, move:str) -> tuple[str,float]:
-        logging.info(f'start eval_move: {move}')
+        # logging.info(f'start eval_move: {move}')
         eval = 0
         game_copy = copy.deepcopy(self.game)
         try: 
@@ -128,10 +128,10 @@ class NaiveEngine(Engine):
                     eval = 0.0
                 case _:
                     eval = get_evaluation(game_copy.board)
-            logging.debug(f'finish eval move: {move} -> {eval}')
+            # logging.debug(f'finish eval move: {move} -> {eval}')
             return move, eval
         except:
-            logging.debug(f'move {eval} fail eval_move')
+            # logging.debug(f'move {eval} fail eval_move')
             return 
     
 

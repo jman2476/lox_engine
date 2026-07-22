@@ -36,7 +36,7 @@ def depth_search(engine:Engine, depth:int=3, breadth:int=5, level:int=0, moves:l
         for i, mv in enumerate(move_list):
             if i >= breadth: break
             moves.append(DepthChart(mv[0], mv[1], level, engine.game.turn))
-    i = 0
+    i = 1
     total = len(moves)
     for mv in moves:
         if level == 0:
@@ -63,7 +63,7 @@ def depth_search_multiprocess(engine:Engine, depth:int=3, breadth:int=5, level:i
         for i, mv in enumerate(move_list):
             if i >= breadth: break
             moves.append(DepthChart(mv[0], mv[1], level, engine.game.turn))
-    i = 0
+    i = 1
     total = len(moves)
     for mv in moves:
         if level == 0:
