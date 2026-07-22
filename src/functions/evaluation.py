@@ -79,7 +79,7 @@ def calc_king_safety(board, side, k_attack:ControlledSquares):
         if board.check_square_filled(sq[0], sq[1])[0]:
             open_squares += 1
     coefficient = open_squares/len(king_adj)
-    logger.info(f'Calc {side} king safety:\nsq_atk_cnt: {sq_atk_count}\nopen_squares: {open_squares} of {len(king_adj)}\ncoefficient: {coefficient}\nresult: {sq_atk_count/coefficient}')
+    # logger.info(f'Calc {side} king safety:\nsq_atk_cnt: {sq_atk_count}\nopen_squares: {open_squares} of {len(king_adj)}\ncoefficient: {coefficient}\nresult: {sq_atk_count/coefficient}')
 
     return sq_atk_count/coefficient
 
@@ -122,9 +122,9 @@ def space_control(board, side):
         # if a square is on opponent's side of board, add to set
         all_squares += find_squares_controlled(board, piece)
     
-    logger.debug(f'all_squares for {side}: {all_squares}')
+    # logger.debug(f'all_squares for {side}: {all_squares}')
     for sq in all_squares.squares:
-        logger.debug(f'{sq}, {all_squares.squares[sq]}')
+        # logger.debug(f'{sq}, {all_squares.squares[sq]}')
         _, rank = parse_square(sq)
         if rank > 4 and side == 'white':
             opponent_squares.squares[sq] = all_squares.squares[sq]

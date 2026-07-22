@@ -91,7 +91,7 @@ def main():
                 # mv = engine_naive_w.play_move_multi_proc()
                 mv = engine_naive_w.play_best_move()
                 end = time.perf_counter_ns()
-                logger.info(f'white move {mv} took {end - start}s')
+                # logger.info(f'white move {mv} took {end - start}s')
                 w_engine_d_t.append(end - start)
                 print(game_board.game.board)
 
@@ -99,7 +99,7 @@ def main():
                 start = time.perf_counter_ns()
                 mv = engine_naive_b.play_best_move()
                 end = time.perf_counter_ns()
-                logger.info(f'black move {mv} took {end - start}s')
+                # logger.info(f'black move {mv} took {end - start}s')
                 b_engine_d_t.append(end - start)
                 print(game_board.game.board)
                 
