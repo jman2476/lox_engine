@@ -26,12 +26,12 @@ class DepthChart():
             depth_node = DepthChart(mv[0], mv[1], prev_level + 1, side)
             self.next.append(depth_node)
 
-def depth_search(engine:Engine, depth:int=3, breadth:int=5, level:int=0, moves:list[DepthChart]=[]) -> list[DepthChart]:
+def depth_search(engine:Engine, depth:int=3, breadth:int=5, level:int=0, moves:list[DepthChart]=[], multi_proc:bool=False) -> list[DepthChart]:
     logger.info(f'Starting depth={depth} search: side {engine.game.turn} level {level}, moves: {moves}')
     if depth <= level: return moves
     if moves == []:
         logger.info('empty move list')
-        move_list = get_ranked_moves(engine)
+        move_list = get_ranked_moves(engine, multi_proc)
         logger.info(f'Had empty move list, new move list: {move_list}')
         for i, mv in enumerate(move_list):
             if i >= breadth: break
@@ -44,7 +44,7 @@ def depth_search(engine:Engine, depth:int=3, breadth:int=5, level:int=0, moves:l
             i += 1
         engine_copy = copy.deepcopy(engine)
         engine_copy.game.parse_move(mv.move)
-        ranked_moves = get_ranked_moves(engine_copy)
+        ranked_moves = get_ranked_moves(engine_copy, multi_proc)
         if len(ranked_moves) < breadth:
             mv.set_next(ranked_moves, level, engine_copy.game.turn)
         else:
@@ -52,11 +52,38 @@ def depth_search(engine:Engine, depth:int=3, breadth:int=5, level:int=0, moves:l
         depth_search(engine_copy, depth, breadth, level+1, mv.next)
     return moves
 
+# Alter this to us multiprocessing
+def depth_search_multiprocess(engine:Engine, depth:int=3, breadth:int=5, level:int=0, moves:list[DepthChart]=[], multi_proc:bool=False) -> list[DepthChart]:
+    logger.info(f'Starting depth={depth} search: side {engine.game.turn} level {level}, moves: {moves}')
+    if depth <= level: return moves
+    if moves == []:
+        logger.info('empty move list')
+        move_list = get_ranked_moves(engine, multi_proc)
+        logger.info(f'Had empty move list, new move list: {move_list}')
+        for i, mv in enumerate(move_list):
+            if i >= breadth: break
+            moves.append(DepthChart(mv[0], mv[1], level, engine.game.turn))
+    i = 0
+    total = len(moves)
+    for mv in moves:
+        if level == 0:
+            logger.info(f'Move {i} of {total}')
+            i += 1
+        engine_copy = copy.deepcopy(engine)
+        engine_copy.game.parse_move(mv.move)
+        ranked_moves = get_ranked_moves(engine_copy, multi_proc)
+        if len(ranked_moves) < breadth:
+            mv.set_next(ranked_moves, level, engine_copy.game.turn)
+        else:
+            mv.set_next(ranked_moves[:breadth], level, engine_copy.game.turn)
+        depth_search(engine_copy, depth, breadth, level+1, mv.next)
+    return moves
 
-
-def get_ranked_moves(engine:Engine)->list[tuple[str, float]]:
+def get_ranked_moves(engine:Engine, multi_proc:bool=False)->list[tuple[str, float]]:
     match engine:
         case NaiveEngine():
+            if multi_proc:
+                engine.rank_moves_process()
             return engine.rank_moves()
         case _:
             raise TypeError('Depth search: Unknown engine type')

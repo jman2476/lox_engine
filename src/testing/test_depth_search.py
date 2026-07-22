@@ -14,7 +14,7 @@ class TestDepthSearch(unittest.TestCase):
         game.start_new_game()
         engine = NaiveEngine(game, 'white', 5)
         start = time.perf_counter()
-        move_charts = depth_search(engine=engine, depth=5, level=0)
+        move_charts = depth_search(engine=engine, depth=3, level=0, multi_proc=True)
         end = time.perf_counter()
         print(move_charts)
         print(f'Depth search time taken: {end-start}s')

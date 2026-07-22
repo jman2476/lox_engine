@@ -97,7 +97,7 @@ class NaiveEngine(Engine):
 
     def eval_moves_mp(self, move_list:list[str]) -> list[tuple[str, float]]:
         # In future, may need to migrate to passing game state directly, and use starmap instead of imap
-        logging.info(f'start eval moves mp for {self.game.turn}')
+        # logging.info(f'start eval moves mp for {self.game.turn}')
         move_evaluation = []
         pieces = self.white if self.game.turn == 'white' else self.black
 
@@ -105,8 +105,8 @@ class NaiveEngine(Engine):
             move_evaluation = list(p.imap_unordered(
                 self.eval_move, move_list
             ))
-            logging.debug(f'finished move_evaluation: {move_evaluation}')
-        logging.debug(f'Leaving pool context')
+            # logging.debug(f'finished move_evaluation: {move_evaluation}')
+        # logging.debug(f'Leaving pool context')
         print('Evaluated moves:')
         print(f'{move_evaluation}')
         print('-----------------')
