@@ -13,7 +13,7 @@ class DepthChart():
         self.next:list[DepthChart] = []
 
     def __repr__(self):
-        base_str = f'[{self.move}, {self.eval}, {self.side}]:\n'
+        base_str = f'[{self.move}, {self.eval}, {self.side}, {self.level}]:\n'
         for node in self.next:
             node_str = f'-{node}'
             for i in range(node.level):
@@ -122,11 +122,11 @@ def crawl_depth_chart(chart:DepthChart) -> list[str, float, str, float, str]:
 
 
 def get_best_move(engine:Engine, depth:int, breadth:int, multiproc:bool=False):
-    move_charts = depth_search(engine, depth, breadth, multi_proc=multiproc)
+    move_charts = depth_search(engine, depth, breadth, moves=[], multi_proc=multiproc)
     best_move = None 
     for ch in move_charts:
         crawl = crawl_depth_chart(ch)
-        print(crawl)
+        print('crawl', crawl)
         if best_move is None:
             best_move = crawl
         elif best_move[4] > crawl[4] and engine.game.turn == 'white':
@@ -134,4 +134,5 @@ def get_best_move(engine:Engine, depth:int, breadth:int, multiproc:bool=False):
         elif best_move[4] < crawl[4] and engine.game.turn == 'black':
             best_move = ch
 
+    print(f'Playing {best_move[0]} for {engine.game.turn}')
     engine.game.parse_move(best_move[0])
