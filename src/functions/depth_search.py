@@ -1,5 +1,6 @@
 from src.engines.naive import NaiveEngine
 from src.engines.engine import Engine
+from multiprocessing import Pool
 import copy
 import logging
 logger = logging.getLogger(__name__)
@@ -63,21 +64,40 @@ def depth_search_multiprocess(engine:Engine, depth:int=3, breadth:int=5, level:i
         for i, mv in enumerate(move_list):
             if i >= breadth: break
             moves.append(DepthChart(mv[0], mv[1], level, engine.game.turn))
-    i = 1
-    total = len(moves)
-    for mv in moves:
-        if level == 0:
-            logger.info(f'Move {i} of {total}')
-            i += 1
-        engine_copy = copy.deepcopy(engine)
-        engine_copy.game.parse_move(mv.move)
-        ranked_moves = get_ranked_moves(engine_copy, multi_proc)
-        if len(ranked_moves) < breadth:
-            mv.set_next(ranked_moves, level, engine_copy.game.turn)
-        else:
-            mv.set_next(ranked_moves[:breadth], level, engine_copy.game.turn)
-        depth_search(engine_copy, depth, breadth, level+1, mv.next)
-    return moves
+
+    move_args = [(engine, mv, depth, breadth, 
+                  level, multi_proc) for mv in moves]
+
+    with Pool() as p:
+        new_moves = list(p.imap_unordered(
+            search_process, move_args
+        ))
+    # for mv in moves:
+    #     if level == 0:
+    #         logger.info(f'Move {i} of {total}')
+    #         i += 1
+    #     engine_copy = copy.deepcopy(engine)
+    #     engine_copy.game.parse_move(mv.move)
+    #     ranked_moves = get_ranked_moves(engine_copy, multi_proc)
+    #     if len(ranked_moves) < breadth:
+    #         mv.set_next(ranked_moves, level, engine_copy.game.turn)
+    #     else:
+    #         mv.set_next(ranked_moves[:breadth], level, engine_copy.game.turn)
+    #     depth_search(engine_copy, depth, breadth, level+1, mv.next)
+    return new_moves
+
+
+def search_process(engine:Engine, mv:DepthChart, depth:int, breadth:int, level:int, multi_proc:bool):
+    engine_copy = copy.deepcopy(engine)
+    engine_copy.game.parse_move(mv.move)
+    ranked_moves = get_ranked_moves(engine_copy, multi_proc)
+    if len(ranked_moves) < breadth:
+        mv.set_next(ranked_moves, level, engine_copy.game.turn)
+    else:
+        mv.set_next(ranked_moves[:breadth], level, engine_copy.game.turn)
+    depth_search(engine_copy, depth, breadth, level+1, mv.next)
+    return mv
+
 
 def get_ranked_moves(engine:Engine, multi_proc:bool=False)->list[tuple[str, float]]:
     match engine:
