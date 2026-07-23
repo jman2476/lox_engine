@@ -119,4 +119,19 @@ def crawl_depth_chart(chart:DepthChart) -> list[str, float, str, float, str]:
                 result[3] = min(mv_crawl[3], result[3])
 
     return result
-        
+
+
+def get_best_move(engine:Engine, depth:int, breadth:int, multiproc:bool=False):
+    move_charts = depth_search(engine, depth, breadth, multi_proc=multiproc)
+    best_move = None 
+    for ch in move_charts:
+        crawl = crawl_depth_chart(ch)
+        print(crawl)
+        if best_move is None:
+            best_move = crawl
+        elif best_move[4] > crawl[4] and engine.game.turn == 'white':
+            best_move = ch
+        elif best_move[4] < crawl[4] and engine.game.turn == 'black':
+            best_move = ch
+
+    engine.game.parse_move(best_move[0])
