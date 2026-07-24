@@ -60,7 +60,7 @@ class NaiveEngine(Engine):
                         if self.game.turn == 'white' else
                         sorted(moves, 
                                key=self.__eval_from_tuple__, reverse=False))
-        print(f'Ranked engine moves for {self.game.turn}: {ranked_moves[:10]}')
+        # print(f'Ranked engine moves for {self.game.turn}: {ranked_moves[:10]}')
         # logger.info(f'choose_move end {datetime.now()}')
         if len(ranked_moves) > 10:
             return ranked_moves[:10]
@@ -107,9 +107,9 @@ class NaiveEngine(Engine):
             ))
             # logging.debug(f'finished move_evaluation: {move_evaluation}')
         # logging.debug(f'Leaving pool context')
-        print('Evaluated moves:')
-        print(f'{move_evaluation}')
-        print('-----------------')
+        # print('Evaluated moves:')
+        # print(f'{move_evaluation}')
+        # print('-----------------')
         return [m for m in move_evaluation if m is not None]
 
 

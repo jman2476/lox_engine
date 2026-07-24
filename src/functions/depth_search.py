@@ -68,8 +68,8 @@ def depth_search_multiprocess(engine:Engine, depth:int=3, breadth:int=5, level:i
     move_args = [(engine, mv, depth, breadth, 
                   level, multi_proc) for mv in moves]
 
-    with Pool() as p:
-        new_moves = list(p.imap_unordered(
+    with Pool(16) as p:
+        new_moves = list(p.starmap(
             search_process, move_args
         ))
     # for mv in moves:
@@ -150,8 +150,8 @@ def get_best_move(engine:Engine, depth:int, breadth:int, multiproc:bool=False):
         if best_move is None:
             best_move = crawl
         elif best_move[4] > crawl[4] and engine.game.turn == 'white':
-            best_move = ch
+            best_move = crawl
         elif best_move[4] < crawl[4] and engine.game.turn == 'black':
-            best_move = ch
+            best_move = crawl
     print(f'Playing {best_move[0]} for {engine.game.turn}')
     engine.game.parse_move(best_move[0])

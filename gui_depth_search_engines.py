@@ -61,84 +61,91 @@ def main():
     # exit button
     exit_button = ExitButton()
 
-    while running:
-        
-        events = pygame.event.get()
-        for event in events:
-            if event.type == pygame.QUIT:
-                running = False
+    game_start = time.perf_counter()
+    try:
+        while running:
             
-            # Mouse down
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                mouse_pos = pygame.mouse.get_pos()
-                if mouse_pos[0] > 1180 and mouse_pos[1] < 20:
-                    exit_button.on_click()
-    
-        # Engine implementation
-        if (game_board.game.winner is None and elapsed > 2.0):
-            if game_board.game.turn == 'white':
-                start = time.perf_counter_ns()
-                get_best_move(engine_naive_w, depth, breadth, True)
-                end = time.perf_counter_ns()
-                w_engine_d_t.append(end - start)
-                print(game_board.game.board)
-
-            elif game_board.game.turn == 'black':
-                start = time.perf_counter_ns()
-                get_best_move(engine_naive_b, depth, breadth, True)
-                end = time.perf_counter_ns()
-                b_engine_d_t.append(end - start)
-                print(game_board.game.board)
+            events = pygame.event.get()
+            for event in events:
+                if event.type == pygame.QUIT:
+                    running = False
                 
-        screen.fill("purple")
-        w_clock = Clock(datetime.timedelta(minutes=5), Color.WHITE)
-        b_clock = Clock(datetime.timedelta(minutes=5), Color.BLACK)
-        fen_box.set_text(game_board.game.fen)
-        fen_box.render()
+                # Mouse down
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    mouse_pos = pygame.mouse.get_pos()
+                    if mouse_pos[0] > 1180 and mouse_pos[1] < 20:
+                        exit_button.on_click()
         
-        w_clock.render()
-        b_clock.render()
+            # Engine implementation
+            if (game_board.game.winner is None and elapsed > 2.0):
+                if game_board.game.turn == 'white':
+                    start = time.perf_counter_ns()
+                    get_best_move(engine_naive_w, depth, breadth, True)
+                    end = time.perf_counter_ns()
+                    w_engine_d_t.append(end - start)
+                    print(game_board.game.board)
 
-        screen.blit(w_clock, (900, 50))
-        screen.blit(b_clock, (900, 140))
-        screen.blit(error_box, (900, 230))
-        screen.blit(exit_button, (1180, 0))
-        
-        # RENDER GAME HERE
-        game_board.render_board(Color.WHITE, piece_font)
-        
-        screen.blit(game_board, (50, 50))
-        # if move_piece is not None:
-        #     screen.blit(move_piece, (move_piece.x_pos, move_piece.y_pos))
-        screen.blit(piece_font.render("Hello, chess. Time: %.3f, Turn: %s"%(elapsed, game_board.game.turn), 0, "black"), (10,10))
-        screen.blit(fen_box, (50, 855))
-        screen.blit(fen_button, (950, 855))
-        pygame.display.flip()
+                elif game_board.game.turn == 'black':
+                    start = time.perf_counter_ns()
+                    get_best_move(engine_naive_b, depth, breadth, True)
+                    end = time.perf_counter_ns()
+                    b_engine_d_t.append(end - start)
+                    print(game_board.game.board)
+                    
+            screen.fill("purple")
+            w_clock = Clock(datetime.timedelta(minutes=5), Color.WHITE)
+            b_clock = Clock(datetime.timedelta(minutes=5), Color.BLACK)
+            fen_box.set_text(game_board.game.fen)
+            fen_box.render()
+            
+            w_clock.render()
+            b_clock.render()
 
-        dt = clock.tick(60)/1000
-        elapsed += dt
-        
-        if game_board.game.winner is not None:
-            running = False
-            w_x = range(1, len(w_engine_d_t) + 1)
-            b_x = range(1, len(b_engine_d_t) + 1)
-            plt.plot(w_x, w_engine_d_t, 'ro-', label="white")
-            plt.plot(b_x, b_engine_d_t, 'bx-', label='black')
-            plt.xlabel('move')
-            plt.ylabel('elapsed time (ns)')
-            plt.xticks(range(1,len(w_engine_d_t), 5))
-            plt.autoscale(True, 'y')
-            plt.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
-            plt.minorticks_on()
-            plt.suptitle(f'Depth Search: Single vs Single Process Move Time\nResult: {game_board.game.winner}\nFinal FEN: {game_board.game.fen}')
-            print(f'Max time for black: {max(b_engine_d_t)}s')
-            print(f'Min times: white {min(w_engine_d_t)}s, black {min(b_engine_d_t)}s')
-            save_game(game_board.game.pgnw.path,
-                      game_board.game.pgnw.title, 
-                      plt.figure(num=1),
-                      f'{game_board.game.w_player} v {game_board.game.b_player}-{game_board.game.pgnw.date}')
-            plt.show()
-    pygame.quit()
+            screen.blit(w_clock, (900, 50))
+            screen.blit(b_clock, (900, 140))
+            screen.blit(error_box, (900, 230))
+            screen.blit(exit_button, (1180, 0))
+            
+            # RENDER GAME HERE
+            game_board.render_board(Color.WHITE, piece_font)
+            
+            screen.blit(game_board, (50, 50))
+            # if move_piece is not None:
+            #     screen.blit(move_piece, (move_piece.x_pos, move_piece.y_pos))
+            screen.blit(piece_font.render("Hello, chess. Time: %.3f, Turn: %s"%(elapsed, game_board.game.turn), 0, "black"), (10,10))
+            screen.blit(fen_box, (50, 855))
+            screen.blit(fen_button, (950, 855))
+            pygame.display.flip()
+
+            dt = clock.tick(60)/1000
+            elapsed += dt
+            
+            if game_board.game.winner is not None:
+                running = False
+                w_x = range(1, len(w_engine_d_t) + 1)
+                b_x = range(1, len(b_engine_d_t) + 1)
+                plt.plot(w_x, w_engine_d_t, 'ro-', label="white")
+                plt.plot(b_x, b_engine_d_t, 'bx-', label='black')
+                plt.xlabel('move')
+                plt.ylabel('elapsed time (ns)')
+                plt.xticks(range(1,len(w_engine_d_t), 5))
+                plt.autoscale(True, 'y')
+                plt.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
+                plt.minorticks_on()
+                plt.suptitle(f'Depth Search: Single vs Single Process Move Time\nResult: {game_board.game.winner}\nFinal FEN: {game_board.game.fen}')
+                print(f'Max time for black: {max(b_engine_d_t)}s')
+                print(f'Min times: white {min(w_engine_d_t)}s, black {min(b_engine_d_t)}s')
+                save_game(game_board.game.pgnw.path,
+                        game_board.game.pgnw.title, 
+                        plt.figure(num=1),
+                        f'{game_board.game.w_player} v {game_board.game.b_player}-{game_board.game.pgnw.date}')
+                plt.show()
+    except Exception as e:
+        print(f'Exception found: {e}')
+    finally:
+        game_end = time.perf_counter()
+        print(f'Game took {(game_end - game_start)/60} min')
+        pygame.quit()
 
 if __name__ == '__main__':
     mp.set_start_method('forkserver')
