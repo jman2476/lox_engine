@@ -153,6 +153,5 @@ def get_best_move(engine:Engine, depth:int, breadth:int, multiproc:bool=False):
             best_move = ch
         elif best_move[4] < crawl[4] and engine.game.turn == 'black':
             best_move = ch
-
     print(f'Playing {best_move[0]} for {engine.game.turn}')
     engine.game.parse_move(best_move[0])

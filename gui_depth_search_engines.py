@@ -78,14 +78,14 @@ def main():
         if (game_board.game.winner is None and elapsed > 2.0):
             if game_board.game.turn == 'white':
                 start = time.perf_counter_ns()
-                get_best_move(engine_naive_w, depth, breadth, False)
+                get_best_move(engine_naive_w, depth, breadth, True)
                 end = time.perf_counter_ns()
                 w_engine_d_t.append(end - start)
                 print(game_board.game.board)
 
             elif game_board.game.turn == 'black':
                 start = time.perf_counter_ns()
-                get_best_move(engine_naive_b, depth, breadth, False)
+                get_best_move(engine_naive_b, depth, breadth, True)
                 end = time.perf_counter_ns()
                 b_engine_d_t.append(end - start)
                 print(game_board.game.board)
