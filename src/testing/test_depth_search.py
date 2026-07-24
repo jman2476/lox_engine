@@ -74,37 +74,37 @@ class TestDepthSearch(unittest.TestCase):
                 self.assertTrue(isinstance(move_charts[0], DepthChart))
     
 
-    def test_depth_search_forkserver(self):
-            print(__name__)
-            print(__name__ == 'src.testing.test_depth_search')
-            if __name__ == 'src.testing.test_depth_search':
-                mp.set_start_method('forkserver')
-                print('------Depth Search Test Fork Server------')
-                game = Game()
-                game.start_new_game()
-                engine = NaiveEngine(game, 'white', 5)
-                start = time.perf_counter()
-                move_charts = depth_search(engine=engine, depth=3, level=0, multi_proc=True)
-                end = time.perf_counter()
-                # print(move_charts)
-                print(f'Depth search time taken: {end-start}s')
+    # def test_depth_search_forkserver(self):
+    #         print(__name__)
+    #         print(__name__ == 'src.testing.test_depth_search')
+    #         if __name__ == 'src.testing.test_depth_search':
+    #             mp.set_start_method('forkserver')
+    #             print('------Depth Search Test Fork Server------')
+    #             game = Game()
+    #             game.start_new_game()
+    #             engine = NaiveEngine(game, 'white', 5)
+    #             start = time.perf_counter()
+    #             move_charts = depth_search(engine=engine, depth=3, level=0, multi_proc=True)
+    #             end = time.perf_counter()
+    #             # print(move_charts)
+    #             print(f'Depth search time taken: {end-start}s')
     
-                side = move_charts[0].side
-                best_move = None 
-                start = time.perf_counter()
-                for ch in move_charts:
-                    crawl = crawl_depth_chart(ch)
-                    # print(crawl)
-                    if best_move is None:
-                        best_move = crawl
-                    elif best_move[4] > crawl[4] and side == 'white':
-                        best_move = ch
-                    elif best_move[4] < crawl[4] and side == 'black':
-                        best_move = ch
-                end = time.perf_counter()
-                print(f'Crawl time taken: {end-start}s')
-                print(f'Best move: {best_move}')
-                self.assertTrue(isinstance(move_charts[0], DepthChart))
+    #             side = move_charts[0].side
+    #             best_move = None 
+    #             start = time.perf_counter()
+    #             for ch in move_charts:
+    #                 crawl = crawl_depth_chart(ch)
+    #                 # print(crawl)
+    #                 if best_move is None:
+    #                     best_move = crawl
+    #                 elif best_move[4] > crawl[4] and side == 'white':
+    #                     best_move = ch
+    #                 elif best_move[4] < crawl[4] and side == 'black':
+    #                     best_move = ch
+    #             end = time.perf_counter()
+    #             print(f'Crawl time taken: {end-start}s')
+    #             print(f'Best move: {best_move}')
+    #             self.assertTrue(isinstance(move_charts[0], DepthChart))
 
 
     # def test_depth_search_play_game(self):

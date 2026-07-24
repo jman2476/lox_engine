@@ -43,7 +43,7 @@ class NaiveEngine(Engine):
         ranked_moves = (sorted(available, key=self.__eval_from_tuple__, reverse=True) 
                         if self.game.turn == 'white' else
                         sorted(available, key=self.__eval_from_tuple__, reverse=False))
-        print(f'Ranked engine moves for {self.game.turn}: {ranked_moves[:10]}')
+        # print(f'Ranked engine moves for {self.game.turn}: {ranked_moves[:10]}')
         # logger.info(f'choose_move end {datetime.now()}')
         if len(ranked_moves) > 10:
             return ranked_moves[:10]
