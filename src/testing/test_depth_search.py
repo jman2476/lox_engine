@@ -213,10 +213,10 @@ class TestDepthSearch(unittest.TestCase):
             end = time.perf_counter()
             print(f'Game took {(end-start)/60} min')
 
-    def test_depth_search_m5(self):
-        print('======Play M5 position depth search======')
+    def test_depth_search_m2(self):
+        print('======Play -M1 position depth search======')
         game = Game()
-        game.read_fen('6k1/R7/8/2P5/4P3/6P1/P4P2/6K1 w - - 1 32')
+        game.read_fen('6r1/ppp2k1p/8/4p3/3nP3/5P2/PPPP1P1P/RNB1K1R1 b Q - 2 13')
         engine_w = NaiveEngine(game, 'white', 5)
         engine_b = NaiveEngine(game, 'black', 5)
 
@@ -232,6 +232,34 @@ class TestDepthSearch(unittest.TestCase):
                     case 'black':
                         get_best_move(engine_b, 3, 5, False)
                 print('Postmove board: \n',game.board)
+        except Exception as e:
+            print(f'Exception found: {e}')
+        finally:
+            end = time.perf_counter()
+            print(f'Game took {(end-start)/60} min')
+            
+
+    def test_depth_search_m5(self):
+        print('======Play M5 position depth search======')
+        game = Game()
+        game.read_fen('6k1/R7/8/2P5/4P3/6P1/P4P2/6K1 w - - 1 32')
+        engine_w = NaiveEngine(game, 'white', 5)
+        engine_b = NaiveEngine(game, 'black', 5)
+
+        start = time.perf_counter()
+        try:
+            while game.winner is None:
+                print(f'Premove board: {game.turn}\'s turn\n',game.board)
+                print(game)
+                # print(f'White\'s board: {engine_w.game.turn}\'s turn\n{engine_w.game.board}')
+                # print(f'Black\'s board: {engine_b.game.turn}\'s turn\n{engine_b.game.board}')
+                match game.turn:
+                    case 'white':
+                        get_best_move(engine_w, 3, 5, False)
+                    case 'black':
+                        get_best_move(engine_b, 3, 5, False)
+                print('Postmove board: \n',game.board)
+                print(game)
         except Exception as e:
             print(f'Exception found: {e}')
         finally:

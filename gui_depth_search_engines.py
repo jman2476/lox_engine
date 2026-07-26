@@ -33,7 +33,7 @@ def main():
 
     # Depth search parameters
     depth = 3
-    breadth = 5
+    breadth = 3
 
     # Engine setup
     engine_naive_b = NaiveEngine(game_board.game, 'black', depth)

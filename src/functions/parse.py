@@ -66,7 +66,7 @@ def parse_pawn_capture(game, string):
 
         if not piece_at_target[0]:
             if game.en_passent == match[2]:
-                print('Google en passent\nHoly hell!')
+                # print('Google en passent\nHoly hell!')
                 piece_at_target = move_board.check_square_filled(file, rank + direction)
                 if not piece_at_target[0]:
                     raise ValueError(
