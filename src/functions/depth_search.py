@@ -159,10 +159,18 @@ def get_best_move(engine:Engine, depth:int, breadth:int, multiproc:bool=False):
         elif crawl[1] == -1000.0 and crawl[2] == 'black':
             best_move = crawl
             break
-        elif best_move[4] < crawl[4] and engine.game.turn == 'white':
+        elif best_move[3] < crawl[3] and engine.game.turn == 'white':
             best_move = crawl
-        elif best_move[4] > crawl[4] and engine.game.turn == 'black':
+        elif best_move[3] > crawl[3] and engine.game.turn == 'black':
             best_move = crawl
     print(f'Playing {best_move[0]} for {engine.game.turn}')
     engine.game.parse_move(best_move[0])
     print(engine.game)
+    return
+    charts = []
+    for ch in move_charts:
+        crawl = crawl_depth_chart(ch)
+        print('crawl', crawl)
+        if crawl[4] is None:
+            crawl[4] = crawl[1]
+            crawl[5]
