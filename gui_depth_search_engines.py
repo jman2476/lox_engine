@@ -23,6 +23,11 @@ def main():
     pygame.init()
     pygame.mouse.set_visible(True)
     screen = pygame.display.set_mode((1200, 900))
+    # Depth search parameters
+    depth = 5
+    breadth = 5
+    multi_proc = True
+
     clock = pygame.time.Clock()
     running = True
     dt = 0
@@ -31,9 +36,6 @@ def main():
     piece_font = pygame.font.Font("./fonts/nishiki-teki/NishikiTeki-MVxaJ.ttf", 30)
     error_box = ErrorBox()
 
-    # Depth search parameters
-    depth = 3
-    breadth = 4
 
     # Engine setup
     engine_naive_b = NaiveEngine(game_board.game, 'black', depth)

@@ -1,0 +1,10 @@
+[Event ""]
+[Site "Lox Engine"]
+[Date "2026-07-27"]
+[Round "1"]
+[White "Human"]
+[Black "Human"]
+[Result "1-0"]
+
+32. f4 Kh8 33. g4 Kg8 34. a4 Kh8 35. a5 Kg8 36. Ra7b7 Kh8 
+37. a6 Kg8 38. a7 Kh8 39. a8=Q# 1-0

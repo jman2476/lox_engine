@@ -15,12 +15,12 @@ from src.pgn_writer import PGNWriter
 import copy
 
 class Game():
-    def __init__(self,  w_player='Human', b_player='Human'):
+    def __init__(self,  w_player='Human', b_player='Human', event=""):
         self.board = Board()
         self.w_player = w_player
         self.b_player = b_player
         self.fen = ''
-        self.pgnw = PGNWriter(self)
+        self.pgnw = PGNWriter(self, event)
         self.turn = 'white'
         self.halfmove = 0
         self.fullmove = 1

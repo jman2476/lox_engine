@@ -68,7 +68,7 @@ def depth_search_multiprocess(engine:Engine, depth:int=3, breadth:int=5, level:i
     move_args = [(engine, mv, depth, breadth, 
                   level, multi_proc) for mv in moves]
 
-    with Pool(16) as p:
+    with Pool() as p:
         new_moves = list(p.starmap(
             search_process, move_args
         ))
@@ -143,30 +143,24 @@ def crawl_depth_chart(chart:DepthChart) -> list[str, float, str, float, str]:
 
 def get_best_move(engine:Engine, depth:int, breadth:int, multiproc:bool=False):
     move_charts = depth_search(engine, depth, breadth, moves=[], multi_proc=multiproc)
-    # best_move = None 
-    # for ch in move_charts:
-    #     crawl = crawl_depth_chart(ch)
-    #     print('crawl', crawl, crawl[1], crawl[2])
-    #     if best_move is None:
-    #         best_move = crawl
-    #         if crawl[1] == 1000.0 and crawl[2] == 'white':
-    #             break
-    #         elif crawl[1] == -1000.0 and crawl[2] == 'black':
-    #             break
-    #     elif crawl[1] == 1000.0 and crawl[2] == 'white':
-    #         best_move = crawl
-    #         break
-    #     elif crawl[1] == -1000.0 and crawl[2] == 'black':
-    #         best_move = crawl
-    #         break
-    #     elif best_move[3] < crawl[3] and engine.game.turn == 'white':
-    #         best_move = crawl
-    #     elif best_move[3] > crawl[3] and engine.game.turn == 'black':
-    #         best_move = crawl
-    # print(f'Playing {best_move[0]} for {engine.game.turn}')
-    # engine.game.parse_move(best_move[0])
-    # print(engine.game)
-    # return
+    crawls = []
+    for ch in move_charts:
+        crawl = crawl_depth_chart(ch)
+        print('crawl', crawl)
+        if crawl[3] is None:
+            crawl[3] = crawl[1]
+            crawl[4] = crawl[2]
+        crawls.append(crawl)
+    if crawls[0][2] == 'white':
+        best = max(crawls, key=lambda c: c[3])
+    else:
+        best = min(crawls, key=lambda c: c[3])
+    print(f'Playing {best[0]} for {best[2]}')
+    engine.game.parse_move(best[0])
+    print(engine.game)
+
+def get_best_move_mp(engine:Engine, depth:int, breadth:int, multiproc:bool=False):
+    move_charts = depth_search_multiprocess(engine, depth, breadth, moves=[], multi_proc=multiproc)
     crawls = []
     for ch in move_charts:
         crawl = crawl_depth_chart(ch)
