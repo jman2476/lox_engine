@@ -17,22 +17,24 @@ logging.getLogger('matplotlib').setLevel(logging.WARNING)
 import matplotlib.pyplot as plt
 import numpy as np
 from src.functions.save_game import save_game
-from src.functions.depth_search import get_best_move
+from src.functions.depth_search import get_best_move, get_best_move_mp
 
 def main():
     pygame.init()
     pygame.mouse.set_visible(True)
     screen = pygame.display.set_mode((1200, 900))
     # Depth search parameters
-    depth = 5
+    depth = 3
     breadth = 5
-    multi_proc = True
+    multi_proc = False
+    depth_mp = not multi_proc
+    event = f'Depth: {depth}, Breadth: {breadth}, MP: {multi_proc} Engine, {depth_mp} Search'
 
     clock = pygame.time.Clock()
     running = True
     dt = 0
     elapsed = 0
-    game_board = GUI_Board()
+    game_board = GUI_Board(event=event)
     piece_font = pygame.font.Font("./fonts/nishiki-teki/NishikiTeki-MVxaJ.ttf", 30)
     error_box = ErrorBox()
 
@@ -81,16 +83,22 @@ def main():
             # Engine implementation
             if (game_board.game.winner is None and elapsed > 2.0):
                 if game_board.game.turn == 'white':
-                    start = time.perf_counter_ns()
-                    get_best_move(engine_naive_w, depth, breadth, True)
-                    end = time.perf_counter_ns()
+                    start = time.perf_counter()
+                    if multi_proc:
+                        get_best_move(engine_naive_w, depth, breadth, True)
+                    else:
+                        get_best_move_mp(engine_naive_w, depth, breadth)
+                    end = time.perf_counter()
                     w_engine_d_t.append(end - start)
                     print(game_board.game.board)
 
                 elif game_board.game.turn == 'black':
-                    start = time.perf_counter_ns()
-                    get_best_move(engine_naive_b, depth, breadth, True)
-                    end = time.perf_counter_ns()
+                    start = time.perf_counter()
+                    if multi_proc:
+                        get_best_move(engine_naive_b, depth, breadth, True)
+                    else:
+                        get_best_move_mp(engine_naive_b, depth, breadth)
+                    end = time.perf_counter()
                     b_engine_d_t.append(end - start)
                     print(game_board.game.board)
                     
