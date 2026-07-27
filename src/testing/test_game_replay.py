@@ -26,3 +26,8 @@ class TestGameReplay(unittest.TestCase):
         file_name = 'pawn_move_test.pgn'
         print('Pawn move example game')
         # game_replay(file_name, './test_pgn_files')
+
+    def test_replay_depth_search_game(self):
+        file_name = 'Human v Human-2026-07-26-15:24:50.504187.pgn'
+        print('Depth Search Naive vs Naive \'26')
+        game_replay(file_name, './test_pgn_files')

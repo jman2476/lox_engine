@@ -18,6 +18,7 @@ class PGNWriter():
         self.line_length = 0
 
     def create_file(self):
+        print(f'Creating pgn file {self.path}')
         with open(self.path, 'w', encoding='UTF-8') as file:
             file.write(self.format_header())
 

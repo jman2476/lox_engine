@@ -43,7 +43,7 @@ class NaiveEngine(Engine):
         ranked_moves = (sorted(available, key=self.__eval_from_tuple__, reverse=True) 
                         if self.game.turn == 'white' else
                         sorted(available, key=self.__eval_from_tuple__, reverse=False))
-        print(f'Ranked engine moves for {self.game.turn}: {ranked_moves[:10]}')
+        # print(f'Ranked engine moves for {self.game.turn}: {ranked_moves[:10]}')
         # logger.info(f'choose_move end {datetime.now()}')
         if len(ranked_moves) > 10:
             return ranked_moves[:10]
@@ -60,7 +60,7 @@ class NaiveEngine(Engine):
                         if self.game.turn == 'white' else
                         sorted(moves, 
                                key=self.__eval_from_tuple__, reverse=False))
-        print(f'Ranked engine moves for {self.game.turn}: {ranked_moves[:10]}')
+        # print(f'Ranked engine moves for {self.game.turn}: {ranked_moves[:10]}')
         # logger.info(f'choose_move end {datetime.now()}')
         if len(ranked_moves) > 10:
             return ranked_moves[:10]
@@ -97,7 +97,7 @@ class NaiveEngine(Engine):
 
     def eval_moves_mp(self, move_list:list[str]) -> list[tuple[str, float]]:
         # In future, may need to migrate to passing game state directly, and use starmap instead of imap
-        logging.info(f'start eval moves mp for {self.game.turn}')
+        # logging.info(f'start eval moves mp for {self.game.turn}')
         move_evaluation = []
         pieces = self.white if self.game.turn == 'white' else self.black
 
@@ -105,16 +105,16 @@ class NaiveEngine(Engine):
             move_evaluation = list(p.imap_unordered(
                 self.eval_move, move_list
             ))
-            logging.debug(f'finished move_evaluation: {move_evaluation}')
-        logging.debug(f'Leaving pool context')
-        print('Evaluated moves:')
-        print(f'{move_evaluation}')
-        print('-----------------')
+            # logging.debug(f'finished move_evaluation: {move_evaluation}')
+        # logging.debug(f'Leaving pool context')
+        # print('Evaluated moves:')
+        # print(f'{move_evaluation}')
+        # print('-----------------')
         return [m for m in move_evaluation if m is not None]
 
 
     def eval_move(self, move:str) -> tuple[str,float]:
-        logging.info(f'start eval_move: {move}')
+        # logging.info(f'start eval_move: {move}')
         eval = 0
         game_copy = copy.deepcopy(self.game)
         try: 
@@ -128,10 +128,10 @@ class NaiveEngine(Engine):
                     eval = 0.0
                 case _:
                     eval = get_evaluation(game_copy.board)
-            logging.debug(f'finish eval move: {move} -> {eval}')
+            # logging.debug(f'finish eval move: {move} -> {eval}')
             return move, eval
         except:
-            logging.debug(f'move {eval} fail eval_move')
+            # logging.debug(f'move {eval} fail eval_move')
             return 
     
 
@@ -199,3 +199,6 @@ class NaiveEngine(Engine):
         
     def set_threads(self, pieces):
         return len(pieces)
+    
+    def depth_search(self):
+        return
