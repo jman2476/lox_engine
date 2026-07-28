@@ -91,6 +91,7 @@ def main():
                     end = time.perf_counter()
                     w_engine_d_t.append(end - start)
                     print(game_board.game.board)
+                    print(f'Move duration: {start-end}')
 
                 elif game_board.game.turn == 'black':
                     start = time.perf_counter()
@@ -101,6 +102,8 @@ def main():
                     end = time.perf_counter()
                     b_engine_d_t.append(end - start)
                     print(game_board.game.board)
+                    print(f'Move duration: {start-end}')
+
                     
             screen.fill("purple")
             w_clock = Clock(datetime.timedelta(minutes=5), Color.WHITE)
@@ -131,6 +134,9 @@ def main():
             elapsed += dt
             
             if game_board.game.winner is not None:
+                game_end = time.perf_counter()
+                duration = (game_end - game_start)/60
+                print(f'Game took {duration} min')
                 running = False
                 w_x = range(1, len(w_engine_d_t) + 1)
                 b_x = range(1, len(b_engine_d_t) + 1)
@@ -142,7 +148,7 @@ def main():
                 plt.autoscale(True, 'y')
                 plt.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
                 plt.minorticks_on()
-                plt.suptitle(f'Depth Search: Single vs Single Process Move Time\nResult: {game_board.game.winner}\nFinal FEN: {game_board.game.fen}')
+                plt.suptitle(f'Depth Search: Single vs Single Process Move Time\nResult: {game_board.game.winner}  Duration: {duration} min\nFinal FEN: {game_board.game.fen}')
                 print(f'Max time for black: {max(b_engine_d_t)}s')
                 print(f'Min times: white {min(w_engine_d_t)}s, black {min(b_engine_d_t)}s')
                 save_game(game_board.game.pgnw.path,
@@ -153,8 +159,6 @@ def main():
     except Exception as e:
         print(f'Exception found: {e}')
     finally:
-        game_end = time.perf_counter()
-        print(f'Game took {(game_end - game_start)/60} min')
         pygame.quit()
 
 if __name__ == '__main__':
