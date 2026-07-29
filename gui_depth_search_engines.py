@@ -149,8 +149,8 @@ def main():
                 plt.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
                 plt.minorticks_on()
                 plt.suptitle(f'Depth Search: Single vs Single Process Move Time\nResult: {game_board.game.winner}  Duration: {duration:.2f} min\nFinal FEN: {game_board.game.fen}')
-                print(f'Max time for black: {max(b_engine_d_t)}s')
-                print(f'Min times: white {min(w_engine_d_t)}s, black {min(b_engine_d_t)}s')
+                print(f'Max times:\n    white: {max(w_engine_d_t)}s\n    black: {max(b_engine_d_t)}s')
+                print(f'Min times:\n    white {min(w_engine_d_t)}s\n    black {min(b_engine_d_t)}s')
                 save_game(game_board.game.pgnw.path,
                         game_board.game.pgnw.title, 
                         plt.figure(num=1),
