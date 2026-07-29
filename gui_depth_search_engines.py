@@ -91,7 +91,7 @@ def main():
                     end = time.perf_counter()
                     w_engine_d_t.append(end - start)
                     print(game_board.game.board)
-                    print(f'Move duration: {start-end}')
+                    print(f'Move duration: {end - start}')
 
                 elif game_board.game.turn == 'black':
                     start = time.perf_counter()
@@ -102,7 +102,7 @@ def main():
                     end = time.perf_counter()
                     b_engine_d_t.append(end - start)
                     print(game_board.game.board)
-                    print(f'Move duration: {start-end}')
+                    print(f'Move duration: {end - start}')
 
                     
             screen.fill("purple")
