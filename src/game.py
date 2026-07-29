@@ -20,7 +20,7 @@ class Game():
         self.w_player = w_player
         self.b_player = b_player
         self.fen = ''
-        self.pgnw = PGNWriter(self, event)
+        self.pgnw = PGNWriter(self, event=event)
         self.turn = 'white'
         self.halfmove = 0
         self.fullmove = 1
