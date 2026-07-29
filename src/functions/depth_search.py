@@ -72,18 +72,6 @@ def depth_search_multiprocess(engine:Engine, depth:int=3, breadth:int=5, level:i
         new_moves = list(p.starmap(
             search_process, move_args
         ))
-    # for mv in moves:
-    #     if level == 0:
-    #         logger.info(f'Move {i} of {total}')
-    #         i += 1
-    #     engine_copy = copy.deepcopy(engine)
-    #     engine_copy.game.parse_move(mv.move)
-    #     ranked_moves = get_ranked_moves(engine_copy, multi_proc)
-    #     if len(ranked_moves) < breadth:
-    #         mv.set_next(ranked_moves, level, engine_copy.game.turn)
-    #     else:
-    #         mv.set_next(ranked_moves[:breadth], level, engine_copy.game.turn)
-    #     depth_search(engine_copy, depth, breadth, level+1, mv.next)
     return new_moves
 
 
