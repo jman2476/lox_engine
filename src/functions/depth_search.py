@@ -6,12 +6,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 class DepthChart():
-    def __init__(self, move:str, eval:float, level:int, side:str):
+    def __init__(self, move:str, eval:float, level:int, side:str, fen:str):
         self.move = move
         self.eval = eval
         self.level = level
         self.side = side
         self.next:list[DepthChart] = []
+        self.fen = fen
 
     def __repr__(self):
         base_str = f'[{self.move}, {self.eval}, {self.side}, {self.level}]:\n'
@@ -22,9 +23,9 @@ class DepthChart():
             base_str += node_str
         return base_str
 
-    def set_next(self, moves:list[tuple[str,float]], prev_level:int, side:str):
+    def set_next(self, moves:list[tuple[str,float]], prev_level:int, side:str, fen:str):
         for mv in moves:
-            depth_node = DepthChart(mv[0], mv[1], prev_level + 1, side)
+            depth_node = DepthChart(mv[0], mv[1], prev_level + 1, side, fen)
             self.next.append(depth_node)
 
 def depth_search(engine:Engine, depth:int=3, breadth:int=5, level:int=0, moves:list[DepthChart]=[], multi_proc:bool=False) -> list[DepthChart]:
@@ -36,7 +37,7 @@ def depth_search(engine:Engine, depth:int=3, breadth:int=5, level:int=0, moves:l
         logger.info(f'Had empty move list, new move list: {move_list}')
         for i, mv in enumerate(move_list):
             if i >= breadth: break
-            moves.append(DepthChart(mv[0], mv[1], level, engine.game.turn))
+            moves.append(DepthChart(mv[0], mv[1], level, engine.game.turn, engine.game.fen))
     i = 1
     total = len(moves)
     for mv in moves:
@@ -47,9 +48,9 @@ def depth_search(engine:Engine, depth:int=3, breadth:int=5, level:int=0, moves:l
         engine_copy.game.parse_move(mv.move, False, True)
         ranked_moves = get_ranked_moves(engine_copy, multi_proc)
         if len(ranked_moves) < breadth:
-            mv.set_next(ranked_moves, level, engine_copy.game.turn)
+            mv.set_next(ranked_moves, level, engine_copy.game.turn, engine_copy.game.fen)
         else:
-            mv.set_next(ranked_moves[:breadth], level, engine_copy.game.turn)
+            mv.set_next(ranked_moves[:breadth], level, engine_copy.game.turn, engine_copy.game.fen)
         depth_search(engine_copy, depth, breadth, level+1, mv.next)
     return moves
 
