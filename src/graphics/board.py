@@ -17,9 +17,9 @@ class GUI_Board(pygame.Surface):
     _ranks = [i for i in range(0,8)]
     _files = list("abcdefgh")
  
-    def __init__(self):
+    def __init__(self, event=""):
         pygame.Surface.__init__(self, (800, 800))
-        self.game = Game()
+        self.game = Game(event=event)
         self.game.start_new_game()
         self.board = {
                 "a":[[None, None] for i in range(0,8)],

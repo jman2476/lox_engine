@@ -4,9 +4,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 class PGNWriter():
-    def __init__(self, game, dir:str='./recent_games'):
+    def __init__(self, game, dir:str='./recent_games', event:str=""):
         self.game = game
-        self.event = ''
+        self.event = event
         self.site = 'Lox Engine'
         self.date = dt.datetime.now()
         self.round = '1'

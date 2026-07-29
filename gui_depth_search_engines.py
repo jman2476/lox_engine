@@ -17,23 +17,27 @@ logging.getLogger('matplotlib').setLevel(logging.WARNING)
 import matplotlib.pyplot as plt
 import numpy as np
 from src.functions.save_game import save_game
-from src.functions.depth_search import get_best_move
+from src.functions.depth_search import get_best_move, get_best_move_mp
 
 def main():
     pygame.init()
     pygame.mouse.set_visible(True)
     screen = pygame.display.set_mode((1200, 900))
+    # Depth search parameters
+    depth = 5
+    breadth = 5
+    multi_proc = False
+    depth_mp = not multi_proc
+    event = f'Depth: {depth}, Breadth: {breadth}, MP: {multi_proc} Engine, {depth_mp} Search'
+
     clock = pygame.time.Clock()
     running = True
     dt = 0
     elapsed = 0
-    game_board = GUI_Board()
+    game_board = GUI_Board(event=event)
     piece_font = pygame.font.Font("./fonts/nishiki-teki/NishikiTeki-MVxaJ.ttf", 30)
     error_box = ErrorBox()
 
-    # Depth search parameters
-    depth = 3
-    breadth = 4
 
     # Engine setup
     engine_naive_b = NaiveEngine(game_board.game, 'black', depth)
@@ -79,18 +83,27 @@ def main():
             # Engine implementation
             if (game_board.game.winner is None and elapsed > 2.0):
                 if game_board.game.turn == 'white':
-                    start = time.perf_counter_ns()
-                    get_best_move(engine_naive_w, depth, breadth, True)
-                    end = time.perf_counter_ns()
+                    start = time.perf_counter()
+                    if multi_proc:
+                        get_best_move(engine_naive_w, depth, breadth, True)
+                    else:
+                        get_best_move_mp(engine_naive_w, depth, breadth)
+                    end = time.perf_counter()
                     w_engine_d_t.append(end - start)
                     print(game_board.game.board)
+                    print(f'Move duration: {end - start}')
 
                 elif game_board.game.turn == 'black':
-                    start = time.perf_counter_ns()
-                    get_best_move(engine_naive_b, depth, breadth, True)
-                    end = time.perf_counter_ns()
+                    start = time.perf_counter()
+                    if multi_proc:
+                        get_best_move(engine_naive_b, depth, breadth, True)
+                    else:
+                        get_best_move_mp(engine_naive_b, depth, breadth)
+                    end = time.perf_counter()
                     b_engine_d_t.append(end - start)
                     print(game_board.game.board)
+                    print(f'Move duration: {end - start}')
+
                     
             screen.fill("purple")
             w_clock = Clock(datetime.timedelta(minutes=5), Color.WHITE)
@@ -121,20 +134,23 @@ def main():
             elapsed += dt
             
             if game_board.game.winner is not None:
+                game_end = time.perf_counter()
+                duration = (game_end - game_start)/60
+                print(f'Game took {duration} min')
                 running = False
                 w_x = range(1, len(w_engine_d_t) + 1)
                 b_x = range(1, len(b_engine_d_t) + 1)
                 plt.plot(w_x, w_engine_d_t, 'ro-', label="white")
                 plt.plot(b_x, b_engine_d_t, 'bx-', label='black')
                 plt.xlabel('move')
-                plt.ylabel('elapsed time (ns)')
+                plt.ylabel('elapsed time (s)')
                 plt.xticks(range(1,len(w_engine_d_t), 5))
                 plt.autoscale(True, 'y')
                 plt.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
                 plt.minorticks_on()
-                plt.suptitle(f'Depth Search: Single vs Single Process Move Time\nResult: {game_board.game.winner}\nFinal FEN: {game_board.game.fen}')
-                print(f'Max time for black: {max(b_engine_d_t)}s')
-                print(f'Min times: white {min(w_engine_d_t)}s, black {min(b_engine_d_t)}s')
+                plt.suptitle(f'Depth Search: Single vs Single Process Move Time\nResult: {game_board.game.winner}  Duration: {duration:.2f} min\nFinal FEN: {game_board.game.fen}')
+                print(f'Max times:\n    white: {max(w_engine_d_t)}s\n    black: {max(b_engine_d_t)}s')
+                print(f'Min times:\n    white {min(w_engine_d_t)}s\n    black {min(b_engine_d_t)}s')
                 save_game(game_board.game.pgnw.path,
                         game_board.game.pgnw.title, 
                         plt.figure(num=1),
@@ -143,8 +159,6 @@ def main():
     except Exception as e:
         print(f'Exception found: {e}')
     finally:
-        game_end = time.perf_counter()
-        print(f'Game took {(game_end - game_start)/60} min')
         pygame.quit()
 
 if __name__ == '__main__':
