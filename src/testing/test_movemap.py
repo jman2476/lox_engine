@@ -18,6 +18,7 @@ class TestMoveMap(unittest.TestCase):
         chart_list = depth_search(engine_w, 2, 3)
         print(f'Chart list len: {len(chart_list)}')
         for chart in chart_list:
+            print(chart.move, chart.eval)
             engine_w.move_map.parse_depth_chart(chart)
 
         print(f'Move map:\n{engine_w.move_map}')

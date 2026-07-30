@@ -13,8 +13,9 @@ logging.basicConfig(filename='naive-engine.log', level=logging.INFO)
 
 class NaiveEngine(Engine):
     def __init__(self, game:Game, side:str, depth:int=4):
+        from src.move_map import MoveMap
         super().__init__(game, side, 'naive', depth)
-        self.move_map = {}
+        self.move_map = MoveMap()
         # loggerinfo('Naive engine instantiated')
 
     def find_moves(self, game=None):
@@ -119,6 +120,11 @@ class NaiveEngine(Engine):
         game_copy = copy.deepcopy(self.game)
         try: 
             game_copy.parse_move(move, False, True)
+            new_fen = game_copy.fen
+            new_turn = game_copy.turn
+            if new_fen in self.move_map:
+                if self.move_map[new_fen].turn == new_turn:
+                    return move, self.move_map[new_fen].eval
             match game_copy.winner:
                 case '1-0':
                     eval = 1000.0

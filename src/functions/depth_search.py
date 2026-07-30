@@ -64,7 +64,7 @@ def depth_search_multiprocess(engine:Engine, depth:int=3, breadth:int=5, level:i
         logger.info(f'Had empty move list, new move list: {move_list}')
         for i, mv in enumerate(move_list):
             if i >= breadth: break
-            moves.append(DepthChart(mv[0], mv[1], level, engine.game.turn))
+            moves.append(DepthChart(mv[0], mv[1], level, engine.game.turn, engine.game.fen))
 
     move_args = [(engine, mv, depth, breadth, 
                   level, multi_proc) for mv in moves]
@@ -81,9 +81,9 @@ def search_process(engine:Engine, mv:DepthChart, depth:int, breadth:int, level:i
     engine_copy.game.parse_move(mv.move, False, True)
     ranked_moves = get_ranked_moves(engine_copy, multi_proc)
     if len(ranked_moves) < breadth:
-        mv.set_next(ranked_moves, level, engine_copy.game.turn)
+        mv.set_next(ranked_moves, level, engine_copy.game.turn, engine_copy.game.fen)
     else:
-        mv.set_next(ranked_moves[:breadth], level, engine_copy.game.turn)
+        mv.set_next(ranked_moves[:breadth], level, engine_copy.game.turn, engine_copy.game.fen)
     depth_search(engine_copy, depth, breadth, level+1, mv.next)
     return mv
 
