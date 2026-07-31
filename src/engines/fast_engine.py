@@ -3,7 +3,10 @@ from src.game import Game
 from typing import Literal
 
 class FastEngine(Engine):
-    def __init__(self, game:Game, side:Literal['white', 'black'], search:tuple[int,int]=(2,2)):
+    def __init__(self, game:Game, 
+                 side:Literal['white', 'black'], 
+                 search:tuple[int,int]=(2,2)):
         super().__init__(game, side, 'fast', search[0])
         self.breadth = search[1]
         self.search = search
+        self.eval_memo:dict[str, float] = {}
