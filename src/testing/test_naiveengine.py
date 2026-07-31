@@ -17,4 +17,12 @@ class TestNaive(unittest.TestCase):
         next_pos_key = engine.fen_to_key()
 
         self.assertEqual(next_pos_key, 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3')
+
+    def test_eval_dict(self):
+        game = Game()
+        game.start_new_game()
+        engine = NaiveEngine(game, 'white')
+        moves = engine.rank_moves()
+        print(moves)
+        print(engine.eval_dict)
         
