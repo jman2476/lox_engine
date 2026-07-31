@@ -16,6 +16,7 @@ class NaiveEngine(Engine):
         from src.move_map import MoveMap
         super().__init__(game, side, 'naive', depth)
         self.move_map = MoveMap()
+        self.eval_dict = {}
         # loggerinfo('Naive engine instantiated')
 
     def find_moves(self, game=None):
@@ -208,3 +209,7 @@ class NaiveEngine(Engine):
     
     def depth_search(self):
         return
+
+    def fen_to_key(self)->str:
+        parts = self.game.fen.split()
+        return ' '.join([parts[i] for i in range(0,4)])
