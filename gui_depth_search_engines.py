@@ -25,7 +25,7 @@ def main():
     screen = pygame.display.set_mode((1200, 900))
     # Depth search parameters
     depth = 5
-    breadth = 5
+    breadth = 2
     multi_proc = False
     depth_mp = not multi_proc
     event = f'Depth: {depth}, Breadth: {breadth}, MP: {multi_proc} Engine, {depth_mp} Search'
