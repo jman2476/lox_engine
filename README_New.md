@@ -20,7 +20,6 @@ Lox Engine is a Python based chess platform with command-line and graphical inte
     <figcaption>Graphical interface for Lox Engine</figcaption>
 </figure>
 
-![Command-line Lox interface](/imgs/lox_tui_screenshot.png)
-![Graphical Lox interface](/imgs/lox_gui_screenshot.png)
+
 
 ## Why did you build another chess engine?
