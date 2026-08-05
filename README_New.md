@@ -21,7 +21,7 @@ Lox Engine is a Python based chess platform with command-line and graphical inte
 </figure>
 
 ## Why did I build another chess engine?
-Chess engines like [Stockfish](https://stockfishchess.org/) and [Leela Chess Zero](https://lczero.org/) are practically the gods and truthsayers of the chess world, but their logic is so far beyond our comprehension of the game that we can only guess the reasoning behind their move choices. I set out to build Lox Engine to illustrate the difference in gameplay and board knowledge that comes with designing engines with different levels of computer chess theory. The parallel aim of this project is to develop a comparison between how humans perceive the chess board and how computers see it.
+Chess engines like [Stockfish](https://stockfishchess.org/) and [Leela Chess Zero](https://lczero.org/) are practically the gods and truthsayers of the chess world, but their logic is so far beyond our comprehension of the game that we can only guess the reasoning behind their move choices. I set out to build Lox Engine to illustrate the difference in gameplay and board knowledge that comes with designing engines with different levels of computer chess theory. The parallel aim of this project is to develop a comparison between how humans and computers perceive the chess board.
 
 The engines, in order of strength:
 - Fool: Makes random moves, imitating how a beginner might play after learning the rules of chess.
