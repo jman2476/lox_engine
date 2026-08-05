@@ -33,3 +33,23 @@ The engines, in order of strength:
 - Fast: Based on the Naive engine, but reoptimized to play quickly and look ahead more efficiently.
 - Informed (upcoming): First engine in the series to be based on existing theory of computer chess, which will incorporate fewer human-oriented evaluation algorithms.
 - Machine Learning (upcoming): Will use machine learning to learn the best way to play chess, and designed to emulate the best chess engines on the market today. 
+
+
+## Quick Start: I want to play NOW!
+
+### 1. Prerequisits
+
+## Usage: What else can I do with it?
+
+### TUI vs GUI
+
+### Play from a position
+
+### Watch the engine play itself
+
+### Replay a game
+
+### Postgame Analysis
+
+## Contributing: 
+### Lemme touch that code!
