@@ -181,7 +181,7 @@ def main():
         screen.blit(game_board, (50, 50))
         if move_piece is not None:
             screen.blit(move_piece, (move_piece.x_pos, move_piece.y_pos))
-        screen.blit(piece_font.render("Hello, chess. Time: %.3f, Turn: %s"%(elapsed, game_board.game.turn), 0, "black"), (10,10))
+        screen.blit(piece_font.render("Welcome to Lox Engine. Time: %.3f, Turn: %s"%(elapsed, game_board.game.turn), 0, "black"), (10,10))
         # screen.blit(piece_font.render("Fen: %s"%(game_board.game.fen), 0, "black"), (10,850))
         screen.blit(fen_box, (50, 855))
         screen.blit(fen_button, (950, 855))
