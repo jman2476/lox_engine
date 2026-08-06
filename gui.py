@@ -1,14 +1,12 @@
 import pygame
-from src.graphics.board import GUI_Board, Color, PromotionOptions
+from src.graphics.board import GUI_Board, Color
 from src.graphics.clock import Clock
 from src.graphics.error_box import ErrorBox
 from src.graphics.button import ExitButton, SetFenButton
 from src.graphics.mouse import get_square, move_notation, play_move
-from src.engines.fool import FoolEngine
 from src.engines.naive import NaiveEngine
 from src.graphics.fen_box import FenBox
 import datetime
-import logging
 import sys
 
 def main():
@@ -22,16 +20,9 @@ def main():
     game_board = GUI_Board()
     piece_font = pygame.font.Font("./fonts/nishiki-teki/NishikiTeki-MVxaJ.ttf", 30)
     error_box = ErrorBox()
-    game_turn = game_board.game.turn
 
     # Engine setup
-    engine_fool = FoolEngine(game_board.game, 'black')
     engine_naive = NaiveEngine(game_board.game, 'black')
-
-    # Logging
-    # logger = logging.getLogger('find_moves')
-    # logging.basicConfig(filename='find_moves.log', level=logging.DEBUG)
-    # logger.info(f'Starting log {datetime.datetime.now()}')
 
     # FenBox
     fen_box = FenBox()
@@ -46,11 +37,6 @@ def main():
     dragging = False
     move_piece = None
     init_tracker = None
-
-    # test game => automation
-    move_list = ["e4", "d5", "Ke2", "Kd7", "Qe1", "Qe8", "Kd1", "Kd8"]
-    move_idx = 0
-    trigger = 5 #seconds
     mouse_msgs = []
 
     # exit button
@@ -90,7 +76,6 @@ def main():
                         move_piece = game_board.clear_square(init_sq)
                         init_tracker = init_sq
                     
-                    # print(f'init_sq {init_sq}, move_piece {move_piece}')
                     if move_piece is not None:
                         dragging = True
                         move_piece.set_drag_coords(mouse_pos)
@@ -138,17 +123,11 @@ def main():
                         move_piece.set_drag_coords((-100, -100))
                     game_board.drag_square = (None, None)
                     move_piece = None
-    
-        # if game_turn != game_board.game.turn:
-        #     # engine_naive.find_move_multiprocessor()
-        #     engine_naive.compare_rank_moves()
-        #     print('turn switch')
-        #     game_turn == game_board.game.turn
+
 
         # Engine implementation
         if game_board.game.turn == 'black' and game_board.game.winner is None:
-            # engine_eval.choose_move()
-            # engine_fool.pick_and_play_move()
+
             engine_naive.play_best_move()
             
                 
@@ -182,7 +161,6 @@ def main():
         if move_piece is not None:
             screen.blit(move_piece, (move_piece.x_pos, move_piece.y_pos))
         screen.blit(piece_font.render("Hello, chess. Time: %.3f, Turn: %s"%(elapsed, game_board.game.turn), 0, "black"), (10,10))
-        # screen.blit(piece_font.render("Fen: %s"%(game_board.game.fen), 0, "black"), (10,850))
         screen.blit(fen_box, (50, 855))
         screen.blit(fen_button, (950, 855))
         
