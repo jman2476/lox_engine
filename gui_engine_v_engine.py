@@ -15,7 +15,6 @@ import matplotlib
 matplotlib.use('QtAgg')
 logging.getLogger('matplotlib').setLevel(logging.WARNING)
 import matplotlib.pyplot as plt
-import numpy as np
 from src.functions.save_game import save_game
 
 def main():
@@ -26,26 +25,21 @@ def main():
     running = True
     dt = 0
     elapsed = 0
-    last_move = 0
     game_board = GUI_Board()
     piece_font = pygame.font.Font("./fonts/nishiki-teki/NishikiTeki-MVxaJ.ttf", 30)
     error_box = ErrorBox()
 
     # Engine setup
-    engine_fool = FoolEngine(game_board.game, 'white')
     engine_naive_b = NaiveEngine(game_board.game, 'black')
     # engine for white will use multprocessing
     engine_naive_w = NaiveEngine(game_board.game, 'white')
     game_board.game.b_player = 'Naive Single Proc'
     game_board.game.w_player = 'Naive Multi Proc'
-    # game_board.game.w_player = 'Naive Multi Proc'
 
     b_engine_d_t = []
     w_engine_d_t = []
 
     # Logging
-    # logging.basicConfig(filename='find_moves.log', level=logging.DEBUG)
-    # logger.info(f'Starting log {datetime.datetime.now()}')
     logger = logging.getLogger('elapsed move time')
 
     # FenBox
@@ -56,17 +50,6 @@ def main():
     if len(sys.argv) > 1:
         fen_box.set_text(sys.argv[1])
         fen_button.on_click()
-
-    # mouse handlers
-    dragging = False
-    move_piece = None
-    init_tracker = None
-
-    # test game => automation
-    move_list = ["e4", "d5", "Ke2", "Kd7", "Qe1", "Qe8", "Kd1", "Kd8"]
-    move_idx = 0
-    trigger = 5 #seconds
-    mouse_msgs = []
 
     # exit button
     exit_button = ExitButton()
@@ -123,10 +106,7 @@ def main():
         
         
         screen.blit(game_board, (50, 50))
-        # if move_piece is not None:
-        #     screen.blit(move_piece, (move_piece.x_pos, move_piece.y_pos))
         screen.blit(piece_font.render("Hello, chess. Time: %.3f, Turn: %s"%(elapsed, game_board.game.turn), 0, "black"), (10,10))
-        # screen.blit(piece_font.render("Fen: %s"%(game_board.game.fen), 0, "black"), (10,850))
         screen.blit(fen_box, (50, 855))
         screen.blit(fen_button, (950, 855))
         pygame.display.flip()
@@ -145,13 +125,10 @@ def main():
             plt.xticks(range(1,len(w_engine_d_t), 5))
             plt.autoscale(True, 'y')
             plt.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
-            # plt.axis((0, len(w_engine_d_t), min(b_engine_d_t), max(b_engine_d_t)))
             plt.minorticks_on()
             plt.suptitle(f'Naive Engine: Multi vs Single Process Move Time\nResult: {game_board.game.winner}\nFinal FEN: {game_board.game.fen}')
             print(f'Max time for black: {max(b_engine_d_t)}s')
             print(f'Min times: white {min(w_engine_d_t)}s, black {min(b_engine_d_t)}s')
-            # fig_num = plt.get_fignums()
-            # print(f'Fig nums: {fig_num}')
             save_game(game_board.game.pgnw.path,
                       game_board.game.pgnw.title, 
                       plt.figure(num=1),
