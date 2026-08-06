@@ -6,6 +6,8 @@ from src.graphics.button import ExitButton, SetFenButton
 from src.graphics.mouse import get_square, move_notation, play_move
 from src.engines.naive import NaiveEngine
 from src.graphics.fen_box import FenBox
+from src.graphics.eval_bar import EvalBar
+from src.functions.evaluation import get_evaluation
 import datetime
 import sys
 
@@ -20,6 +22,7 @@ def main():
     game_board = GUI_Board()
     piece_font = pygame.font.Font("./fonts/nishiki-teki/NishikiTeki-MVxaJ.ttf", 30)
     error_box = ErrorBox()
+    eval_bar = EvalBar()
 
     # Engine setup
     engine_naive = NaiveEngine(game_board.game, 'black')
@@ -156,7 +159,11 @@ def main():
                 game_board.render_board(Color.WHITE, piece_font)
             case "black":
                 game_board.render_board(Color.BLACK, piece_font)
-        
+
+        evaluation = get_evaluation(game_board.game.board)
+        eval_bar.set_eval(evaluation)
+        eval_bar.render()
+        screen.blit(eval_bar, (10, 50))
         screen.blit(game_board, (50, 50))
         if move_piece is not None:
             screen.blit(move_piece, (move_piece.x_pos, move_piece.y_pos))
