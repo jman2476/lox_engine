@@ -1,23 +1,24 @@
 import pygame
 
-class GUIEvalBar(pygame.Surface):
+class EvalBar(pygame.Surface):
     def __init__(self):
-        super().__init__(self, (20, 100))
+        pygame.Surface.__init__(self, (30, 800))
         self.eval:float = 0.0
         self.max:float = 30.0
         self.fill('white')
         self.font = pygame.freetype.Font("./fonts/kissinger2.ttf", 10)
-        self.b_height = 50
-        self.black_adv = pygame.Surface((20,self.b_height))
+        self.b_height = 400
+        self.black_adv = pygame.Surface((30,self.b_height))
 
     def render(self):
+        self.fill('white')
         self.blit(self.black_adv, (0,0))
 
     def set_eval(self, eval:float):
+        if eval != self.eval:
+            print(f'Evaluation: {self.eval}')
         self.eval = eval
-        # if abs(eval) > self.max:
-        #     self.black_adv = pygame.Surface((20,100))
-        # else:
-        #     ...
-        self.b_height -= eval
-        self.black_adv = pygame.Surface((20, self.b_height))
+        self.b_height = 400 - (self.eval*10)
+        if self.b_height < 0: self.b_height = 0.0
+        if self.b_height > 800.0: self.b_height = 800.0
+        self.black_adv = pygame.Surface((30, self.b_height))
