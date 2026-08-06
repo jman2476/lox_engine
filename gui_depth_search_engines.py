@@ -3,7 +3,6 @@ from src.graphics.board import GUI_Board, Color
 from src.graphics.clock import Clock
 from src.graphics.error_box import ErrorBox
 from src.graphics.button import ExitButton, SetFenButton
-from src.engines.fool import FoolEngine
 from src.engines.naive import NaiveEngine
 from src.graphics.fen_box import FenBox
 import datetime
@@ -15,7 +14,6 @@ import matplotlib
 matplotlib.use('QtAgg')
 logging.getLogger('matplotlib').setLevel(logging.WARNING)
 import matplotlib.pyplot as plt
-import numpy as np
 from src.functions.save_game import save_game
 from src.functions.depth_search import get_best_move, get_best_move_mp
 
@@ -45,7 +43,6 @@ def main():
     engine_naive_w = NaiveEngine(game_board.game, 'white', depth)
     game_board.game.b_player = 'Naive Single Proc'
     game_board.game.w_player = 'Naive Single Proc'
-    # game_board.game.w_player = 'Naive Multi Proc'
 
     b_engine_d_t = []
     w_engine_d_t = []
@@ -123,8 +120,6 @@ def main():
             game_board.render_board(Color.WHITE, piece_font)
             
             screen.blit(game_board, (50, 50))
-            # if move_piece is not None:
-            #     screen.blit(move_piece, (move_piece.x_pos, move_piece.y_pos))
             screen.blit(piece_font.render("Hello, chess. Time: %.3f, Turn: %s"%(elapsed, game_board.game.turn), 0, "black"), (10,10))
             screen.blit(fen_box, (50, 855))
             screen.blit(fen_button, (950, 855))
