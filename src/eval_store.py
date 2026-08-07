@@ -11,3 +11,15 @@ class GrugEvalStore():
             shutil.rmtree(abs_path)
         os.mkdir(abs_path)
         return abs_path
+
+    def store_eval(self, fen:str, eval:float) -> tuple[str,str,float]:
+        ...
+
+    def create_file_name(self, fen:str, eval:float) -> str:
+        ...
+
+    def parse_file_name(self, file:str) -> tuple[str,str,float]:
+        ...
+
+    def find_and_set_eval(self, fen:str, eval:float) -> tuple[str,str,float]:
+        ...
