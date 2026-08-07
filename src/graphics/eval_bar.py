@@ -18,7 +18,7 @@ class EvalBar(pygame.Surface):
         if eval != self.eval:
             print(f'Evaluation: {self.eval}')
         self.eval = eval
-        self.b_height = 400 - (self.eval*10)
+        self.b_height = 400 - (self.eval*20)
         if self.b_height < 0: self.b_height = 0.0
         if self.b_height > 800.0: self.b_height = 800.0
         self.black_adv = pygame.Surface((30, self.b_height))
