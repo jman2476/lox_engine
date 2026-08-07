@@ -167,6 +167,8 @@ def main():
         evaluation = get_evaluation(game_board.game.board)
         eval_bar.set_eval(evaluation)
         eval_bar.render()
+        eval_bar.font.render_to(
+            screen, (10, 850), f'{eval_bar.eval}', 'white')
         screen.blit(eval_bar, (10, 50))
         screen.blit(game_board, (50, 50))
         if move_piece is not None:
