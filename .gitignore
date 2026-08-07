@@ -18,3 +18,6 @@ wheels/
 # PGN files
 pgn-writer-testing/
 recent_games/
+
+# Grug eval
+grug_eval/

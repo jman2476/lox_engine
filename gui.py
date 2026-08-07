@@ -46,6 +46,7 @@ def main():
     exit_button = ExitButton()
 
     while running:
+        human_played = False
         
         events = pygame.event.get()
         for event in events:
@@ -103,6 +104,7 @@ def main():
                     elif move is not None:
                         print(f"Algebraic notation: {move}")
                         error_box.set_message(str(play_move(game_board.game, move)))
+                        human_played = True
                         print("-------------------------")
                         print(f'FEN: {game_board.game.fen}')
                         print("-------------------------")
@@ -114,6 +116,7 @@ def main():
                     elif move is not None and not game_board.promoting['current']:
                         print(f"Algebraic notation: {move}")
                         error_box.set_message(str(play_move(game_board.game, move)))
+                        human_played = True
                         print("-------------------------")
                         print(f'FEN: {game_board.game.fen}')
                         print("-------------------------")
@@ -129,8 +132,9 @@ def main():
 
 
         # Engine implementation
-        if game_board.game.turn == 'black' and game_board.game.winner is None:
-
+        if (game_board.game.turn == 'black' 
+            and game_board.game.winner is None
+            and not human_played):
             engine_naive.play_best_move()
             
                 
