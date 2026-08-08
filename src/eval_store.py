@@ -13,16 +13,22 @@ class GrugEvalStore():
         return abs_path
 
     def store_eval(self, fen:str, eval:float) -> tuple[str,str,float]:
-        ...
+        file = self.create_file_name(fen, eval)
+        file_path = os.path.join(self.path, file)
+        with open(file_path, 'x') as f:
+            f.write(f'{file_path}')
+        return self.parse_file_name(file)
 
     def create_file_name(self, fen:str, eval:float) -> str:
-        board_state = '_'.join(fen.split()[:2])
-        return f'{board_state}_{eval:.2f}.txt'
+        clean_fen = '='.join(fen.split('/'))
+        board_state = '_'.join(clean_fen.split()[:2])
+        return f'"{board_state}_{eval:.2f}".txt'
 
     def parse_file_name(self, file:str) -> tuple[str,str,float]:
-        parts = file.split('_')
-        eval = parts[2][:-4]
-        return parts[0], parts[1], float(eval)
+        parts = file.strip('".txt').split('_')
+        fen = '/'.join(parts[0].split('='))
+        eval = parts[2]
+        return fen, parts[1], float(eval)
 
     def find_and_set_eval(self, fen:str, eval:float) -> tuple[str,str,float]:
         ...
