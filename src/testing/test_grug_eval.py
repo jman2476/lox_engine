@@ -19,7 +19,6 @@ class TestGrugEval(unittest.TestCase):
         with open(dummy_file_path, 'w', encoding='UTF-8') as file:
             file.write('Potato test')
         grug_a_ls = os.listdir('./grug_eval')
-        print(f'Grug a contents: {grug_a_ls}')
         self.assertEqual(len(grug_a_ls), 1)
 
         grug_eval_a_2 = GrugEvalStore()
@@ -38,9 +37,21 @@ class TestGrugEval(unittest.TestCase):
         grug_eval = GrugEvalStore()
         cases = [(fen_a, eval_a),
                  (fen_b, eval_b)]
-        expected = ['k7/3Q4/K7/8/8/8/8/8_w=69.42.txt',
-                    '6R1/8/2B5/4Q3/P1k2P1P/8/3K4/8_w=-420.69.txt']
+        expected = ['k7/3Q4/K7/8/8/8/8/8_w_69.42.txt',
+                    '6R1/8/2B5/4Q3/P1k2P1P/8/3K4/8_w_-420.69.txt']
 
         for i in range(2):
             file_name = grug_eval.create_file_name(*cases[i])
             self.assertEqual(file_name, expected[i])
+
+
+    def test_parse_file_name(self):
+        cases = ['k7/3Q4/K7/8/8/8/8/8_w_69.42.txt',
+                '6R1/8/2B5/4Q3/P1k2P1P/8/3K4/8_w_-420.69.txt']
+        expected = [('k7/3Q4/K7/8/8/8/8/8','w',69.42),
+                    ('6R1/8/2B5/4Q3/P1k2P1P/8/3K4/8','w',-420.69)]
+        grug_eval = GrugEvalStore()
+
+        for i in range(2):
+            parsed_file = grug_eval.parse_file_name(cases[i])
+            self.assertEqual(parsed_file, expected[i])

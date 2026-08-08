@@ -17,10 +17,12 @@ class GrugEvalStore():
 
     def create_file_name(self, fen:str, eval:float) -> str:
         board_state = '_'.join(fen.split()[:2])
-        return f'{board_state}={eval:.2f}.txt'
+        return f'{board_state}_{eval:.2f}.txt'
 
     def parse_file_name(self, file:str) -> tuple[str,str,float]:
-        ...
+        parts = file.split('_')
+        eval = parts[2][:-4]
+        return parts[0], parts[1], float(eval)
 
     def find_and_set_eval(self, fen:str, eval:float) -> tuple[str,str,float]:
         ...
