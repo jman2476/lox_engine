@@ -15,9 +15,13 @@ class GrugEvalStore():
     def store_eval(self, fen:str, eval:float) -> tuple[str,str,float]:
         file = self.create_file_name(fen, eval)
         file_path = os.path.join(self.path, file)
-        with open(file_path, 'x') as f:
-            f.write(f'{file_path}')
-        return self.parse_file_name(file)
+        try:
+            with open(file_path, 'x') as f:
+                f.write(f'{file_path}')
+        except Exception as e:
+            print(f'Exception storing eval {file}: {e}')
+        finally:
+            return self.parse_file_name(file)
 
     def create_file_name(self, fen:str, eval:float) -> str:
         clean_fen = '='.join(fen.split('/'))
@@ -30,5 +34,5 @@ class GrugEvalStore():
         eval = parts[2]
         return fen, parts[1], float(eval)
 
-    def find_and_set_eval(self, fen:str, eval:float) -> tuple[str,str,float]:
+    def find_set_eval(self, fen:str, eval:float) -> tuple[str,str,float]:
         ...
