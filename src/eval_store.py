@@ -16,7 +16,8 @@ class GrugEvalStore():
         ...
 
     def create_file_name(self, fen:str, eval:float) -> str:
-        ...
+        board_state = '_'.join(fen.split()[:2])
+        return f'{board_state}={eval:.2f}.txt'
 
     def parse_file_name(self, file:str) -> tuple[str,str,float]:
         ...
