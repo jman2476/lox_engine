@@ -1,6 +1,7 @@
 import unittest
-from src.eval_store import GrugEvalStore
+from src.grug_eval_store import GrugEvalStore, GrugManager
 import os, shutil
+import multiprocessing as mp
 
 
 class TestGrugEval(unittest.TestCase):
@@ -69,3 +70,73 @@ class TestGrugEval(unittest.TestCase):
 
         for c in cases:
             grug_eval.store_eval(*c)
+            
+
+    def test_multi_proc_write(self):
+        cases = [('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', 0.0),
+                 ('5rk1/pppb1p1p/3p2p1/3P2N1/2P2P1q/3B3P/PP1Q1bPK/5R2 b - - 2 21', 10.66),
+                 ('6R1/8/2B5/4Q3/P1k2P1P/8/3K4/8 w - - 3 34', -25)]
+        store_path = None
+        def write_process(fen, eval, process_id, grug):
+            name = f'Process-{process_id}'
+            result = grug.store_eval(fen, eval)
+            print(f'Process {name} results: {result}')
+        if __name__ == 'src.testing.test_grug_eval':
+            print('\nrunning test multi proc grug\n')
+            GrugManager.register('GrugEvalStore', GrugEvalStore)
+            with GrugManager() as gm:
+                grug_store = gm.GrugEvalStore()
+                store_path = grug_store.get_path()
+                processes = []
+                for i in range(3):
+                    p = mp.Process(target=write_process, args=(*cases[i], i, grug_store))
+                    processes.append(p)
+                    p.start()
+
+                for p in processes:
+                    p.join()
+
+                print('\n--Finished writing files--')
+
+            ls_grug_dir = os.listdir(store_path)
+            print(f'Current grug directory:\n{'\n'.join(ls_grug_dir)}')
+            self.assertEqual(len(ls_grug_dir), 3)
+            self.assertTrue('"rnbqkbnr=pppppppp=8=8=8=8=PPPPPPPP=RNBQKBNR_w_0.00".txt')
+        else:
+            print(f'\nnot running test multi proc grug: {__name__}')          
+
+            
+    def test_mp_write_collision(self):
+        cases = [('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', 0.0),
+                 ('5rk1/pppb1p1p/3p2p1/3P2N1/2P2P1q/3B3P/PP1Q1bPK/5R2 b - - 2 21', 10.66),
+                 ('6R1/8/2B5/4Q3/P1k2P1P/8/3K4/8 w - - 3 34', -25),
+                 ('6R1/8/2B5/4Q3/P1k2P1P/8/3K4/8 w - - 3 34', -25)]
+        store_path = None
+        def write_process(fen, eval, process_id, grug):
+            name = f'Process-{process_id}'
+            result = grug.store_eval(fen, eval)
+            print(f'Process {name} results: {result}')
+        if __name__ == 'src.testing.test_grug_eval':
+            print('\nrunning test multi proc grug\n')
+            GrugManager.register('GrugEvalStore', GrugEvalStore)
+            with GrugManager() as gm:
+                grug_store = gm.GrugEvalStore()
+                store_path = grug_store.get_path()
+                processes = []
+                for i in range(len(cases)):
+                    p = mp.Process(target=write_process, args=(*cases[i], i, grug_store))
+                    processes.append(p)
+                    p.start()
+
+                for p in processes:
+                    p.join()
+
+                print('\n--Finished writing files--')
+
+            ls_grug_dir = os.listdir(store_path)
+            print(f'Current grug directory:\n{'\n'.join(ls_grug_dir)}')
+            self.assertEqual(len(ls_grug_dir), 3)
+            self.assertTrue('"rnbqkbnr=pppppppp=8=8=8=8=PPPPPPPP=RNBQKBNR_w_0.00".txt')
+            self.assertTrue('"6R1=8=2B5=4Q3=P1k2P1P=8=3K4=8_w_-25.00".txt')
+        else:
+            print(f'\nnot running test multi proc grug: {__name__}')         
