@@ -1,16 +1,22 @@
 import os
 import shutil
+from multiprocessing.managers import BaseManager
 
 class GrugEvalStore():
     def __init__(self, dir:str='./grug_eval'):
         self.path = self.set_path(dir)
+
 
     def set_path(self, dir:str) -> str:
         abs_path = os.path.abspath(dir)
         if os.path.exists(abs_path):
             shutil.rmtree(abs_path)
         os.mkdir(abs_path)
+        print(f'\ngrug using path {abs_path}\n')
         return abs_path
+
+    def get_path(self):
+        return self.path
 
     def store_eval(self, fen:str, eval:float) -> tuple[str,str,float]:
         file = self.create_file_name(fen, eval)
@@ -36,3 +42,6 @@ class GrugEvalStore():
 
     def find_set_eval(self, fen:str, eval:float) -> tuple[str,str,float]:
         ...
+
+class GrugManager(BaseManager):
+    ...
