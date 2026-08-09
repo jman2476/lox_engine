@@ -1,5 +1,5 @@
 import unittest
-from src.eval_store import GrugEvalStore, GrugManager
+from src.grug_eval_store import GrugEvalStore, GrugManager
 import os, shutil
 import multiprocessing as mp
 
