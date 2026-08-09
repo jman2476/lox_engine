@@ -99,7 +99,7 @@ class TestGrugEval(unittest.TestCase):
                 print('\n--Finished writing files--')
 
             ls_grug_dir = os.listdir(store_path)
-
+            print(f'Current grug directory:\n{'\n'.join(ls_grug_dir)}')
             self.assertEqual(len(ls_grug_dir), 3)
             self.assertTrue('"rnbqkbnr=pppppppp=8=8=8=8=PPPPPPPP=RNBQKBNR_w_0.00".txt')
         else:
