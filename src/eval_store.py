@@ -2,6 +2,12 @@ import os
 import shutil
 from multiprocessing.managers import BaseManager
 
+# Depricated: GrugEvalStore lookups would be O(n) to find pre-evaluated positions
+#               Actually implementing this would massively drive down performance,
+#               and negate any actual benefit from caching values
+#       However: I can use the methods here for implementing a proper eval store
+
+
 class GrugEvalStore():
     def __init__(self, dir:str='./grug_eval'):
         self.path = self.set_path(dir)
