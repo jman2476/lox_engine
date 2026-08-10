@@ -34,8 +34,6 @@ The engines, in order of strength:
 - Informed (upcoming): First engine in the series to be based on existing theory of computer chess, which will incorporate fewer human-oriented evaluation algorithms.
 - Machine Learning (upcoming): Will use machine learning to learn the best way to play chess, and designed to emulate the best chess engines on the market today. 
 
- 
-
 
 ## Quick Start: I want to play NOW!
 
