@@ -216,7 +216,11 @@ class TestEvalStore(unittest.TestCase):
         ext_eval_store = EvalStore()
         
         def proc_set_task(eval_store, fen, eval, process_id):
-            print(f'Process {process_id}')
+            is_set = eval_store.get_locked_eval(fen)
+            print(f'Process {process_id} is_set: {is_set}')
+            if is_set[1]:
+                print(f'Proc-{process_id} skipping: {fen} stored as {is_set[0]}')
+                return
             eval_store.set_locked_eval(fen, eval)
             print(f'Proc-{process_id} stored {fen}: {eval}')
 
@@ -260,3 +264,55 @@ class TestEvalStore(unittest.TestCase):
                 ext_eval_store.set_positions(eval_store.get_positions())
 
         print(ext_eval_store)
+
+    def test_update_positions(self):
+        print('\n===Update Eval Store Positions===\n')
+        eval_store_a = EvalStore()
+        eval_store_b = EvalStore()
+        eval_store_full = EvalStore()
+
+        positions_a = [
+            ('6R1/8/2B5/4Q3/P1k2P1P/8/3K4/8 w - - 3 34', 12.39),
+            
+            ('k7/3Q4/K7/8/8/8/8/8 b - - 0 1', -4.43),
+            
+            ('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', 0.00),
+            ('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', 0.00),
+            ('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 49 1', 0.00),
+            ('5rk1/pppb1p1p/3p2p1/3P2N1/2P2P1q/3B3P/PP1Q1bPK/5R2 b - - 52 21', 1.0212),
+        ]
+        positions_b = [
+            ('6R1/8/2B5/4Q3/P1k2P1P/8/3K4/8 w - - 300 34', 12.39),
+            ('k7/3Q4/K7/8/8/8/8/8 w - - 0 1', 4.43),
+            ('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', 0.00),
+            ('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 49 1', 0.00),
+            ('5rk1/pppb1p1p/3p2p1/3P2N1/2P2P1q/3B3P/PP1Q1bPK/5R2 b - - 52 21', 1.3212)
+        ]
+
+        for p in positions_a:
+            eval_store_a.set_eval(*p)
+            eval_store_full.set_eval(*p)
+
+        for p in positions_b:
+            eval_store_b.set_eval(*p)
+            eval_store_full.set_eval(*p)
+
+        print(eval_store_full)
+        print(eval_store_a)
+        print(eval_store_b)
+
+        eval_store_a.update_evals(eval_store_b.positions)
+
+        self.assertEqual(
+            eval_store_a.get_positions(), 
+            eval_store_full.get_positions()
+            )
+        self.assertNotEqual(
+            eval_store_b.get_positions(), 
+            eval_store_full.get_positions()
+            )
+        eval_store_full.set_positions(eval_store_b.get_positions())
+        self.assertEqual(
+            eval_store_b.get_positions(),
+            eval_store_full.get_positions()
+        )
