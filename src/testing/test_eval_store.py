@@ -1,5 +1,5 @@
 import unittest
-from multiprocessing import Process, Lock
+from multiprocessing import Process
 from src.eval_store import EvalManager, EvalStore
 
 class TestEvalStore(unittest.TestCase):
