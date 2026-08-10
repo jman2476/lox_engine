@@ -23,6 +23,11 @@ class EvalStore():
         self.positions |= new_evals
 
     def set_key(self, fen:str) -> str:
+        # NOTE: position keys account only for piece positions,
+        #       turn, and fifty move rule. They DO NOT account 
+        #       for castling or en-passent possibilities.
+        #       As of now, this is not an issue because position
+        #       evaluations do not take ep or castling into account.
         parts = fen.split()
         fifty_mv = "T" if int(parts[-2]) >= 50 else "F"
         return f'{parts[0]}|{parts[1]}|{fifty_mv}'
