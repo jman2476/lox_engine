@@ -110,7 +110,6 @@ class TestEvalStore(unittest.TestCase):
         if __name__ == 'src.testing.test_eval_store':
             print('\n==Running MP test: Eval Store set==\n')
             EvalManager.register('EvalStore', EvalStore)
-            # dict_lock = Lock()
 
             with EvalManager() as manager:
                 eval_store = manager.EvalStore()
@@ -230,7 +229,6 @@ class TestEvalStore(unittest.TestCase):
         if __name__ == 'src.testing.test_eval_store':
             print('\n==Running MP test: Eval Store Collision==\n')
             EvalManager.register('EvalStore', EvalStore)
-            # dict_lock = Lock()
 
             with EvalManager() as manager:
                 eval_store = manager.EvalStore()
