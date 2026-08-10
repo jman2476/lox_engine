@@ -66,10 +66,10 @@ class TestEvalStore(unittest.TestCase):
 
         for i in range(len(cases)):
             result = evals.get_eval(cases[i])
-            print(f"Case: {cases[i]}")
-            print(f'Expected: {expected[i]}')
-            print(f'Actual: {result}')
-            print('-------------------------')
+            # print(f"Case: {cases[i]}")
+            # print(f'Expected: {expected[i]}')
+            # print(f'Actual: {result}')
+            # print('-------------------------')
             self.assertEqual(result, expected[i])
 
     def test_get_set_eval_mp(self):
@@ -97,14 +97,14 @@ class TestEvalStore(unittest.TestCase):
         ext_eval_store = EvalStore()
 
         def proc_set_task(eval_store, fen, eval, process_id):
-            print(f'Process {process_id}')
+            # print(f'Process {process_id}')
             eval_store.set_locked_eval(fen, eval)
-            print(f'Proc-{process_id} stored {fen}: {eval}')
+            # print(f'Proc-{process_id} stored {fen}: {eval}')
 
         def proc_get_task(eval_store, fen, process_id):
-            print(f'Process {process_id}')
+            # print(f'Process {process_id}')
             result = eval_store.get_locked_eval(fen)
-            print(f'Proc-{process_id} stored {fen}: {result}')
+            # print(f'Proc-{process_id} stored {fen}: {result}')
             self.assertEqual(result, expected[process_id])
 
         if __name__ == 'src.testing.test_eval_store':
@@ -140,7 +140,7 @@ class TestEvalStore(unittest.TestCase):
                 print('\n---Finished gettting evals---')
                 ext_eval_store.set_positions(eval_store.get_positions())
 
-        print(ext_eval_store)
+        # print(ext_eval_store)
 
     def test_get_set_collision(self):
         to_store = [
@@ -181,10 +181,10 @@ class TestEvalStore(unittest.TestCase):
 
         for i in range(len(cases)):
             result = evals.get_eval(cases[i])
-            print(f"Case: {cases[i]}")
-            print(f'Expected: {expected[i]}')
-            print(f'Actual: {result}')
-            print('-------------------------')
+            # print(f"Case: {cases[i]}")
+            # print(f'Expected: {expected[i]}')
+            # print(f'Actual: {result}')
+            # print('-------------------------')
             self.assertEqual(result, expected[i])
 
     def test_get_set_collision_mp(self):
@@ -216,7 +216,11 @@ class TestEvalStore(unittest.TestCase):
         ext_eval_store = EvalStore()
         
         def proc_set_task(eval_store, fen, eval, process_id):
-            print(f'Process {process_id}')
+            is_set = eval_store.get_locked_eval(fen)
+            print(f'Process {process_id} is_set: {is_set}')
+            if is_set[1]:
+                print(f'Proc-{process_id} skipping: {fen} stored as {is_set[0]}')
+                return
             eval_store.set_locked_eval(fen, eval)
             print(f'Proc-{process_id} stored {fen}: {eval}')
 
@@ -259,7 +263,7 @@ class TestEvalStore(unittest.TestCase):
                 print('\n---Finished gettting evals---')
                 ext_eval_store.set_positions(eval_store.get_positions())
 
-        print(ext_eval_store)
+        # print(ext_eval_store)
 
     def test_update_positions(self):
         print('\n===Update Eval Store Positions===\n')
@@ -293,17 +297,22 @@ class TestEvalStore(unittest.TestCase):
             eval_store_b.set_eval(*p)
             eval_store_full.set_eval(*p)
 
-        print(eval_store_full)
-        print(eval_store_a)
-        print(eval_store_b)
+        # print(eval_store_full)
+        # print(eval_store_a)
+        # print(eval_store_b)
 
         eval_store_a.update_evals(eval_store_b.positions)
 
         self.assertEqual(
-            eval_store_a.positions, 
-            eval_store_full.positions
+            eval_store_a.get_positions(), 
+            eval_store_full.get_positions()
             )
         self.assertNotEqual(
-            eval_store_b.positions, 
-            eval_store_full.positions
+            eval_store_b.get_positions(), 
+            eval_store_full.get_positions()
             )
+        eval_store_full.set_positions(eval_store_b.get_positions())
+        self.assertEqual(
+            eval_store_b.get_positions(),
+            eval_store_full.get_positions()
+        )
