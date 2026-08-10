@@ -16,5 +16,15 @@ class EvalStore():
         draw_available = True if parts[2] == "T" else False
         return parts[0], parts[1], draw_available
 
+    def get_eval(self, fen:str) -> tuple[float, bool]:
+        key = self.set_key(fen)
+        if key in self.positions:
+            return self.positions[key], True
+        return None, False
+
+    def set_eval(self, fen:str, eval:float):
+        key = self.set_key(fen)
+        self.positions[key] = eval
+
 class EvalManager(BaseManager):
     ...
