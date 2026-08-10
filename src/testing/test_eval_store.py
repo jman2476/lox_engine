@@ -260,3 +260,50 @@ class TestEvalStore(unittest.TestCase):
                 ext_eval_store.set_positions(eval_store.get_positions())
 
         print(ext_eval_store)
+
+    def test_update_positions(self):
+        print('\n===Update Eval Store Positions===\n')
+        eval_store_a = EvalStore()
+        eval_store_b = EvalStore()
+        eval_store_full = EvalStore()
+
+        positions_a = [
+            ('6R1/8/2B5/4Q3/P1k2P1P/8/3K4/8 w - - 3 34', 12.39),
+            
+            ('k7/3Q4/K7/8/8/8/8/8 b - - 0 1', -4.43),
+            
+            ('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', 0.00),
+            ('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', 0.00),
+            ('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 49 1', 0.00),
+            ('5rk1/pppb1p1p/3p2p1/3P2N1/2P2P1q/3B3P/PP1Q1bPK/5R2 b - - 52 21', 1.0212),
+        ]
+        positions_b = [
+            ('6R1/8/2B5/4Q3/P1k2P1P/8/3K4/8 w - - 300 34', 12.39),
+            ('k7/3Q4/K7/8/8/8/8/8 w - - 0 1', 4.43),
+            ('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', 0.00),
+            ('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 49 1', 0.00),
+            ('5rk1/pppb1p1p/3p2p1/3P2N1/2P2P1q/3B3P/PP1Q1bPK/5R2 b - - 52 21', 1.3212)
+        ]
+
+        for p in positions_a:
+            eval_store_a.set_eval(*p)
+            eval_store_full.set_eval(*p)
+
+        for p in positions_b:
+            eval_store_b.set_eval(*p)
+            eval_store_full.set_eval(*p)
+
+        print(eval_store_full)
+        print(eval_store_a)
+        print(eval_store_b)
+
+        eval_store_a.update_evals(eval_store_b.positions)
+
+        self.assertEqual(
+            eval_store_a.positions, 
+            eval_store_full.positions
+            )
+        self.assertNotEqual(
+            eval_store_b.positions, 
+            eval_store_full.positions
+            )
