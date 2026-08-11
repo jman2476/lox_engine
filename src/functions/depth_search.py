@@ -100,7 +100,7 @@ def get_ranked_moves(engine:Engine, multi_proc:bool=False)->list[tuple[str, floa
     match engine:
         case NaiveEngine():
             if multi_proc:
-                engine.rank_moves_process()
+                return engine.rank_moves_process()
             return engine.rank_moves()
         case _:
             raise TypeError('Depth search: Unknown engine type')

@@ -30,8 +30,8 @@ class NaiveEngine(Engine):
         for piece in pieces:
             moves.extend(find_move_notation(self.game, piece))
         # Debugging: print moves w/ notation
-        # print(f'Available engine moves: {moves}')
-        # logger.info(f'find_moves {self.game.turn} end {datetime.now()}')
+        print(f'Available engine moves: {moves}')
+        logger.info(f'find_moves {self.game.turn} end {datetime.now()}')
         return moves
     
     def rank_moves(self):
@@ -53,8 +53,9 @@ class NaiveEngine(Engine):
     
     
     def rank_moves_process(self):
-        # logger.info(f'choose_move start {datetime.now()}')
+        logger.info(f'choose_move start {datetime.now()}')
         moves = self.eval_moves_mp(self.find_moves())
+        logger.debug(f'evaluated moves: {moves}')
         if moves is None:
             print('No available moves')
         ranked_moves = (sorted(moves, 
@@ -62,8 +63,8 @@ class NaiveEngine(Engine):
                         if self.game.turn == 'white' else
                         sorted(moves, 
                                key=self.__eval_from_tuple__, reverse=False))
-        # print(f'Ranked engine moves for {self.game.turn}: {ranked_moves[:10]}')
-        # logger.info(f'choose_move end {datetime.now()}')
+        print(f'Ranked engine moves for {self.game.turn}: {ranked_moves[:10]}')
+        logger.info(f'choose_move end {datetime.now()}')
         if len(ranked_moves) > 10:
             return ranked_moves[:10]
         return ranked_moves 
@@ -108,16 +109,16 @@ class NaiveEngine(Engine):
         # logging.info(f'start eval moves mp for {self.game.turn}')
         move_evaluation = []
         pieces = self.white if self.game.turn == 'white' else self.black
-
+        print(f'move list for evaluation: {move_list}')
         with Pool() as p:
             move_evaluation = list(p.imap_unordered(
                 self.eval_move, move_list
             ))
-            # logging.debug(f'finished move_evaluation: {move_evaluation}')
-        # logging.debug(f'Leaving pool context')
-        # print('Evaluated moves:')
-        # print(f'{move_evaluation}')
-        # print('-----------------')
+            logging.debug(f'finished move_evaluation: {move_evaluation}')
+        logging.debug(f'Leaving pool context')
+        print('Evaluated moves:')
+        print(f'{move_evaluation}')
+        print('-----------------')
         return [m for m in move_evaluation if m is not None]
 
 
@@ -129,9 +130,9 @@ class NaiveEngine(Engine):
             game_copy.parse_move(move, False, True)
             new_fen = game_copy.fen
             new_turn = game_copy.turn
-            if new_fen in self.move_map:
-                if self.move_map[new_fen].turn == new_turn:
-                    return move, self.move_map[new_fen].eval
+            if new_fen in self.move_map.map:
+                if self.move_map.map[new_fen].turn == new_turn:
+                    return move, self.move_map.map[new_fen].eval
             match game_copy.winner:
                 case '1-0':
                     eval = 1000.0
@@ -143,8 +144,8 @@ class NaiveEngine(Engine):
                     eval = get_evaluation(game_copy.board)
             # logging.debug(f'finish eval move: {move} -> {eval}')
             return move, eval
-        except:
-            # logging.debug(f'move {eval} fail eval_move')
+        except Exception as e:
+            logging.debug(f'move {eval} fail eval_move: {e}')
             return 
     
 
