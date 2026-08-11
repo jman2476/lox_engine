@@ -25,6 +25,44 @@ call depth_search.get_best_move(naive_)
                     -> creates Pool, each calls self.eval_move()
                         => returns (move, eval)
                     => return list of moves found
-                
+                - sort moves by eval and turn
+                => return top 10 moves
+            => returns the moves
+        - for each now move, appends a depth chart of move to list
+        - loop through moves
+        - per mv, copy engine, parse mv on engine.game
+        -> call get_ranked_moves() [see above]
+        - set results from call to mv.next arr
+        - call depth_search on mv.next
+        => return moves
+    - loop through moves in move_charts
+    - crawl each move, look at last value on best path
+    - if move has best found path, set as best_move
+    - call engine.game.parse_move(best_move)
 
 ## Depth multiprocessing
+instantiate naive engine w/ game => naive_
+call depth_search.get_best_move_mp(naive_)
+    -> call depth_search_multiprocess()
+        -> calls get_ranked_moves() --> same as above
+        - set Manager() as manager:
+        - use manager to manage eval_dict
+        - Pool w/ move args
+        -> processes call search_process()
+            - copy engine
+            - parse mv on engine_copy.game
+            - update e_copy.eval_dict w/ managed eval_dict
+            -> call get_ranked_moves
+                -> call engine.rank_moves()
+                    -> call self.evaluate_moves(self.find_moves())
+                        -checks by FEN if position has been seen, but it doesn't get matches because it includes castling and ep
+                        => returns list[(move, eval)]
+                    => sorts, returns best 10 moves
+                => return move list
+            -> calls depth_search() to continue
+            -> update eval_dict w/ engine_copy.eval_dict
+            => return move
+        -> update engine.eval_dict w/ managed eval_dict
+        => return depth chart move list
+    -> as before, crawl depth charts, find best move
+    => return best move
