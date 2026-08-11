@@ -21,10 +21,6 @@ class FastEngine(Engine):
                    ) -> list[(str,float)]:
         ...
 
-    def eval_move_process(self, move:str
-                          ) -> tuple[str, float]:
-        ...
-
-    def eval_moves_mp(self, move_list:list[str]
-                      ) -> list[tuple[str,float]]:
+    def eval_moves(self, move:str
+                          ) -> list[tuple[str, float]]:
         ...

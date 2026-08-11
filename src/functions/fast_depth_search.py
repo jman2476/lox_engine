@@ -4,7 +4,7 @@ from src.functions.depth_search import DepthChart, crawl_depth_chart
 from multiprocessing import Process
 import copy
 
-class SearchParam():
+class SearchArgs():
     def __init__(self, engine:FastEngine, layer:int, parent:DepthChart, move_list:list[DepthChart]):
         self.engine = engine
         self.layer = layer
@@ -12,11 +12,11 @@ class SearchParam():
         self.move_list = move_list
 
 
-def depth_search():
+def depth_search(engine:FastEngine) -> list[DepthChart]:
     ...
 
-def search_process():
+def search_process(params:SearchArgs) -> list[SearchArgs]:
     ...
 
-def get_best_move():
+def get_best_move(engine:FastEngine):
     ...
