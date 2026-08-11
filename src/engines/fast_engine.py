@@ -13,3 +13,18 @@ class FastEngine(Engine):
         self.breadth = search[1]
         self.search = search
         self.eval_store = EvalStore()
+
+    def find_moves(self, game:Game) -> list[str]:
+        ...
+
+    def rank_moves(self, eval_moves:list[tuple[str,float]]
+                   ) -> list[(str,float)]:
+        ...
+
+    def eval_move_process(self, move:str
+                          ) -> tuple[str, float]:
+        ...
+
+    def eval_moves_mp(self, move_list:list[str]
+                      ) -> list[tuple[str,float]]:
+        ...
