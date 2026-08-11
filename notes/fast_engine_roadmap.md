@@ -66,3 +66,27 @@ call depth_search.get_best_move_mp(naive_)
         => return depth chart move list
     -> as before, crawl depth charts, find best move
     => return best move
+
+
+# Why is naive engine slow?
+## No MP on child processes
+Currently can only have multiprocessing on one layer, so the options are MP on move search/evaluation, or MP on first layer of depth search.
+Second+ layer of depth search is still slow because each layer processes as a child of the first 10 moves. 
+
+## Has a bad caching/memoization system
+It isn't implemented well so it can find similar positions. It currently stores values as dict of [str,float], but the key is just a shortening of the fen, so it doesn't match if EP or castling is wrong.
+It does seem to update properly on each loop, though.
+
+# What can fast engine do different?
+## Can we depth search layers to the surface?
+If I can return an object of necessary values to continue to depth process from the search function, I can process the next layer at to surface with MP, store them on the depth chart, then continue until I've processed enough layers.
+Is that possible? -> I'm not sure.
+
+What would a search_parameters object need?
+- engine-copy -> copy of state of the engine for that path of search
+- depth-layer -> which layer of search
+- parent-move -> to store results in DepthChart.next
+- move-list -> next moves to search
+
+## Implement eval store
+It's written, so just use it
