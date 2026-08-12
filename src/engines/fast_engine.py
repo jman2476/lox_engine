@@ -31,5 +31,5 @@ class FastEngine(Engine):
         ...
 
     def eval_moves(self, move:str
-                          ) -> list[tuple[str, float]]:
+                    ) -> list[tuple[str, float]]:
         ...
