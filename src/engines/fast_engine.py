@@ -28,6 +28,8 @@ class FastEngine(Engine):
 
     def rank_moves(self, eval_moves:list[tuple[str,float]]
                    ) -> list[(str,float)]:
+        # rank moves decreasing for white's turn,
+        #   decreasing for black's turn
         ...
 
     def eval_moves(self, move:str
