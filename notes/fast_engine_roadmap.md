@@ -89,4 +89,12 @@ What would a search_parameters object need?
 - move-list -> next moves to search
 
 ## Implement eval store
-It's written, so just use it
+It's written, so just use it.
+- Use EvalManager to hold managed_eval_store
+- At each depth cycle, engine will be copied, 
+and engine_copy.eval_moves will store each new position in
+engine_copy.eval_store
+- once moves are evaluated, engine_copy.eval_store is used to update
+managed_eval_store so the next processes can use it
+- at end of manager context, managaed_eval_store is used to update
+engine.eval_store
