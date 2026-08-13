@@ -21,3 +21,6 @@ class TestFastEngine(unittest.TestCase):
         print(f'Type of move list: {type(starting_moves[0])}')
 
         self.assertEqual(len(starting_moves), 20)
+
+    def test_eval_moves(self):
+        ...
