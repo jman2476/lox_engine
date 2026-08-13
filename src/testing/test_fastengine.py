@@ -144,3 +144,9 @@ class TestFastEngine(unittest.TestCase):
 
         ranked_black = engine.rank_moves(move_evals)
         self.assertEqual(ranked_black, expected_order_b)
+
+    def test_rank_moves_empty(self):
+        game = Game()
+        game.start_new_game()
+        engine = FastEngine(game, 'white', (2,3))
+        self.assertEqual(engine.rank_moves([]), [])
