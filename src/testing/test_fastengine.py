@@ -57,3 +57,37 @@ class TestFastEngine(unittest.TestCase):
                     self.assertEqual(mv[1], 0.0)
                 case 'Ka5':
                     self.assertTrue(mv[1] < 0)
+
+    def test_rank_moves(self):
+        game = Game(dir='./test_games')
+        game.start_new_game()
+        engine = FastEngine(game, 'white', (2,3))
+        move_evals = [
+            ('e4', 10.0),
+            ('d4', 12.0),
+            ('Nc3', 6.2),
+            ('Na3', -3),
+            ('b3', -100),
+            ('Nf3', 200),
+            ('Nh3', -1.0),
+            ('h4', 6.3)
+        ]
+        expected_order_w = [
+            ('Nf3', 200),
+            ('e4', 10.0),
+            ('d4', 12.0),
+            ('h4', 6.3),
+            ('Nc3', 6.2),
+            ('Nh3', -1.0),
+            ('Na3', -3),
+            ('b3', -100),
+        ]
+        expected_order_b = expected_order_w.copy().reverse()
+
+        ranked_white = engine.rank_moves(move_evals)
+        self.assertEqual(ranked_white, expected_order_w)
+
+        game.parse_move('e4')
+
+        ranked_black = engine.rank_moves(move_evals)
+        self.assertEqual(ranked_black, expected_order_b)
