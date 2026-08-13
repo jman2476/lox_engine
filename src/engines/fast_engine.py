@@ -30,7 +30,15 @@ class FastEngine(Engine):
                    ) -> list[(str,float)]:
         # rank moves decreasing for white's turn,
         #   decreasing for black's turn
-        ...
+        if len(eval_moves) == 0:
+            print('No available moves')
+            return []
+        ranked = (sorted(eval_moves,
+                        key=lambda x: x[1], reverse=True)
+                if self.game.turn == 'white' else
+                sorted(eval_moves,
+                       key=lambda x: x[1], reverse=False))
+        return ranked[:10]
 
     def eval_moves(self, moves:list[str]
                     ) -> list[tuple[str, float]]:
