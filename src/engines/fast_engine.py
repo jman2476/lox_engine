@@ -32,6 +32,28 @@ class FastEngine(Engine):
         #   decreasing for black's turn
         ...
 
-    def eval_moves(self, move:str
+    def eval_moves(self, moves:list[str]
                     ) -> list[tuple[str, float]]:
-        ...
+        move_evals = []
+        for mv in moves:
+            eval = 0
+            game_copy = copy.deepcopy(self.game)
+
+            game_copy.parse_move(mv, False, True)
+            stored_eval, exists = self.eval_store.get_eval(game_copy.fen)
+            if exists:
+                eval = stored_eval
+            else:
+                match game_copy.winner:
+                    case '1-0':
+                        eval = 1000.0
+                    case '0-1':
+                        eval = -1000.0
+                    case '1/2-1/2':
+                        eval = 0.0
+                    case _:
+                        eval = get_evaluation(game_copy.board)
+                self.eval_store.set_eval(game_copy.fen, eval)
+            move_evals.append((mv, eval))
+        return move_evals
+                
