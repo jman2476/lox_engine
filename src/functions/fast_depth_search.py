@@ -14,7 +14,11 @@ class SearchArgs():
 
 
 def depth_search(engine:FastEngine) -> list[DepthChart]:
-    ...
+    # User mp.manager.queue to dynamically add elements to the queue until the desired depth is reached 
+    moves = engine.find_ranked_moves()
+    mv_charts = [DepthChart(
+        mv[0],mv[1], 0, engine.game.turn, engine.game.fen) 
+        for mv in moves]
 
 def search_process(params:SearchArgs) -> list[SearchArgs]:
     engine_copy = copy.deepcopy(params.engine)

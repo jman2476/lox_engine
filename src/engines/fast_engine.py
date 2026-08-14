@@ -16,6 +16,11 @@ class FastEngine(Engine):
         self.search = search
         self.eval_store = EvalStore()
 
+    def find_ranked_moves(self) -> list[tuple[str, float]]:
+        moves = self.find_moves()
+        evaluations = self.eval_moves(moves)
+        return self.rank_moves(evaluations)
+
     def find_moves(self) -> list[str]:
         self.white = self.game.board.white()
         self.black = self.game.board.black()
@@ -27,7 +32,7 @@ class FastEngine(Engine):
         return moves
 
     def rank_moves(self, eval_moves:list[tuple[str,float]]
-                   ) -> list[(str,float)]:
+                   ) -> list[tuple[str,float]]:
         # rank moves decreasing for white's turn,
         #   decreasing for black's turn
         if len(eval_moves) == 0:
