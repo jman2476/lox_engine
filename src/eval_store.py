@@ -1,4 +1,4 @@
-from multiprocessing.managers import BaseManager
+from multiprocessing.managers import SyncManager
 
 class EvalStore():
     def __init__(self):
@@ -56,5 +56,5 @@ class EvalStore():
             self.set_eval(fen, eval)
 
 
-class EvalManager(BaseManager):
+class EvalManager(SyncManager):
     ...

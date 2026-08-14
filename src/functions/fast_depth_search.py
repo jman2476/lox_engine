@@ -19,8 +19,15 @@ def depth_search(engine:FastEngine) -> list[DepthChart]:
     mv_charts = [DepthChart(
         mv[0],mv[1], 0, engine.game.turn, engine.game.fen) 
         for mv in moves]
+    mv_ch_search_args = [SearchArgs(engine, ch.level, None, ch, []) for ch in mv_charts]
 
-def search_process(params:SearchArgs) -> list[SearchArgs]:
+    EvalManager.register('SearchArgs', SearchArgs)
+    EvalManager.register('EvalStore', EvalStore)
+    with EvalManager() as manager:
+        eval_store = manager.EvalStore()
+        move_queue = manager.Queue()
+
+def search_process(params:SearchArgs, store:EvalStore) -> list[SearchArgs]:
     engine_copy = copy.deepcopy(params.engine)
     engine_copy.game.parse_move()
 
