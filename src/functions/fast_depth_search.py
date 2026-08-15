@@ -24,6 +24,7 @@ def depth_search(engine:FastEngine) -> list[DepthChart]:
     mv_ch_search_args = [SearchArgs(
         engine, ch.level, None, ch, [])
         for ch in mv_charts]
+    results = []
 
     EvalManager.register('SearchArgs', SearchArgs)
     EvalManager.register('EvalStore', EvalStore)
