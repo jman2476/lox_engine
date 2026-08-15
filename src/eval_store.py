@@ -4,8 +4,8 @@ class EvalStore():
     def __init__(self):
         self.positions = {}
 
-        import threading
-        self.lock = threading.Lock()
+        # import threading
+        # self.lock = threading.Lock()
 
     def __repr__(self):
         p_dict = "{\n"
@@ -48,11 +48,11 @@ class EvalStore():
         self.positions[key] = eval
 
     def get_locked_eval(self, fen:str) -> tuple[float, bool]:
-        with self.lock:
+        # with self.lock:
             return self.get_eval(fen)
 
     def set_locked_eval(self, fen:str, eval:float):
-        with self.lock:
+        # with self.lock:
             self.set_eval(fen, eval)
 
 
