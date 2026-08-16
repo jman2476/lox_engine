@@ -71,6 +71,8 @@ def search_process(move_queue:Queue, store:EvalStore, results:list[DepthChart]) 
         engine_copy = copy.deepcopy(move_params.engine)
         print(engine_copy.game.board)
 
+        next_moves = engine_copy.find_ranked_moves()
+
         move_queue.task_done()
 
 def get_best_move(engine:FastEngine):
