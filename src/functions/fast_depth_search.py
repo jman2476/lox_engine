@@ -31,6 +31,7 @@ def depth_search(engine:FastEngine) -> list[DepthChart]:
     with EvalManager() as manager:
         eval_store = manager.EvalStore()
         move_queue = manager.Queue()
+        res_list = manager.list()
 
         eval_store.set_positions(
             engine.eval_store.get_positions())
@@ -41,7 +42,7 @@ def depth_search(engine:FastEngine) -> list[DepthChart]:
         for i in range(4):
             p = Process(
                 target=search_process,
-                args=(move_queue, eval_store),
+                args=(move_queue, eval_store, res_list),
                 name=f"Worker-{i+1}"
             )
             processes.append(p)
@@ -61,7 +62,7 @@ def depth_search(engine:FastEngine) -> list[DepthChart]:
         )
 
 
-def search_process(move_queue:Queue, store:EvalStore) -> list[SearchArgs]:
+def search_process(move_queue:Queue, store:EvalStore, results:list[DepthChart]) -> list[SearchArgs]:
     while True:
         move_params = move_queue.get()
         if move_params is None:
