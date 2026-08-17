@@ -13,6 +13,10 @@ class SearchArgs():
         self.parent = parent
         self.move = move
         self.move_list = move_list
+        self.idx_path = []
+
+    def add_idx(self, idx:int):
+        self.idx_path.append(idx)
 
 
 def depth_search(engine:FastEngine) -> list[DepthChart]:
