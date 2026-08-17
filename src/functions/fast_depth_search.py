@@ -2,7 +2,7 @@ from src.engines.fast_engine import FastEngine
 from src.eval_store import EvalManager, EvalStore
 from src.functions.depth_search import DepthChart, crawl_depth_chart
 from multiprocessing import Process
-import copy, time
+import copy, time, random
 from queue import Queue
 
 
@@ -19,6 +19,23 @@ class SearchArgs():
         self.idx_path.append(idx)
 
 
+class MoveNode():
+    def __init__(self, id:str, chart:DepthChart):
+        self.id = id
+        self.chart = chart
+        self.next = []
+
+class TreeNodeArgs():
+    def __init__(self, engine:FastEngine, layer: int, parent:str, move:DepthChart):
+        self.engine = engine
+        self.layer = layer
+        self.parent = parent
+        self.move = move
+
+def set_evalnode(ch:DepthChart) -> MoveNode:
+    node_id = f'{ch.move}{random.seed(f'{ch.eval}{ch.level}{ch.fen}{time.time()}')}'
+    return MoveNode(node_id, ch)
+
 def depth_search(engine:FastEngine) -> list[DepthChart]:
     # User mp.manager.queue to dynamically add elements to the queue until the desired depth is reached 
     moves = engine.find_ranked_moves()
@@ -28,6 +45,7 @@ def depth_search(engine:FastEngine) -> list[DepthChart]:
     mv_ch_search_args = [SearchArgs(
         engine, ch.level, None, ch, [])
         for ch in mv_charts]
+    max_processes = 4
     results = []
 
     EvalManager.register('SearchArgs', SearchArgs)
@@ -43,7 +61,7 @@ def depth_search(engine:FastEngine) -> list[DepthChart]:
             move_queue.put(move)
 
         processes = []
-        for i in range(4):
+        for i in range(max_processes):
             p = Process(
                 target=search_process,
                 args=(move_queue, eval_store, res_list),
@@ -55,7 +73,7 @@ def depth_search(engine:FastEngine) -> list[DepthChart]:
         while not move_queue.empty():
             time.sleep(0.01)
 
-        for _ in range(4):
+        for _ in range(max_processes):
             move_queue.put(None)
 
         for p in processes:
@@ -112,3 +130,16 @@ def search_process(move_queue:Queue, store:EvalStore, results:list[DepthChart]) 
 
 def get_best_move(engine:FastEngine):
     ...
+
+
+def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
+    # Differs from depth_search by using a dictionary to store
+    # all nodes of the search as EvalNodes, to be rebuild into a
+    # list[DepthChart] at the end.
+    moves = engine.find_ranked_moves()
+    turn, fen = engine.game.turn, engine.game.fen
+    mv_charts = [
+        DepthChart(mv[0], mv[1], 0, turn, fen)
+        for mv in moves
+    ]
+    mv_nodes = []
