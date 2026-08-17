@@ -26,14 +26,14 @@ class MoveNode():
         self.next = []
 
 class TreeNodeArgs():
-    def __init__(self, engine:FastEngine, layer: int, parent:str, move:DepthChart):
+    def __init__(self, engine:FastEngine, layer: int, parent:str, move:MoveNode):
         self.engine = engine
         self.layer = layer
-        self.parent = parent
+        self.parent_id = parent
         self.move = move
 
 def set_evalnode(ch:DepthChart) -> MoveNode:
-    node_id = f'{ch.move}{random.seed(f'{ch.eval}{ch.level}{ch.fen}{time.time()}')}'
+    node_id = f'{ch.move}{random.seed(f'{ch.eval}{ch.level}{time.time()}')}'
     return MoveNode(node_id, ch)
 
 def depth_search(engine:FastEngine) -> list[DepthChart]:
@@ -132,6 +132,35 @@ def get_best_move(engine:FastEngine):
     ...
 
 
+def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[MoveNode]):
+    # Must rewrite using TreeNodeArgs!!!!!!
+    while True:
+        move_params = move_queueu.get()
+        if move_params is None:
+            move_queueu.task_done()
+            break
+
+        engine_copy = copy.deepcopy(move_params.engine)
+        layer = move_params.layer
+
+        engine_copy.eval_store.update_evals(
+            store.get_positions()
+        )
+        engine_copy.game.parse_move(move_params.move.move)
+        next_moves = engine_copy.find_ranked_moves()
+        store.update_evals(
+            engine_copy.eval_store.get_positions()
+        )
+        move_params.move.set_next(
+            next_moves[:engine_copy.breadth], layer, engine_copy.game.turn, engine_copy.game.fen
+        )
+
+
+        if layer < engine_copy.depth:
+            next_searches = [
+                TreeNodeArgs()
+            ]
+
 def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
     # Differs from depth_search by using a dictionary to store
     # all nodes of the search as EvalNodes, to be rebuild into a
@@ -142,4 +171,44 @@ def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
         DepthChart(mv[0], mv[1], 0, turn, fen)
         for mv in moves
     ]
-    mv_nodes = []
+    mv_nodes = [
+        set_evalnode(mv) for mv in mv_charts
+    ]
+    ##### Must incorporate tree node args!
+    num_processes = 4
+    results = []
+
+    EvalManager.register('EvalStore', EvalStore)
+    with EvalManager() as manager:
+        eval_store = manager.EvalStore()
+        move_queue = manager.Queue()
+        move_nodes = manager.dict()
+
+        eval_store.set_positions(
+            engine.eval_store.get_positions()
+        )
+        for mv in mv_nodes:
+            move_queue.put(mv)
+
+        processes = []
+        for i in range(num_processes):
+            p = Process(
+                target=search_proc_2,
+                args=(move_queue, eval_store, move_nodes),
+                name=f'Worker-{i+1}'
+            )
+            processes.append(p)
+            p.start()
+
+        while not move_queue.empty():
+            time.sleep(0.01)
+
+        for _ in range(num_processes):
+            move_queue.put(None)
+
+        for p in processes:
+            p.join()
+
+        engine.eval_store.update_evals(
+            eval_store.get_positions()
+        )
