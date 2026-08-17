@@ -1,6 +1,6 @@
 from src.engines.fast_engine import FastEngine
 from src.game import Game
-import unittest
+import unittest, time
 
 class TestFastEngine(unittest.TestCase):
     def test_init(self):
@@ -150,3 +150,25 @@ class TestFastEngine(unittest.TestCase):
         game.start_new_game()
         engine = FastEngine(game, 'white', (2,3))
         self.assertEqual(engine.rank_moves([]), [])
+
+    def test_eval_speed(self):
+        game = Game()
+        game.start_new_game()
+        engine = FastEngine(game, 'white', (2,2))
+
+        start_1 = time.perf_counter()
+        moves_1 = engine.find_ranked_moves()
+        end_1 = time.perf_counter()
+
+        start_2 = time.perf_counter()
+        moves_2 = engine.find_ranked_moves()
+        end_2 = time.perf_counter()
+
+        dif_1 = end_1 - start_1
+        dif_2 = end_2 - start_2
+
+        self.assertEqual(moves_1, moves_2)
+        print(f'Run 1: {dif_1}s')
+        print(f'Run 2: {dif_2}s')
+        print(f'Diff 2-1: {dif_2 - dif_1}s')
+        self.assertTrue(dif_2 < dif_1)
