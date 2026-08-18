@@ -104,9 +104,9 @@ def search_process(move_queue:Queue, store:EvalStore, results:list[DepthChart]) 
         if move_params is None:
             break
         layer = move_params.move.level
-        print(f'Move parameters: {move_params.move}, {move_params.parent}, {move_params.layer}')
+        # print(f'Move parameters: {move_params.move}, {move_params.parent}, {move_params.layer}')
         engine_copy = copy.deepcopy(move_params.engine)
-        print(engine_copy.game.board)
+        # print(engine_copy.game.board)
         engine_copy.eval_store.update_evals(store.get_positions())
 
         engine_copy.game.parse_move(move_params.move.move)
@@ -158,7 +158,7 @@ def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, Mo
         store.update_evals(
             engine_copy.eval_store.get_positions()
         )
-        task.move.set_next(
+        task.move.chart.set_next(
             next_moves[:engine_copy.breadth], layer, engine_copy.game.turn, engine_copy.game.fen
         )
         next_nodes = [
@@ -231,3 +231,8 @@ def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
         engine.eval_store.update_evals(
             eval_store.get_positions()
         )
+
+        return build_tree(move_nodes)
+
+def build_tree(nodes:dict[str, MoveNode]) -> list[DepthChart]:
+    list = []
