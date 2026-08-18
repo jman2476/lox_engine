@@ -4,6 +4,7 @@ from src.functions.depth_search import DepthChart, crawl_depth_chart
 from multiprocessing import Process
 import copy, time, random
 from queue import Queue
+from typing import Self
 
 
 class SearchArgs():
@@ -25,14 +26,21 @@ class MoveNode():
         self.chart = chart
         self.next = []
 
-class TreeNodeArgs():
+class MoveArgs():
     def __init__(self, engine:FastEngine, layer: int, parent:str, move:MoveNode):
         self.engine = engine
         self.layer = layer
         self.parent_id = parent
         self.move = move
 
-def set_evalnode(ch:DepthChart) -> MoveNode:
+    def set_next(self, moves:list[MoveNode], engine:FastEngine) -> list[Self]:
+        return [
+            MoveArgs(engine, self.layer+1, self.move.id, mv)
+            for mv in moves
+        ]
+
+        
+def set_movenode(ch:DepthChart) -> MoveNode:
     node_id = f'{ch.move}{random.seed(f'{ch.eval}{ch.level}{time.time()}')}'
     return MoveNode(node_id, ch)
 
@@ -132,34 +140,41 @@ def get_best_move(engine:FastEngine):
     ...
 
 
-def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[MoveNode]):
+def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, MoveNode]):
     # Must rewrite using TreeNodeArgs!!!!!!
     while True:
-        move_params = move_queueu.get()
-        if move_params is None:
-            move_queueu.task_done()
+        task = move_queueu.get()
+        if task is None:
             break
 
-        engine_copy = copy.deepcopy(move_params.engine)
-        layer = move_params.layer
+        engine_copy = copy.deepcopy(task.engine)
+        layer = task.layer
 
         engine_copy.eval_store.update_evals(
             store.get_positions()
         )
-        engine_copy.game.parse_move(move_params.move.move)
+        engine_copy.game.parse_move(task.move.chart.move)
         next_moves = engine_copy.find_ranked_moves()
         store.update_evals(
             engine_copy.eval_store.get_positions()
         )
-        move_params.move.set_next(
+        task.move.set_next(
             next_moves[:engine_copy.breadth], layer, engine_copy.game.turn, engine_copy.game.fen
         )
+        next_nodes = [
+            set_movenode(mv) for mv in task.move.next
+        ]
 
+        for n in next_nodes:
+            node_registry[n.id] = n
 
         if layer < engine_copy.depth:
-            next_searches = [
-                TreeNodeArgs()
-            ]
+            next_searches = task.set_next(next_nodes, engine_copy)
+
+            for s in next_searches:
+                move_queueu.put(s)
+            
+        move_queueu.task_done()
 
 def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
     # Differs from depth_search by using a dictionary to store
@@ -172,7 +187,11 @@ def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
         for mv in moves
     ]
     mv_nodes = [
-        set_evalnode(mv) for mv in mv_charts
+        set_movenode(mv) for mv in mv_charts
+    ]
+    mv_args = [
+        MoveArgs(engine, 0, None, mv) 
+        for mv in mv_nodes
     ]
     ##### Must incorporate tree node args!
     num_processes = 4
@@ -187,7 +206,7 @@ def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
         eval_store.set_positions(
             engine.eval_store.get_positions()
         )
-        for mv in mv_nodes:
+        for mv in mv_args:
             move_queue.put(mv)
 
         processes = []
