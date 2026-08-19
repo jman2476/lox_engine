@@ -5,6 +5,8 @@ from multiprocessing import Process
 import copy, time, random
 from queue import Queue
 from typing import Self
+import logging
+logger = logging.getLogger(__name__)
 
 
 class SearchArgs():
@@ -41,7 +43,10 @@ class MoveArgs():
 
         
 def set_movenode(ch:DepthChart) -> MoveNode:
-    node_id = f'{ch.move}{random.seed(f'{ch.eval}{ch.level}{time.time()}')}'
+    random.seed(f'{ch.eval}{ch.level}{time.time()}')
+    rand_part = int(random.random()*1e6)
+    print(f'New node rand part: {rand_part}')
+    node_id = f'{ch.move}{rand_part}'
     return MoveNode(node_id, ch)
 
 def depth_search(engine:FastEngine) -> list[DepthChart]:
@@ -54,7 +59,6 @@ def depth_search(engine:FastEngine) -> list[DepthChart]:
         engine, ch.level, None, ch, [])
         for ch in mv_charts]
     max_processes = 4
-    results = []
 
     EvalManager.register('SearchArgs', SearchArgs)
     EvalManager.register('EvalStore', EvalStore)
@@ -104,12 +108,12 @@ def search_process(move_queue:Queue, store:EvalStore, results:list[DepthChart]) 
         if move_params is None:
             break
         layer = move_params.move.level
-        print(f'Move parameters: {move_params.move}, {move_params.parent}, {move_params.layer}')
+        # print(f'Move parameters: {move_params.move}, {move_params.parent}, {move_params.layer}')
         engine_copy = copy.deepcopy(move_params.engine)
-        print(engine_copy.game.board)
+        # print(engine_copy.game.board)
         engine_copy.eval_store.update_evals(store.get_positions())
 
-        engine_copy.game.parse_move(move_params.move.move)
+        engine_copy.game.parse_move(move_params.move.move, False, True)
         next_moves = engine_copy.find_ranked_moves()
         store.update_evals(engine_copy.eval_store.get_positions())
         
@@ -137,44 +141,68 @@ def search_process(move_queue:Queue, store:EvalStore, results:list[DepthChart]) 
         move_queue.task_done()
 
 def get_best_move(engine:FastEngine):
-    ...
+    move_tree = depth_search_tree(engine)
+    logger.info(f'{engine.game.turn}\'s moves:\n{move_tree}')
+    crawls = []
+    for ch in move_tree:
+        crawl = crawl_depth_chart(ch)
+        if crawl[3] is None:
+            crawl[3] = crawl[1]
+            crawl[4] = crawl[2]
+        crawls.append(crawl)
+    if crawls[0][2] == 'white':
+        best = max(crawls, key=lambda c: c[3])
+    else:
+        best = min(crawls, key=lambda c: c[3])
+    print(f'Playing {best[0]} for {best[2]}')
+    engine.game.parse_move(best[0])
+    print(engine.game)
 
 
-def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, MoveNode]):
+def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, MoveNode], active_workers):
     # Must rewrite using TreeNodeArgs!!!!!!
     while True:
+        logger.debug(f'Active workers: {active_workers.value}')
+        active_workers.value += 1
         task = move_queueu.get()
         if task is None:
             break
 
         engine_copy = copy.deepcopy(task.engine)
         layer = task.layer
-
+        # logger.debug(f'Search Proc 2 layer: {layer}')
         engine_copy.eval_store.update_evals(
             store.get_positions()
         )
-        engine_copy.game.parse_move(task.move.chart.move)
+        engine_copy.game.parse_move(task.move.chart.move, False, True)
         next_moves = engine_copy.find_ranked_moves()
         store.update_evals(
             engine_copy.eval_store.get_positions()
         )
-        task.move.set_next(
+        task.move.chart.set_next(
             next_moves[:engine_copy.breadth], layer, engine_copy.game.turn, engine_copy.game.fen
         )
         next_nodes = [
-            set_movenode(mv) for mv in task.move.next
+            set_movenode(mv) for mv in task.move.chart.next
         ]
 
         for n in next_nodes:
+            # print(f'Processing node: {n.id} {n.chart}')
+            task.move.next.append(n.id)
             node_registry[n.id] = n
+
+        # print(f'Task.move.next: {task.move.next}')
+        node_registry[task.move.id] = task.move
 
         if layer < engine_copy.depth:
             next_searches = task.set_next(next_nodes, engine_copy)
 
             for s in next_searches:
                 move_queueu.put(s)
-            
+        logger.debug(f'Active workers: {active_workers.value}')
+        
         move_queueu.task_done()
+        active_workers.value -= 1
 
 def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
     # Differs from depth_search by using a dictionary to store
@@ -202,6 +230,7 @@ def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
         eval_store = manager.EvalStore()
         move_queue = manager.Queue()
         move_nodes = manager.dict()
+        active_workers = manager.Value('i', 0)
 
         eval_store.set_positions(
             engine.eval_store.get_positions()
@@ -213,13 +242,16 @@ def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
         for i in range(num_processes):
             p = Process(
                 target=search_proc_2,
-                args=(move_queue, eval_store, move_nodes),
+                args=(move_queue, eval_store, move_nodes, active_workers),
                 name=f'Worker-{i+1}'
             )
             processes.append(p)
             p.start()
 
-        while not move_queue.empty():
+        print(f'Active workers: {active_workers.value}')
+
+        while not move_queue.empty() and active_workers.value > 0:
+            logger.debug(f'Active workers: {active_workers.value}')
             time.sleep(0.01)
 
         for _ in range(num_processes):
@@ -231,3 +263,21 @@ def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
         engine.eval_store.update_evals(
             eval_store.get_positions()
         )
+
+        # logger.info(f'Fast eval store: {engine.eval_store}')
+        return build_tree(move_nodes, mv_nodes)
+
+def build_tree(nodes:dict[str, MoveNode], root_nodes:list[MoveNode]) -> list[DepthChart]:
+    results = []
+    id_list = [node.id for node in root_nodes]
+    # print(f'Node dict:')
+    # for k,v in nodes.items():
+    #     print(f'{k}: {v}, next: {v.next}')
+    # print(f'Root nodes: {root_nodes}')
+    # print(f'id_list: {id_list}')
+    for id in id_list:
+        node = nodes[id]
+        chart = node.chart
+        chart.next = build_tree(nodes, [nodes[i] for i in node.next])
+        results.append(chart)
+    return results

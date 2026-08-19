@@ -10,7 +10,7 @@ from multiprocessing import Process
 class FastEngine(Engine):
     def __init__(self, game:Game, 
                  side:Literal['white', 'black'], 
-                 search:tuple[int,int]=(2,2)):
+                 search:tuple[int,int]=(5,2)):
         super().__init__(game, side, 'fast', search[0])
         self.breadth = search[1]
         self.search = search
@@ -19,7 +19,7 @@ class FastEngine(Engine):
     def find_ranked_moves(self) -> list[tuple[str, float]]:
         moves = self.find_moves()
         evaluations = self.eval_moves(moves)
-        return self.rank_moves(evaluations)
+        return self.rank_moves(evaluations)[:self.breadth]
 
     def find_moves(self) -> list[str]:
         self.white = self.game.board.white()
@@ -28,7 +28,7 @@ class FastEngine(Engine):
         moves = []
         for p in pieces:
             moves.extend(find_move_notation(self.game, p))
-        print(f'Available engine moves: {moves}')
+        print(f'Fast engine moves: {moves}')
         return moves
 
     def rank_moves(self, eval_moves:list[tuple[str,float]]

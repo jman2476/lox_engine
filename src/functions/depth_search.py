@@ -173,4 +173,4 @@ def get_best_move_mp(engine:Engine, depth:int, breadth:int, multiproc:bool=False
     print(f'Playing {best[0]} for {best[2]}')
     engine.game.parse_move(best[0])
     print(engine.game)
-    logger.debug(f'Engine eval dict: {engine.eval_dict}')
+    logger.debug(f'Naive Engine eval dict: {engine.eval_dict}')
