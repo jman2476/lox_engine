@@ -166,8 +166,10 @@ def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, Mo
         ]
 
         for n in next_nodes:
+            task.move.next.append(n.id)
             node_registry[n.id] = n
 
+        node_registry[task.move.id] = task.move
         if layer < engine_copy.depth:
             next_searches = task.set_next(next_nodes, engine_copy)
 
