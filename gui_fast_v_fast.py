@@ -25,7 +25,7 @@ def main():
     screen = pygame.display.set_mode((1200, 900))
     # Depth search parameters
     depth = 5
-    breadth = 2
+    breadth = 5
     multi_proc = False
     depth_mp = not multi_proc
     event = f'Depth: {depth}, Breadth: {breadth}, MP: {multi_proc} Engine, {depth_mp} Search'
@@ -42,9 +42,9 @@ def main():
     # Engine setup
     engine_fast_b = FastEngine(game_board.game, 'black', (depth, breadth))
     # engine for white will use multprocessing
-    engine_naive_w = NaiveEngine(game_board.game, 'white', depth)
+    engine_naive_w = FastEngine(game_board.game, 'white', (depth, breadth))
     game_board.game.b_player = 'Fast Managed Multi Proc'
-    game_board.game.w_player = 'Naive Multi Proc Search'
+    game_board.game.w_player = 'Fast Managed Multi Proc'
 
     b_engine_d_t = []
     w_engine_d_t = []
@@ -83,7 +83,7 @@ def main():
             if (game_board.game.winner is None and elapsed > 2.0):
                 if game_board.game.turn == 'white':
                     start = time.perf_counter()
-                    ds_mp_best_move(engine_naive_w, depth, breadth)
+                    fds_best_move(engine_naive_w)
                     end = time.perf_counter()
                     w_engine_d_t.append(end - start)
                     print(game_board.game.board)
@@ -139,7 +139,7 @@ def main():
                 plt.autoscale(True, 'y')
                 plt.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
                 plt.minorticks_on()
-                plt.suptitle(f'Depth Search: Multi-OG vs Fast MP Move Time\nResult: {game_board.game.winner}  Duration: {duration:.2f} min\nFinal FEN: {game_board.game.fen}')
+                plt.suptitle(f'Depth Search: Fast MP vs Fast MP Move Time\nResult: {game_board.game.winner}  Duration: {duration:.2f} min\nFinal FEN: {game_board.game.fen}')
                 print(f'Max times:\n     white: {max(w_engine_d_t)}s\n    black: {max(b_engine_d_t)}s')
                 print(f'Min times:\n    white {min(w_engine_d_t)}s\n    black {min(b_engine_d_t)}s')
                 save_game(game_board.game.pgnw.path,
