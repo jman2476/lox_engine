@@ -159,9 +159,11 @@ def get_best_move(engine:FastEngine):
     print(engine.game)
 
 
-def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, MoveNode]):
+def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, MoveNode], active_workers):
     # Must rewrite using TreeNodeArgs!!!!!!
     while True:
+        logger.debug(f'Active workers: {active_workers.value}')
+        active_workers.value += 1
         task = move_queueu.get()
         if task is None:
             break
@@ -197,8 +199,10 @@ def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, Mo
 
             for s in next_searches:
                 move_queueu.put(s)
-            
+        logger.debug(f'Active workers: {active_workers.value}')
+        
         move_queueu.task_done()
+        active_workers.value -= 1
 
 def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
     # Differs from depth_search by using a dictionary to store
@@ -218,7 +222,7 @@ def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
         for mv in mv_nodes
     ]
     ##### Must incorporate tree node args!
-    num_processes = 10
+    num_processes = 4
     results = []
 
     EvalManager.register('EvalStore', EvalStore)
@@ -226,6 +230,7 @@ def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
         eval_store = manager.EvalStore()
         move_queue = manager.Queue()
         move_nodes = manager.dict()
+        active_workers = manager.Value('i', 0)
 
         eval_store.set_positions(
             engine.eval_store.get_positions()
@@ -237,13 +242,16 @@ def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
         for i in range(num_processes):
             p = Process(
                 target=search_proc_2,
-                args=(move_queue, eval_store, move_nodes),
+                args=(move_queue, eval_store, move_nodes, active_workers),
                 name=f'Worker-{i+1}'
             )
             processes.append(p)
             p.start()
 
-        while not move_queue.empty():
+        print(f'Active workers: {active_workers.value}')
+
+        while not move_queue.empty() and active_workers.value > 0:
+            logger.debug(f'Active workers: {active_workers.value}')
             time.sleep(0.01)
 
         for _ in range(num_processes):

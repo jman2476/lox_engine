@@ -22,7 +22,7 @@ def main():
     pygame.mouse.set_visible(True)
     screen = pygame.display.set_mode((1200, 900))
     # Depth search parameters
-    depth = 5
+    depth = 3
     breadth = 5
     multi_proc = False
     depth_mp = not multi_proc
@@ -39,7 +39,6 @@ def main():
 
     # Engine setup
     engine_fast_b = FastEngine(game_board.game, 'black', (depth, breadth))
-    # engine for white will use multprocessing
     engine_naive_w = FastEngine(game_board.game, 'white', (depth, breadth))
     game_board.game.b_player = 'Fast Managed Multi Proc'
     game_board.game.w_player = 'Fast Managed Multi Proc'
