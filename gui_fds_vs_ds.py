@@ -24,7 +24,7 @@ def main():
     pygame.mouse.set_visible(True)
     screen = pygame.display.set_mode((1200, 900))
     # Depth search parameters
-    depth = 5
+    depth = 2
     breadth = 2
     multi_proc = False
     depth_mp = not multi_proc
