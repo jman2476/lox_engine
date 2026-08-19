@@ -41,6 +41,20 @@ class MoveArgs():
             for mv in moves
         ]
 
+class KeyChain():
+    def __init__(self, manager:EvalManager):
+        self.counter = manager.Lock()
+        self.store = manager.Lock()
+        self.registry = manager.Lock()
+
+    def get_counter(self):
+        return self.counter
+
+    def get_store(self):
+        return self.store
+
+    def get_registry(self):
+        return self.registry
         
 def set_movenode(ch:DepthChart) -> MoveNode:
     random.seed(f'{ch.eval}{ch.level}{time.time()}')
@@ -62,6 +76,7 @@ def depth_search(engine:FastEngine) -> list[DepthChart]:
 
     EvalManager.register('SearchArgs', SearchArgs)
     EvalManager.register('EvalStore', EvalStore)
+    EvalManager.register('KeyChain', KeyChain)
     with EvalManager() as manager:
         eval_store = manager.EvalStore()
         move_queue = manager.Queue()
@@ -159,11 +174,12 @@ def get_best_move(engine:FastEngine):
     print(engine.game)
 
 
-def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, MoveNode], active_workers):
+def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, MoveNode], active_workers:EvalManager.Value, keys:KeyChain):
     # Must rewrite using TreeNodeArgs!!!!!!
     while True:
         logger.debug(f'Active workers: {active_workers.value}')
-        active_workers.value += 1
+        with keys.get_counter():
+            active_workers.value += 1
         task = move_queueu.get()
         if task is None:
             break
@@ -202,7 +218,8 @@ def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, Mo
         logger.debug(f'Active workers: {active_workers.value}')
         
         move_queueu.task_done()
-        active_workers.value -= 1
+        with keys.get_counter():
+            active_workers.value -= 1
 
 def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
     # Differs from depth_search by using a dictionary to store
@@ -226,11 +243,13 @@ def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
     results = []
 
     EvalManager.register('EvalStore', EvalStore)
+    EvalManager.register('KeyChain', KeyChain)
     with EvalManager() as manager:
         eval_store = manager.EvalStore()
         move_queue = manager.Queue()
         move_nodes = manager.dict()
         active_workers = manager.Value('i', 0)
+        key_chain = manager.KeyChain(manager)
 
         eval_store.set_positions(
             engine.eval_store.get_positions()
@@ -242,7 +261,7 @@ def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
         for i in range(num_processes):
             p = Process(
                 target=search_proc_2,
-                args=(move_queue, eval_store, move_nodes, active_workers),
+                args=(move_queue, eval_store, move_nodes, active_workers, key_chain),
                 name=f'Worker-{i+1}'
             )
             processes.append(p)
