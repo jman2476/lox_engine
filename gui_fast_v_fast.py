@@ -3,7 +3,6 @@ from src.graphics.board import GUI_Board, Color
 from src.graphics.clock import Clock
 from src.graphics.error_box import ErrorBox
 from src.graphics.button import ExitButton, SetFenButton
-from src.engines.naive import NaiveEngine
 from src.engines.fast_engine import FastEngine
 from src.graphics.fen_box import FenBox
 import datetime
@@ -16,7 +15,6 @@ matplotlib.use('QtAgg')
 logging.getLogger('matplotlib').setLevel(logging.WARNING)
 import matplotlib.pyplot as plt
 from src.functions.save_game import save_game
-from src.functions.depth_search import get_best_move_mp as ds_mp_best_move
 from src.functions.fast_depth_search import get_best_move as fds_best_move
 
 def main():

@@ -142,6 +142,7 @@ def search_process(move_queue:Queue, store:EvalStore, results:list[DepthChart]) 
 
 def get_best_move(engine:FastEngine):
     move_tree = depth_search_tree(engine)
+    logger.info(f'{engine.game.turn}\'s moves:\n{move_tree}')
     crawls = []
     for ch in move_tree:
         crawl = crawl_depth_chart(ch)
@@ -167,7 +168,7 @@ def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, Mo
 
         engine_copy = copy.deepcopy(task.engine)
         layer = task.layer
-        logger.debug(f'Search Proc 2 layer: {layer}')
+        # logger.debug(f'Search Proc 2 layer: {layer}')
         engine_copy.eval_store.update_evals(
             store.get_positions()
         )
@@ -217,7 +218,7 @@ def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
         for mv in mv_nodes
     ]
     ##### Must incorporate tree node args!
-    num_processes = 4
+    num_processes = 10
     results = []
 
     EvalManager.register('EvalStore', EvalStore)
@@ -255,7 +256,7 @@ def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
             eval_store.get_positions()
         )
 
-        logger.info(f'Fast eval store: {engine.eval_store}')
+        # logger.info(f'Fast eval store: {engine.eval_store}')
         return build_tree(move_nodes, mv_nodes)
 
 def build_tree(nodes:dict[str, MoveNode], root_nodes:list[MoveNode]) -> list[DepthChart]:
