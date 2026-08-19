@@ -19,7 +19,7 @@ class FastEngine(Engine):
     def find_ranked_moves(self) -> list[tuple[str, float]]:
         moves = self.find_moves()
         evaluations = self.eval_moves(moves)
-        return self.rank_moves(evaluations)
+        return self.rank_moves(evaluations)[:self.breadth]
 
     def find_moves(self) -> list[str]:
         self.white = self.game.board.white()
