@@ -41,7 +41,10 @@ class MoveArgs():
 
         
 def set_movenode(ch:DepthChart) -> MoveNode:
-    node_id = f'{ch.move}{random.seed(f'{ch.eval}{ch.level}{time.time()}')}'
+    random.seed(f'{ch.eval}{ch.level}{time.time()}')
+    rand_part = int(random.random()*1e6)
+    print(f'New node rand part: {rand_part}')
+    node_id = f'{ch.move}{rand_part}'
     return MoveNode(node_id, ch)
 
 def depth_search(engine:FastEngine) -> list[DepthChart]:
@@ -162,14 +165,17 @@ def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, Mo
             next_moves[:engine_copy.breadth], layer, engine_copy.game.turn, engine_copy.game.fen
         )
         next_nodes = [
-            set_movenode(mv) for mv in task.move.next
+            set_movenode(mv) for mv in task.move.chart.next
         ]
 
         for n in next_nodes:
+            # print(f'Processing node: {n.id} {n.chart}')
             task.move.next.append(n.id)
             node_registry[n.id] = n
 
+        # print(f'Task.move.next: {task.move.next}')
         node_registry[task.move.id] = task.move
+
         if layer < engine_copy.depth:
             next_searches = task.set_next(next_nodes, engine_copy)
 
@@ -234,7 +240,19 @@ def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
             eval_store.get_positions()
         )
 
-        return build_tree(move_nodes)
+        return build_tree(move_nodes, mv_nodes)
 
-def build_tree(nodes:dict[str, MoveNode]) -> list[DepthChart]:
-    list = []
+def build_tree(nodes:dict[str, MoveNode], root_nodes:list[MoveNode]) -> list[DepthChart]:
+    results = []
+    id_list = [node.id for node in root_nodes]
+    print(f'Node dict:')
+    for k,v in nodes.items():
+        print(f'{k}: {v}, next: {v.next}')
+    print(f'Root nodes: {root_nodes}')
+    print(f'id_list: {id_list}')
+    for id in id_list:
+        node = nodes[id]
+        chart = node.chart
+        chart.next = build_tree(nodes, [nodes[i] for i in node.next])
+        results.append(chart)
+    return results
