@@ -31,3 +31,14 @@ class TestFastDepthSearch(unittest.TestCase):
         end = time.perf_counter()
         print(f"DST results: \n{results}")
         print(f'Elapsed time: {end - start}s')
+
+    def test_get_play_best_move(self):
+        print('------Get/Play Best Move-------')
+        game = Game()
+        game.start_new_game()
+        engine = FastEngine(game, 'white', (2,3))
+
+        start = time.perf_counter()
+        get_best_move(engine)
+        end = time.perf_counter()
+        print(f'FDS time: {end - start}s')

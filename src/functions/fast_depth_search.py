@@ -57,7 +57,6 @@ def depth_search(engine:FastEngine) -> list[DepthChart]:
         engine, ch.level, None, ch, [])
         for ch in mv_charts]
     max_processes = 4
-    results = []
 
     EvalManager.register('SearchArgs', SearchArgs)
     EvalManager.register('EvalStore', EvalStore)
@@ -140,7 +139,21 @@ def search_process(move_queue:Queue, store:EvalStore, results:list[DepthChart]) 
         move_queue.task_done()
 
 def get_best_move(engine:FastEngine):
-    ...
+    move_tree = depth_search_tree(engine)
+    crawls = []
+    for ch in move_tree:
+        crawl = crawl_depth_chart(ch)
+        if crawl[3] is None:
+            crawl[3] = crawl[1]
+            crawl[4] = crawl[2]
+        crawls.append(crawl)
+    if crawls[0][2] == 'white':
+        best = max(crawls, key=lambda c: c[3])
+    else:
+        best = min(crawls, key=lambda c: c[3])
+    print(f'Playing {best[0]} for {best[2]}')
+    engine.game.parse_move(best[0])
+    print(engine.game)
 
 
 def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, MoveNode]):
@@ -245,11 +258,11 @@ def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
 def build_tree(nodes:dict[str, MoveNode], root_nodes:list[MoveNode]) -> list[DepthChart]:
     results = []
     id_list = [node.id for node in root_nodes]
-    print(f'Node dict:')
-    for k,v in nodes.items():
-        print(f'{k}: {v}, next: {v.next}')
-    print(f'Root nodes: {root_nodes}')
-    print(f'id_list: {id_list}')
+    # print(f'Node dict:')
+    # for k,v in nodes.items():
+    #     print(f'{k}: {v}, next: {v.next}')
+    # print(f'Root nodes: {root_nodes}')
+    # print(f'id_list: {id_list}')
     for id in id_list:
         node = nodes[id]
         chart = node.chart
