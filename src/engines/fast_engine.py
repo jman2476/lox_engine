@@ -28,7 +28,7 @@ class FastEngine(Engine):
         moves = []
         for p in pieces:
             moves.extend(find_move_notation(self.game, p))
-        print(f'Available engine moves: {moves}')
+        print(f'Fast engine moves: {moves}')
         return moves
 
     def rank_moves(self, eval_moves:list[tuple[str,float]]

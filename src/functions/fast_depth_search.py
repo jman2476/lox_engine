@@ -5,6 +5,8 @@ from multiprocessing import Process
 import copy, time, random
 from queue import Queue
 from typing import Self
+import logging
+logger = logging.getLogger(__name__)
 
 
 class SearchArgs():
@@ -111,7 +113,7 @@ def search_process(move_queue:Queue, store:EvalStore, results:list[DepthChart]) 
         # print(engine_copy.game.board)
         engine_copy.eval_store.update_evals(store.get_positions())
 
-        engine_copy.game.parse_move(move_params.move.move)
+        engine_copy.game.parse_move(move_params.move.move, False, True)
         next_moves = engine_copy.find_ranked_moves()
         store.update_evals(engine_copy.eval_store.get_positions())
         
@@ -165,11 +167,11 @@ def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, Mo
 
         engine_copy = copy.deepcopy(task.engine)
         layer = task.layer
-
+        logger.debug(f'Search Proc 2 layer: {layer}')
         engine_copy.eval_store.update_evals(
             store.get_positions()
         )
-        engine_copy.game.parse_move(task.move.chart.move)
+        engine_copy.game.parse_move(task.move.chart.move, False, True)
         next_moves = engine_copy.find_ranked_moves()
         store.update_evals(
             engine_copy.eval_store.get_positions()
@@ -253,6 +255,7 @@ def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
             eval_store.get_positions()
         )
 
+        logger.info(f'Fast eval store: {engine.eval_store}')
         return build_tree(move_nodes, mv_nodes)
 
 def build_tree(nodes:dict[str, MoveNode], root_nodes:list[MoveNode]) -> list[DepthChart]:

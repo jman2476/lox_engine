@@ -30,7 +30,7 @@ class NaiveEngine(Engine):
         for piece in pieces:
             moves.extend(find_move_notation(self.game, piece))
         # Debugging: print moves w/ notation
-        print(f'Available engine moves: {moves}')
+        print(f'Naive engine moves: {moves}')
         logger.info(f'find_moves {self.game.turn} end {datetime.now()}')
         return moves
     
