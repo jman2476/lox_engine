@@ -177,7 +177,7 @@ def get_best_move(engine:FastEngine):
 def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, MoveNode], active_workers:EvalManager.Value, keys:KeyChain):
     # Must rewrite using TreeNodeArgs!!!!!!
     while True:
-        logger.debug(f'Active workers: {active_workers.value}')
+        # logger.debug(f'Active workers: {active_workers.value}')
         with keys.get_counter():
             active_workers.value += 1
         task = move_queueu.get()
@@ -215,7 +215,7 @@ def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, Mo
 
             for s in next_searches:
                 move_queueu.put(s)
-        logger.debug(f'Active workers: {active_workers.value}')
+        # logger.debug(f'Active workers: {active_workers.value}')
         
         move_queueu.task_done()
         with keys.get_counter():
@@ -243,13 +243,13 @@ def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
     results = []
 
     EvalManager.register('EvalStore', EvalStore)
-    EvalManager.register('KeyChain', KeyChain)
+    # EvalManager.register('KeyChain', KeyChain)
     with EvalManager() as manager:
         eval_store = manager.EvalStore()
         move_queue = manager.Queue()
         move_nodes = manager.dict()
         active_workers = manager.Value('i', 0)
-        key_chain = manager.KeyChain(manager)
+        key_chain = KeyChain(manager)
 
         eval_store.set_positions(
             engine.eval_store.get_positions()
@@ -267,10 +267,10 @@ def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
             processes.append(p)
             p.start()
 
-        print(f'Active workers: {active_workers.value}')
+        # print(f'Active workers: {active_workers.value}')
 
         while not move_queue.empty() and active_workers.value > 0:
-            logger.debug(f'Active workers: {active_workers.value}')
+            # logger.debug(f'Active workers: {active_workers.value}')
             time.sleep(0.01)
 
         for _ in range(num_processes):
