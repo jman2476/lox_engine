@@ -28,6 +28,9 @@ class MoveNode():
         self.chart = chart
         self.next = []
 
+    def __repr__(self):
+        return f'Move Node: ID {self.id}\nNext: {self.next}\nChart:{self.chart}'
+
 class MoveArgs():
     def __init__(self, engine:FastEngine, layer: int, parent:str, move:MoveNode):
         self.engine = engine
@@ -298,6 +301,7 @@ def build_tree(nodes:dict[str, MoveNode], root_nodes:list[MoveNode]) -> list[Dep
     # print(f'id_list: {id_list}')
     for id in id_list:
         node = nodes[id]
+        logger.debug(f'Current node: {node}')
         chart = node.chart
         logger.debug(f'Next nodes: {[(i,nodes[i]) for i in node.next]}')
         chart.next = build_tree(nodes, [nodes[i] for i in node.next])
