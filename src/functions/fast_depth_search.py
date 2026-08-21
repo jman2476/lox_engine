@@ -190,14 +190,16 @@ def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, Mo
         engine_copy = copy.deepcopy(task.engine)
         layer = task.layer
         # logger.debug(f'Search Proc 2 layer: {layer}')
-        engine_copy.eval_store.update_evals(
-            store.get_positions()
-        )
+        with keys.get_store():
+            engine_copy.eval_store.update_evals(
+                store.get_positions()
+            )
         engine_copy.game.parse_move(task.move.chart.move, False, True)
         next_moves = engine_copy.find_ranked_moves()
-        store.update_evals(
-            engine_copy.eval_store.get_positions()
-        )
+        with keys.get_store():
+            store.update_evals(
+                engine_copy.eval_store.get_positions()
+            )
         task.move.chart.set_next(
             next_moves[:engine_copy.breadth], layer, engine_copy.game.turn, engine_copy.game.fen
         )
@@ -208,10 +210,12 @@ def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, Mo
         for n in next_nodes:
             # print(f'Processing node: {n.id} {n.chart}')
             task.move.next.append(n.id)
-            node_registry[n.id] = n
+            with keys.get_registry():
+                node_registry[n.id] = n
 
         # print(f'Task.move.next: {task.move.next}')
-        node_registry[task.move.id] = task.move
+        with keys.get_registry():
+            node_registry[task.move.id] = task.move
         print(f'Layer {layer} is {'' if layer<engine_copy.depth else 'not'} greater than {engine_copy.depth}')
 
         if layer < engine_copy.depth:
