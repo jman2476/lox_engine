@@ -209,8 +209,10 @@ def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, Mo
 
         # print(f'Task.move.next: {task.move.next}')
         node_registry[task.move.id] = task.move
+        print(f'Layer {layer} is {'' if layer<engine_copy.depth else 'not'} greater than {engine_copy.depth}')
 
         if layer < engine_copy.depth:
+            print(f'Adding new layer to the queue')
             next_searches = task.set_next(next_nodes, engine_copy)
 
             for s in next_searches:
@@ -297,6 +299,7 @@ def build_tree(nodes:dict[str, MoveNode], root_nodes:list[MoveNode]) -> list[Dep
     for id in id_list:
         node = nodes[id]
         chart = node.chart
+        logger.debug(f'Next nodes: {[(i,nodes[i]) for i in node.next]}')
         chart.next = build_tree(nodes, [nodes[i] for i in node.next])
         results.append(chart)
     return results
