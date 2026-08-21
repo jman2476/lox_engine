@@ -62,7 +62,7 @@ class KeyChain():
 def set_movenode(ch:DepthChart) -> MoveNode:
     random.seed(f'{ch.eval}{ch.level}{time.time()}')
     rand_part = int(random.random()*1e6)
-    print(f'New node rand part: {rand_part}')
+    # print(f'New node rand part: {rand_part}')
     node_id = f'{ch.move}{rand_part}'
     return MoveNode(node_id, ch)
 
@@ -183,6 +183,7 @@ def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, Mo
         # logger.debug(f'Active workers: {active_workers.value}')
         with keys.get_counter():
             active_workers.value += 1
+        print(f'Queue size {move_queueu.qsize()}')
         task = move_queueu.get()
         if task is None:
             break
@@ -206,7 +207,7 @@ def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, Mo
         next_nodes = [
             set_movenode(mv) for mv in task.move.chart.next
         ]
-
+        # logger.debug(f'')
         for n in next_nodes:
             # print(f'Processing node: {n.id} {n.chart}')
             task.move.next.append(n.id)
@@ -216,7 +217,12 @@ def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, Mo
         # print(f'Task.move.next: {task.move.next}')
         with keys.get_registry():
             node_registry[task.move.id] = task.move
-        print(f'Layer {layer} is {'' if layer<engine_copy.depth else 'not'} greater than {engine_copy.depth}')
+            # set parent node.next
+            if task.parent_id is not None:
+                parent = node_registry[task.parent_id]
+                parent.next.append(task.move.id)
+                node_registry[task.parent_id] = parent
+        print(f'Layer {layer} is{' ' if layer>engine_copy.depth else  ' not'} greater than {engine_copy.depth}')
 
         if layer < engine_copy.depth:
             print(f'Adding new layer to the queue')
@@ -291,7 +297,7 @@ def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
         engine.eval_store.update_evals(
             eval_store.get_positions()
         )
-
+        
         # logger.info(f'Fast eval store: {engine.eval_store}')
         return build_tree(move_nodes, mv_nodes)
 
@@ -305,9 +311,9 @@ def build_tree(nodes:dict[str, MoveNode], root_nodes:list[MoveNode]) -> list[Dep
     # print(f'id_list: {id_list}')
     for id in id_list:
         node = nodes[id]
-        logger.debug(f'Current node: {node}')
+        # logger.debug(f'Current node: {node}')
         chart = node.chart
-        logger.debug(f'Next nodes: {[(i,nodes[i]) for i in node.next]}')
+        # logger.debug(f'Next nodes: {[(i,nodes[i]) for i in node.next]}')
         chart.next = build_tree(nodes, [nodes[i] for i in node.next])
         results.append(chart)
     return results
