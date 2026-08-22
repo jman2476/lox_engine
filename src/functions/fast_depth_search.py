@@ -2,7 +2,7 @@ from src.engines.fast_engine import FastEngine
 from src.eval_store import EvalManager, EvalStore
 from src.functions.depth_search import DepthChart, crawl_depth_chart
 from multiprocessing import Process
-import copy, time, random
+import copy, time, random, os
 from queue import Queue
 from typing import Self
 import logging
@@ -66,8 +66,30 @@ def set_movenode(ch:DepthChart) -> MoveNode:
     node_id = f'{ch.move}{rand_part}'
     return MoveNode(node_id, ch)
 
-def depth_search(engine:FastEngine) -> list[DepthChart]:
-    ...
+def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> list[DepthChart]:
+    # Rewriting depth search tree to properly lock values
+    moves = engine.find_ranked_moves()
+    turn, fen = engine.game.turn, engine.game.fen
+    mv_charts = [
+        DepthChart(mv[0], mv[1], 0, turn, fen)
+        for mv in moves
+    ]
+    mv_nodes = [
+        set_movenode(mv) for mv in mv_charts
+    ]
+    mv_args = [
+        MoveArgs(engine, 0, None, mv)
+        for mv in mv_nodes
+    ]
+    if num_workers is None: num_workers = 4
+
+    EvalManager.register('EvalStore', EvalStore)
+    with EvalManager() as manager:
+        eval_store = manager.EvalStore()
+        move_queue = manager.Queue()
+        move_nodes = manager.dict()
+        count_procs = manager.Value('i', 0)
+        key_chain = KeyChain(manager)
 
 def search_process(move_queue:Queue, store:EvalStore, results:list[DepthChart]) -> list[SearchArgs]:
     ...
