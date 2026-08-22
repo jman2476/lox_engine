@@ -67,96 +67,10 @@ def set_movenode(ch:DepthChart) -> MoveNode:
     return MoveNode(node_id, ch)
 
 def depth_search(engine:FastEngine) -> list[DepthChart]:
-    # User mp.manager.queue to dynamically add elements to the queue until the desired depth is reached 
-    moves = engine.find_ranked_moves()
-    mv_charts = [DepthChart(
-        mv[0],mv[1], 0, engine.game.turn, engine.game.fen) 
-        for mv in moves]
-    mv_ch_search_args = [SearchArgs(
-        engine, ch.level, None, ch, [])
-        for ch in mv_charts]
-    max_processes = 4
-
-    EvalManager.register('SearchArgs', SearchArgs)
-    EvalManager.register('EvalStore', EvalStore)
-    EvalManager.register('KeyChain', KeyChain)
-    with EvalManager() as manager:
-        eval_store = manager.EvalStore()
-        move_queue = manager.Queue()
-        res_list = manager.list()
-
-        eval_store.set_positions(
-            engine.eval_store.get_positions())
-        for move in mv_ch_search_args:
-            move_queue.put(move)
-
-        processes = []
-        for i in range(max_processes):
-            p = Process(
-                target=search_process,
-                args=(move_queue, eval_store, res_list),
-                name=f"Worker-{i+1}"
-            )
-            processes.append(p)
-            p.start()
-
-        while not move_queue.empty():
-            time.sleep(0.01)
-
-        for _ in range(max_processes):
-            move_queue.put(None)
-
-        for p in processes:
-            p.join()
-
-        engine.eval_store.update_evals(
-            eval_store.get_positions()
-        )
-
-        print('FDS results:')
-        for dch in res_list:
-            print(dch)
-            for ch in dch.next:
-                print(ch)
-
+    ...
 
 def search_process(move_queue:Queue, store:EvalStore, results:list[DepthChart]) -> list[SearchArgs]:
-    while True:
-        move_params = move_queue.get()
-        if move_params is None:
-            break
-        layer = move_params.move.level
-        # print(f'Move parameters: {move_params.move}, {move_params.parent}, {move_params.layer}')
-        engine_copy = copy.deepcopy(move_params.engine)
-        # print(engine_copy.game.board)
-        engine_copy.eval_store.update_evals(store.get_positions())
-
-        engine_copy.game.parse_move(move_params.move.move, False, True)
-        next_moves = engine_copy.find_ranked_moves()
-        store.update_evals(engine_copy.eval_store.get_positions())
-        
-        move_params.move.set_next(next_moves[:engine_copy.breadth],layer, engine_copy.game.turn, engine_copy.game.fen)
-
-        if move_params.layer == 0:
-            results.append(move_params.move)
-        else:
-            for r in results:
-                if r == move_params.parent:
-                    r.next = move_params.move.next
-
-        if layer < engine_copy.depth:
-            next_searches = [
-                SearchArgs(
-                    engine_copy, ch.level,
-                    move_params.move,
-                    ch, []
-                ) for ch in move_params.move.next
-            ]
-
-            for s in next_searches:
-                move_queue.put(s)
-
-        move_queue.task_done()
+    ...
 
 def get_best_move(engine:FastEngine):
     move_tree = depth_search_tree(engine)
