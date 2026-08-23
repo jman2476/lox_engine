@@ -2,6 +2,7 @@ from src.engines.fast_engine import FastEngine
 from src.eval_store import EvalManager, EvalStore
 from src.functions.depth_search import DepthChart, crawl_depth_chart
 from multiprocessing import Process
+from multiprocessing.sharedctypes import Synchronized
 import copy, time, random, os
 from queue import Queue
 from typing import Self
@@ -91,8 +92,63 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
         count_procs = manager.Value('i', 0)
         key_chain = KeyChain(manager)
 
-def search_process(move_queue:Queue, store:EvalStore, results:list[DepthChart]) -> list[SearchArgs]:
-    ...
+        eval_store.set_positions(
+            engine.eval_store.get_positions()
+        )
+        for mv in mv_args:
+            move_queue.put(mv)
+
+        processes = []
+        for i in range(num_workers):
+            p = Process(
+                target=search_process,
+                args=(move_queue, eval_store, move_nodes, count_procs, key_chain),
+                name=f'Worker-{i+1}'
+            )
+            processes.append(p)
+            p.start()
+
+        while not move_queue.empty() and count_procs.value > 0:
+            time.sleep(0.1)
+
+        for _ in range(count_procs):
+            move_queue.put(None)
+
+        for p in processes:
+            p.join()
+
+        engine.eval_store.update_evals(
+            eval_store.get_positions()
+        )
+
+        return build_tree(move_nodes, mv_nodes)
+
+def search_process(move_queue:Queue, store:EvalStore, 
+                   registry:dict[str,MoveNode], 
+                   counter:Synchronized[int], 
+                   keys: KeyChain) -> list[SearchArgs]:
+    while True:
+        with keys.get_counter():
+            counter.value += 1
+        task = move_queue.get()
+        if task is None:
+            break
+
+        engine_copy = copy.deepcopy(task.engine)
+        layer = task.layer
+        logger.info(f'Processing on layer {layer}')
+        with keys.get_store():
+            engine_copy.eval_store.update_evals(
+                store.get_positions()
+            )
+
+        engine_copy.game.parse_move(task.move.chart.move, False, True)
+        next_moves = engine_copy.find_ranked_moves()
+        with keys.get_store():
+            store.update_evals(
+                engine_copy.eval_store.get_positions()
+            )
+            
 
 def get_best_move(engine:FastEngine):
     move_tree = depth_search_tree(engine)
