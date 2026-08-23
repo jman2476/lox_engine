@@ -39,6 +39,10 @@ class MoveArgs():
         self.parent_id = parent
         self.move = move
 
+    def __repr__(self):
+        return f'Layer {self.layer}, Parent: {self.parent_id}\nMove: {self.move}'
+
+
     def set_next(self, moves:list[MoveNode], engine:FastEngine) -> list[Self]:
         return [
             MoveArgs(engine, self.layer+1, self.move.id, mv)
@@ -120,6 +124,8 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
         engine.eval_store.update_evals(
             eval_store.get_positions()
         )
+
+        result_nodes = dict(move_nodes)
 
         return build_tree(move_nodes, mv_nodes)
 
