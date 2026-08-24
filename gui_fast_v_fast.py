@@ -24,9 +24,9 @@ def main():
     # Depth search parameters
     depth = 3
     breadth = 2
-    multi_proc = False
-    depth_mp = not multi_proc
-    event = f'Depth: {depth}, Breadth: {breadth}, MP: {multi_proc} Engine, {depth_mp} Search'
+    w_threads = 32
+    b_threads = 4
+    event = f'Fast Engine: Depth: {depth}, Breadth: {breadth}, Threads: W->{w_threads} B->{b_threads}'
 
     clock = pygame.time.Clock()
     running = True
@@ -80,7 +80,7 @@ def main():
             if (game_board.game.winner is None and elapsed > 2.0):
                 if game_board.game.turn == 'white':
                     start = time.perf_counter()
-                    fds_best_move(engine_naive_w)
+                    fds_best_move(engine_naive_w, w_threads)
                     end = time.perf_counter()
                     w_engine_d_t.append(end - start)
                     print(game_board.game.board)
@@ -88,7 +88,7 @@ def main():
 
                 elif game_board.game.turn == 'black':
                     start = time.perf_counter()
-                    fds_best_move(engine_fast_b)
+                    fds_best_move(engine_fast_b, b_threads)
                     end = time.perf_counter()
                     b_engine_d_t.append(end - start)
                     print(game_board.game.board)

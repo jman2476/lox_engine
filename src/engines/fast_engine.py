@@ -7,6 +7,8 @@ from src.eval_store import EvalStore, EvalManager
 import copy, logging
 from multiprocessing import Process
 
+logger = logging.getLogger(__name__)
+
 class FastEngine(Engine):
     def __init__(self, game:Game, 
                  side:Literal['white', 'black'], 
@@ -53,23 +55,25 @@ class FastEngine(Engine):
             game_copy = copy.deepcopy(self.game)
             try:
                 game_copy.parse_move(mv, False, True)
+                stored_eval, exists = self.eval_store.get_eval(game_copy.fen)
+                if exists:
+                    eval = stored_eval
+                    # logger.info('Move found in eval store')
+                    # print('Move found in eval store')
+                else:
+                    match game_copy.winner:
+                        case '1-0':
+                            eval = 1000.0
+                        case '0-1':
+                            eval = -1000.0
+                        case '1/2-1/2':
+                            eval = 0.0
+                        case _:
+                            eval = get_evaluation(game_copy.board)
+                    self.eval_store.set_eval(game_copy.fen, eval)
+                move_evals.append((mv, eval))
             except:
                 print(f'Invalid move found: {mv}')
                 continue
-            stored_eval, exists = self.eval_store.get_eval(game_copy.fen)
-            if exists:
-                eval = stored_eval
-            else:
-                match game_copy.winner:
-                    case '1-0':
-                        eval = 1000.0
-                    case '0-1':
-                        eval = -1000.0
-                    case '1/2-1/2':
-                        eval = 0.0
-                    case _:
-                        eval = get_evaluation(game_copy.board)
-                self.eval_store.set_eval(game_copy.fen, eval)
-            move_evals.append((mv, eval))
         return move_evals
                 

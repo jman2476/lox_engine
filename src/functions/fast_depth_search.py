@@ -197,8 +197,11 @@ def search_process(move_queue:Queue, store:EvalStore,
         move_queue.task_done()
             
 
-def get_best_move(engine:FastEngine):
-    move_tree = depth_search(engine, 16)
+def get_best_move(engine:FastEngine, threads:int=0):
+    if threads == 0:
+        move_tree = depth_search(engine)
+    else:
+        move_tree = depth_search(engine, threads)
     logger.info(f'{engine.game.turn}\'s moves:\n{move_tree}')
     crawls = []
     for ch in move_tree:
