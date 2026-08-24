@@ -99,6 +99,7 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
         move_queue = manager.Queue()
         move_nodes = manager.dict()
         count_procs = manager.Value('i', 0)
+        print(f'count_procs is a {type(count_procs)} type')
         key_chain = KeyChain(manager)
 
         eval_store.set_positions(
@@ -120,7 +121,7 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
         while not move_queue.empty() and count_procs.value > 0:
             time.sleep(0.1)
 
-        for _ in range(count_procs):
+        for _ in range(count_procs.value):
             move_queue.put(None)
 
         for p in processes:
@@ -139,8 +140,8 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
 
 def search_process(move_queue:Queue, store:EvalStore, 
                    registry:dict[str,MoveNode], 
-                   counter: ValueProxy[int], 
-                   keys: KeyChain) -> list[SearchArgs]:
+                   counter, 
+                   keys: KeyChain):
     while True:
         with keys.counter:
             counter.value += 1
@@ -188,11 +189,11 @@ def search_process(move_queue:Queue, store:EvalStore,
 
         move_queue.task_done()
         with keys.counter:
-            counter.valuer -= 1
+            counter.value -= 1
             
 
 def get_best_move(engine:FastEngine):
-    move_tree = depth_search_tree(engine)
+    move_tree = depth_search(engine)
     logger.info(f'{engine.game.turn}\'s moves:\n{move_tree}')
     crawls = []
     for ch in move_tree:
@@ -301,6 +302,7 @@ def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
         move_queue = manager.Queue()
         move_nodes = manager.dict()
         active_workers = manager.Value('i', 0)
+        print(f'active workers is a {type(active_workers)} type')
         key_chain = KeyChain(manager)
 
         eval_store.set_positions(
