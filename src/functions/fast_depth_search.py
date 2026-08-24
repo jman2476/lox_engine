@@ -106,6 +106,7 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
             engine.eval_store.get_positions()
         )
         for mv in mv_args:
+            count_procs.value += 1
             move_queue.put(mv)
 
         processes = []
@@ -118,7 +119,9 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
             processes.append(p)
             p.start()
 
-        while not move_queue.empty() and count_procs.value > 0:
+        while not move_queue.empty() or count_procs.value > 0:
+            print(f'Is queue empty: {move_queue.empty()}')
+            print(f'Value of count_procs: {count_procs.value}')
             time.sleep(0.1)
 
         for _ in range(count_procs.value):
@@ -143,8 +146,8 @@ def search_process(move_queue:Queue, store:EvalStore,
                    counter, 
                    keys: KeyChain):
     while True:
-        with keys.counter:
-            counter.value += 1
+        # with keys.counter:
+        #     counter.value += 1
         task = move_queue.get()
         if task is None:
             break
@@ -180,16 +183,20 @@ def search_process(move_queue:Queue, store:EvalStore,
                 registry[task.parent_id] = parent
 
         if layer < engine_copy.depth:
+            print(f'On layer {layer}, add next nodes')
             next_searches = task.set_next(next_nodes, engine_copy)
 
             for ns in next_searches:
+                print(f'Adding node {ns} to queue')
+                with keys.counter:
+                    counter.value += 1
                 move_queue.put(ns)
         else:
             print(f'Max depth search reached at layer {layer}')
 
-        move_queue.task_done()
         with keys.counter:
             counter.value -= 1
+        move_queue.task_done()
             
 
 def get_best_move(engine:FastEngine):
@@ -270,9 +277,9 @@ def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, Mo
             logger.debug('max depth reached')
         # logger.debug(f'Active workers: {active_workers.value}')
         
-        move_queueu.task_done()
         with keys.get_counter():
             active_workers.value -= 1
+        move_queueu.task_done()
 
 def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
     # Differs from depth_search by using a dictionary to store
