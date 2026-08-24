@@ -2,7 +2,7 @@ from src.engines.fast_engine import FastEngine
 from src.eval_store import EvalManager, EvalStore
 from src.functions.depth_search import DepthChart, crawl_depth_chart
 from multiprocessing import Process
-from multiprocessing.sharedctypes import Synchronized
+from multiprocessing.managers import ValueProxy
 import copy, time, random, os
 from queue import Queue
 from typing import Self
@@ -131,7 +131,7 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
 
 def search_process(move_queue:Queue, store:EvalStore, 
                    registry:dict[str,MoveNode], 
-                   counter:Synchronized[int], 
+                   counter: ValueProxy[int], 
                    keys: KeyChain) -> list[SearchArgs]:
     while True:
         with keys.get_counter():
@@ -154,6 +154,8 @@ def search_process(move_queue:Queue, store:EvalStore,
             store.update_evals(
                 engine_copy.eval_store.get_positions()
             )
+
+        
             
 
 def get_best_move(engine:FastEngine):
@@ -205,7 +207,7 @@ def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, Mo
         next_nodes = [
             set_movenode(mv) for mv in task.move.chart.next
         ]
-        # logger.debug(f'')
+        logger.debug(f'On layer {layer} Next nodes: {[node.id for node in next_nodes]}')
         for n in next_nodes:
             # print(f'Processing node: {n.id} {n.chart}')
             task.move.next.append(n.id)
@@ -228,6 +230,10 @@ def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, Mo
 
             for s in next_searches:
                 move_queueu.put(s)
+                print(f'Search {s} added to queue')
+        else:
+            print('Max depth reached')
+            logger.debug('max depth reached')
         # logger.debug(f'Active workers: {active_workers.value}')
         
         move_queueu.task_done()
