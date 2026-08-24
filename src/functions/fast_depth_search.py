@@ -11,7 +11,10 @@ logger = logging.getLogger(__name__)
 
 
 class SearchArgs():
-    def __init__(self, engine:FastEngine, layer:int, parent:DepthChart, move:DepthChart, move_list:list[DepthChart] = []):
+    def __init__(self, engine:FastEngine, 
+                 layer:int, parent:DepthChart, 
+                 move:DepthChart, 
+                 move_list:list[DepthChart] = []):
         self.engine = engine
         self.layer = layer
         self.parent = parent
@@ -33,7 +36,9 @@ class MoveNode():
         return f'Move Node: ID {self.id}\nNext: {self.next}\nChart:{self.chart}'
 
 class MoveArgs():
-    def __init__(self, engine:FastEngine, layer: int, parent:str, move:MoveNode):
+    def __init__(self, engine:FastEngine, 
+                 layer: int, parent:str, 
+                 move:MoveNode):
         self.engine = engine
         self.layer = layer
         self.parent_id = parent
@@ -126,6 +131,9 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
         )
 
         result_nodes = dict(move_nodes)
+        print(f'Result nodes:')
+        for rn in result_nodes:
+            print(f'----------\n{rn}\n------------')
 
         return build_tree(move_nodes, mv_nodes)
 
@@ -134,7 +142,7 @@ def search_process(move_queue:Queue, store:EvalStore,
                    counter: ValueProxy[int], 
                    keys: KeyChain) -> list[SearchArgs]:
     while True:
-        with keys.get_counter():
+        with keys.counter:
             counter.value += 1
         task = move_queue.get()
         if task is None:
@@ -150,12 +158,37 @@ def search_process(move_queue:Queue, store:EvalStore,
 
         engine_copy.game.parse_move(task.move.chart.move, False, True)
         next_moves = engine_copy.find_ranked_moves()
-        with keys.get_store():
+        task.move.chart.set_next(
+            next_moves[:engine_copy.breadth], layer,
+            engine_copy.game.turn, engine_copy.game.fen
+        )
+        next_nodes = [
+            set_movenode(mv) for mv in task.move.chart.next
+        ]
+        with keys.store:
             store.update_evals(
                 engine_copy.eval_store.get_positions()
             )
 
-        
+        with keys.registry:
+            registry[task.move.id] = task.move
+
+            if task.parent_id is not None:
+                parent = registry[task.parent_id]
+                parent.next.append(task.move.id)
+                registry[task.parent_id] = parent
+
+        if layer < engine_copy.depth:
+            next_searches = task.set_next(next_nodes, engine_copy)
+
+            for ns in next_searches:
+                move_queue.put(ns)
+        else:
+            print(f'Max depth search reached at layer {layer}')
+
+        move_queue.task_done()
+        with keys.counter:
+            counter.valuer -= 1
             
 
 def get_best_move(engine:FastEngine):
