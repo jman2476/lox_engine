@@ -1,0 +1,7 @@
+pygame 2.6.1 (SDL 2.28.4, Python 3.13.14)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+Creating pgn file /home/JayBlue/personal_projects/lox_engine/recent_games/Human v Human-2026-08-24-15:17:26.475009.pgn
+pygame 2.6.1 (SDL 2.28.4, Python 3.13.14)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+count_procs is a <class 'multiprocessing.managers.ValueProxy'> type
+Exception found: 'ValueProxy' object cannot be interpreted as an integer

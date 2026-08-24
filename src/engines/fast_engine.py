@@ -28,7 +28,7 @@ class FastEngine(Engine):
         moves = []
         for p in pieces:
             moves.extend(find_move_notation(self.game, p))
-        print(f'Fast engine moves: {moves}')
+        # print(f'Fast engine moves: {moves}')
         return moves
 
     def rank_moves(self, eval_moves:list[tuple[str,float]]
@@ -51,8 +51,11 @@ class FastEngine(Engine):
         for mv in moves:
             eval = 0
             game_copy = copy.deepcopy(self.game)
-
-            game_copy.parse_move(mv, False, True)
+            try:
+                game_copy.parse_move(mv, False, True)
+            except:
+                print(f'Invalid move found: {mv}')
+                continue
             stored_eval, exists = self.eval_store.get_eval(game_copy.fen)
             if exists:
                 eval = stored_eval
