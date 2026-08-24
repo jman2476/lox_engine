@@ -99,7 +99,6 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
         move_queue = manager.Queue()
         move_nodes = manager.dict()
         count_procs = manager.Value('i', 0)
-        print(f'count_procs is a {type(count_procs)} type')
         key_chain = KeyChain(manager)
 
         eval_store.set_positions(
@@ -119,12 +118,13 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
             processes.append(p)
             p.start()
 
-        while not move_queue.empty() or count_procs.value > 0:
-            print(f'Is queue empty: {move_queue.empty()}')
-            print(f'Value of count_procs: {count_procs.value}')
-            time.sleep(0.1)
+        # while not move_queue.empty() or count_procs.value > 0:
+        #     print(f'Is queue empty: {move_queue.empty()}')
+        #     print(f'Value of count_procs: {count_procs.value}')
+        #     time.sleep(0.1)
+        move_queue.join()
 
-        for _ in range(count_procs.value):
+        for _ in range(num_workers):
             move_queue.put(None)
 
         for p in processes:
@@ -134,10 +134,10 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
             eval_store.get_positions()
         )
 
-        result_nodes = dict(move_nodes)
-        print(f'Result nodes:')
-        for rn in result_nodes:
-            print(f'----------\n{rn}\n------------')
+        # result_nodes = dict(move_nodes)
+        # print(f'Result nodes:')
+        # for rn in result_nodes:
+        #     print(f'----------\n{rn}\n------------')
 
         return build_tree(move_nodes, mv_nodes)
 
@@ -183,16 +183,14 @@ def search_process(move_queue:Queue, store:EvalStore,
                 registry[task.parent_id] = parent
 
         if layer < engine_copy.depth:
-            print(f'On layer {layer}, add next nodes')
+            # print(f'On layer {layer}, add next nodes')
             next_searches = task.set_next(next_nodes, engine_copy)
 
             for ns in next_searches:
-                print(f'Adding node {ns} to queue')
-                with keys.counter:
-                    counter.value += 1
+                # print(f'Adding node {ns} to queue')
                 move_queue.put(ns)
-        else:
-            print(f'Max depth search reached at layer {layer}')
+        # else:
+            # print(f'Max depth search reached at layer {layer}')
 
         with keys.counter:
             counter.value -= 1
@@ -200,7 +198,7 @@ def search_process(move_queue:Queue, store:EvalStore,
             
 
 def get_best_move(engine:FastEngine):
-    move_tree = depth_search(engine)
+    move_tree = depth_search(engine, 16)
     logger.info(f'{engine.game.turn}\'s moves:\n{move_tree}')
     crawls = []
     for ch in move_tree:
