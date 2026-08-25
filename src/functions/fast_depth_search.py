@@ -3,7 +3,7 @@ from src.eval_store import EvalManager, EvalStore
 from src.functions.depth_search import DepthChart, crawl_depth_chart
 from multiprocessing import Process
 from multiprocessing.managers import ValueProxy
-import copy, time, random, os
+import copy, time, random, os, uuid
 from queue import Queue
 from typing import Self
 import logging
@@ -70,11 +70,12 @@ class KeyChain():
         return self.registry
         
 def set_movenode(ch:DepthChart) -> MoveNode:
-    random.seed(f'{ch.eval}{ch.level}{time.time()}')
-    rand_part = int(random.random()*1e6)
-    # print(f'New node rand part: {rand_part}')
-    node_id = f'{ch.move}{rand_part}'
-    return MoveNode(node_id, ch)
+    # random.seed(f'{ch.eval}{ch.level}{time.time()}')
+    # rand_part = int(random.random()*1e6)
+    # # print(f'New node rand part: {rand_part}')
+    # node_id = f'{ch.move}{rand_part}'
+    # return MoveNode(node_id, ch)
+    return MoveNode(uuid.uuid4(), ch)
 
 def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> list[DepthChart]:
     # Rewriting depth search tree to properly lock values
@@ -179,9 +180,10 @@ def search_process(move_queue:Queue, store:EvalStore,
         with keys.registry:
             registry[task.move.id] = task.move
 
-            if task.parent_id is not None:
-                parent = registry[task.parent_id]
-                parent.next.append(task.move.id)
+        if task.parent_id is not None:
+            parent = registry[task.parent_id]
+            parent.next.append(task.move.id)
+            with keys.registry:
                 registry[task.parent_id] = parent
 
         if layer < engine_copy.depth:
