@@ -218,6 +218,84 @@ def get_best_move(engine:FastEngine, threads:int=0):
     engine.game.parse_move(best[0])
     print(engine.game)
 
+def search_proc_4(move_queue:Queue, store:EvalStore, 
+                   registry:dict[str,MoveNode], 
+                   counter, 
+                   keys: KeyChain):
+    while True:
+        # with keys.counter:
+        #     counter.value += 1
+        task = move_queue.get()
+        if task is None:
+            break
+
+        engine_copy = copy.deepcopy(task.engine)
+        layer = task.layer
+        logger.info(f'Processing on layer {layer}')
+
+        # no locking on eval store
+        engine_copy.eval_store.update_evals(
+            store.get_positions()
+        )
+
+        engine_copy.game.parse_move(task.move.chart.move, False, True)
+        next_moves = engine_copy.find_ranked_moves()
+        task.move.chart.set_next(
+            next_moves[:engine_copy.breadth], layer,
+            engine_copy.game.turn, engine_copy.game.fen
+        )
+        next_nodes = [
+            set_movenode(mv) for mv in task.move.chart.next
+        ]
+        # no locking on eval store
+        store.update_evals(
+            engine_copy.eval_store.get_positions()
+        )
+
+        with keys.registry:
+            registry[task.move.id] = task.move
+
+            if task.parent_id is not None:
+                parent = registry[task.parent_id]
+                parent.next.append(task.move.id)
+                registry[task.parent_id] = parent
+
+        if layer < engine_copy.depth:
+            # print(f'On layer {layer}, add next nodes')
+            next_searches = task.set_next(next_nodes, engine_copy)
+
+            for ns in next_searches:
+                # print(f'Adding node {ns} to queue')
+                move_queue.put(ns)
+        # else:
+            # print(f'Max depth search reached at layer {layer}')
+
+        with keys.counter:
+            counter.value -= 1
+        move_queue.task_done()
+            
+
+def get_best_move(engine:FastEngine, threads:int=0):
+    if threads == 0:
+        move_tree = depth_search(engine)
+    else:
+        move_tree = depth_search(engine, threads)
+    logger.info(f'{engine.game.turn}\'s moves:\n{move_tree}')
+    crawls = []
+    for ch in move_tree:
+        crawl = crawl_depth_chart(ch)
+        if crawl[3] is None:
+            crawl[3] = crawl[1]
+            crawl[4] = crawl[2]
+        crawls.append(crawl)
+    if crawls[0][2] == 'white':
+        best = max(crawls, key=lambda c: c[3])
+    else:
+        best = min(crawls, key=lambda c: c[3])
+    print(f'Playing {best[0]} for {best[2]}')
+    engine.game.parse_move(best[0])
+    print(engine.game)
+
 
 def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, MoveNode], active_workers:EvalManager.Value, keys:KeyChain):
     # Must rewrite using TreeNodeArgs!!!!!!
