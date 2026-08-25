@@ -98,21 +98,23 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
         eval_store = manager.EvalStore()
         move_queue = manager.Queue()
         move_nodes = manager.dict()
-        count_procs = manager.Value('i', 0)
+        # count_procs = manager.Value('i', 0)
         key_chain = KeyChain(manager)
 
         eval_store.set_positions(
             engine.eval_store.get_positions()
         )
         for mv in mv_args:
-            count_procs.value += 1
+            # count_procs.value += 1
             move_queue.put(mv)
 
         processes = []
         for i in range(num_workers):
             p = Process(
                 target=search_process,
-                args=(move_queue, eval_store, move_nodes, count_procs, key_chain),
+                args=(move_queue, eval_store, move_nodes,
+                    #    count_procs,
+                         key_chain),
                 name=f'Worker-{i+1}'
             )
             processes.append(p)
@@ -143,7 +145,7 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
 
 def search_process(move_queue:Queue, store:EvalStore, 
                    registry:dict[str,MoveNode], 
-                   counter, 
+                #    counter, 
                    keys: KeyChain):
     while True:
         # with keys.counter:
@@ -192,8 +194,8 @@ def search_process(move_queue:Queue, store:EvalStore,
         # else:
             # print(f'Max depth search reached at layer {layer}')
 
-        with keys.counter:
-            counter.value -= 1
+        # with keys.counter:
+        #     counter.value -= 1
         move_queue.task_done()
             
 
