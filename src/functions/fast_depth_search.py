@@ -193,7 +193,7 @@ def search_process(move_queue:Queue, store:EvalStore,
                    keys: KeyChain,
                    log_queue:Queue,
                    log_config):
-    log_config(log_queue)
+    # log_config(log_queue)
     while True:
         # with keys.counter:
         #     counter.value += 1
