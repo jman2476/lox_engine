@@ -1,7 +1,7 @@
 from src.engines.fast_engine import FastEngine
 from src.eval_store import EvalManager, EvalStore
 from src.functions.depth_search import DepthChart, crawl_depth_chart
-from multiprocessing import Process
+from multiprocessing import Process, current_process
 from multiprocessing.managers import ValueProxy
 import copy, time, random, os, uuid
 from queue import Queue
@@ -79,6 +79,8 @@ def set_movenode(ch:DepthChart) -> MoveNode:
 
 def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> list[DepthChart]:
     # Rewriting depth search tree to properly lock values
+    logger.info('Start depth search')
+    start = time.perf_counter()
     moves = engine.find_ranked_moves()
     turn, fen = engine.game.turn, engine.game.fen
     mv_charts = [
@@ -113,9 +115,10 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
         for i in range(num_workers):
             p = Process(
                 target=search_process,
-                args=(move_queue, eval_store, move_nodes,
-                    #    count_procs,
-                         key_chain),
+                args=(move_queue, 
+                      eval_store, 
+                      move_nodes,
+                      key_chain),
                 name=f'Worker-{i+1}'
             )
             processes.append(p)
@@ -141,6 +144,8 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
         # print(f'Result nodes:')
         # for rn in result_nodes:
         #     print(f'----------\n{rn}\n------------')
+        end = time.perf_counter()
+        logger.info(f'Depth_search time: {end-start}s')
 
         return build_tree(move_nodes, mv_nodes)
 
@@ -151,6 +156,7 @@ def search_process(move_queue:Queue, store:EvalStore,
     while True:
         # with keys.counter:
         #     counter.value += 1
+        start = time.perf_counter()
         task = move_queue.get()
         if task is None:
             break
@@ -198,10 +204,14 @@ def search_process(move_queue:Queue, store:EvalStore,
 
         # with keys.counter:
         #     counter.value -= 1
+        end = time.perf_counter()
+        
+        logger.info(f'{current_process().name} search process: {end-start}s')
         move_queue.task_done()
             
 
 def get_best_move(engine:FastEngine, threads:int=0):
+    start = time.perf_counter()
     if threads == 0:
         move_tree = depth_search(engine)
     else:
@@ -219,12 +229,14 @@ def get_best_move(engine:FastEngine, threads:int=0):
     else:
         best = min(crawls, key=lambda c: c[3])
     print(f'Playing {best[0]} for {best[2]}')
+    end = time.perf_counter()
+    logger.info(f'FDS get best move: {end-start}s')
     engine.game.parse_move(best[0])
     print(engine.game)
 
 def search_proc_4(move_queue:Queue, store:EvalStore, 
                    registry:dict[str,MoveNode], 
-                   counter, 
+                #    counter, 
                    keys: KeyChain):
     while True:
         # with keys.counter:
@@ -274,31 +286,31 @@ def search_proc_4(move_queue:Queue, store:EvalStore,
         # else:
             # print(f'Max depth search reached at layer {layer}')
 
-        with keys.counter:
-            counter.value -= 1
+        # with keys.counter:
+        #     counter.value -= 1
         move_queue.task_done()
             
 
-def get_best_move(engine:FastEngine, threads:int=0):
-    if threads == 0:
-        move_tree = depth_search(engine)
-    else:
-        move_tree = depth_search(engine, threads)
-    # logger.info(f'{engine.game.turn}\'s moves:\n{move_tree}')
-    crawls = []
-    for ch in move_tree:
-        crawl = crawl_depth_chart(ch)
-        if crawl[3] is None:
-            crawl[3] = crawl[1]
-            crawl[4] = crawl[2]
-        crawls.append(crawl)
-    if crawls[0][2] == 'white':
-        best = max(crawls, key=lambda c: c[3])
-    else:
-        best = min(crawls, key=lambda c: c[3])
-    print(f'Playing {best[0]} for {best[2]}')
-    engine.game.parse_move(best[0])
-    print(engine.game)
+# def get_best_move(engine:FastEngine, threads:int=0):
+#     if threads == 0:
+#         move_tree = depth_search(engine)
+#     else:
+#         move_tree = depth_search(engine, threads)
+#     # logger.info(f'{engine.game.turn}\'s moves:\n{move_tree}')
+#     crawls = []
+#     for ch in move_tree:
+#         crawl = crawl_depth_chart(ch)
+#         if crawl[3] is None:
+#             crawl[3] = crawl[1]
+#             crawl[4] = crawl[2]
+#         crawls.append(crawl)
+#     if crawls[0][2] == 'white':
+#         best = max(crawls, key=lambda c: c[3])
+#     else:
+#         best = min(crawls, key=lambda c: c[3])
+#     print(f'Playing {best[0]} for {best[2]}')
+#     engine.game.parse_move(best[0])
+#     print(engine.game)
 
 
 def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, MoveNode], active_workers:EvalManager.Value, keys:KeyChain):
