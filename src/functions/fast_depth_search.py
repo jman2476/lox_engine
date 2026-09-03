@@ -6,9 +6,8 @@ from multiprocessing.managers import ValueProxy
 import copy, time, random, os, uuid
 from queue import Queue
 from typing import Self
-import logging
+import logging, logging.handlers
 logger = logging.getLogger(__name__)
-
 
 class SearchArgs():
     def __init__(self, engine:FastEngine, 
@@ -77,6 +76,35 @@ def set_movenode(ch:DepthChart) -> MoveNode:
     # return MoveNode(node_id, ch)
     return MoveNode(uuid.uuid4(), ch)
 
+
+# Configure process-safe logging:
+def listener_config():
+    root = logging.getLogger()
+    h = logging.handlers.RotatingFileHandler('fdstest.log', 'a', 300, 10)
+    f = logging.Formatter('%(asctime)s %(processName)-10s %(name)s %(levelname)-8s %(message)s')
+    h.setFormatter(f)
+    root.addHandler(h)
+
+def listener_process(queue, configurer):
+    configurer()
+    while True:
+        try:
+            record = queue.get()
+            if record is None:
+                break
+            logger  = logging.getLogger(record.name)
+            logger.handle(record)
+        except Exception:
+            import sys, traceback
+            print('Problem encountered: ', file=sys.stderr)
+            traceback.print_exc(file=sys.stderr)
+
+def worker_config(queue):
+    h = logging.handlers.QueueHandler(queue)
+    root = logging.getLogger()
+    root.addHandler(h)
+    
+
 def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> list[DepthChart]:
     # Rewriting depth search tree to properly lock values
     logger.info('Start depth search')
@@ -104,6 +132,11 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
         # count_procs = manager.Value('i', 0)
         key_chain = KeyChain(manager)
 
+        log_queue = manager.Queue(-1)
+        listener = Process(target=listener_process,
+                           args=(log_queue, listener_config))
+        listener.start()
+
         eval_store.set_positions(
             engine.eval_store.get_positions()
         )
@@ -118,7 +151,9 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
                 args=(move_queue, 
                       eval_store, 
                       move_nodes,
-                      key_chain),
+                      key_chain,
+                      log_queue,
+                      worker_config),
                 name=f'Worker-{i+1}'
             )
             processes.append(p)
@@ -136,6 +171,9 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
         for p in processes:
             p.join()
 
+        log_queue.put_nowait(None)
+        listener.join()
+
         engine.eval_store.update_evals(
             eval_store.get_positions()
         )
@@ -152,7 +190,10 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
 def search_process(move_queue:Queue, store:EvalStore, 
                    registry:dict[str,MoveNode], 
                 #    counter, 
-                   keys: KeyChain):
+                   keys: KeyChain,
+                   log_queue:Queue,
+                   log_config):
+    log_config(log_queue)
     while True:
         # with keys.counter:
         #     counter.value += 1

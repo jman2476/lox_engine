@@ -1,0 +1,2 @@
+2026-09-03 16:07:49,985 Worker-6   src.engines.fast_engine INFO     Worker-6 FE.rank_moves: 2.2140011424198747e-06s
+2026-09-03 16:07:49,986 Worker-6   src.functions.fast_depth_search INFO     Worker-6 search process: 0.0654777390009258s

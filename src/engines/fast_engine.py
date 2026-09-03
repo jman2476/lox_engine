@@ -23,7 +23,7 @@ class FastEngine(Engine):
         moves = self.find_moves()
         evaluations = self.eval_moves(moves)
         end = time.perf_counter()
-        logger.info(f'{current_process().name} FE.find_ranked_moves: {end-start}s')
+        # logger.info(f'{current_process().name} FE.find_ranked_moves: {end-start}s')
         return self.rank_moves(evaluations)[:self.breadth]
 
     def find_moves(self) -> list[str]:
@@ -36,7 +36,7 @@ class FastEngine(Engine):
             moves.extend(find_move_notation(self.game, p))
         # print(f'Fast engine moves: {moves}')
         end = time.perf_counter()
-        logger.info(f'{current_process().name} FE.find_moves: {end-start}s')
+        # logger.info(f'{current_process().name} FE.find_moves: {end-start}s')
 
         return moves
 
@@ -54,7 +54,7 @@ class FastEngine(Engine):
                 sorted(eval_moves,
                        key=lambda x: x[1], reverse=False))
         end = time.perf_counter()
-        logger.info(f'{current_process().name} FE.rank_moves: {end-start}s')
+        # logger.info(f'{current_process().name} FE.rank_moves: {end-start}s')
         return ranked[:10]
 
     def eval_moves(self, moves:list[str]
@@ -88,6 +88,6 @@ class FastEngine(Engine):
                 print(f'Invalid move found: {mv}')
                 continue
         end = time.perf_counter()
-        logger.info(f'{current_process().name} FE.eval_moves: {end-start}s')
+        # logger.info(f'{current_process().name} FE.eval_moves: {end-start}s')
         return move_evals
                 
