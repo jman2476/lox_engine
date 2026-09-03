@@ -14,16 +14,17 @@ wheels/
 
 # Logging
 *.log
-fdstest.log.1
-*.log.2
-*.log.3
-*.log.4
-*.log.5
-*.log.6
-*.log.7
-*.log.8
-*.log.9
-*.log.10
+*.log.*
+# *.log.1
+# *.log.2
+# *.log.3
+# *.log.4
+# *.log.5
+# *.log.6
+# *.log.7
+# *.log.8
+# *.log.9
+# *.log.10
 # PGN files
 pgn-writer-testing/
 recent_games/
