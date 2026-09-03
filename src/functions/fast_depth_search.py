@@ -157,7 +157,7 @@ def search_process(move_queue:Queue, store:EvalStore,
 
         engine_copy = copy.deepcopy(task.engine)
         layer = task.layer
-        logger.info(f'Processing on layer {layer}')
+        # logger.info(f'Processing on layer {layer}')
         with keys.get_store():
             engine_copy.eval_store.update_evals(
                 store.get_positions()
@@ -206,7 +206,7 @@ def get_best_move(engine:FastEngine, threads:int=0):
         move_tree = depth_search(engine)
     else:
         move_tree = depth_search(engine, threads)
-    logger.info(f'{engine.game.turn}\'s moves:\n{move_tree}')
+    # logger.info(f'{engine.game.turn}\'s moves:\n{move_tree}')
     crawls = []
     for ch in move_tree:
         crawl = crawl_depth_chart(ch)
@@ -235,7 +235,7 @@ def search_proc_4(move_queue:Queue, store:EvalStore,
 
         engine_copy = copy.deepcopy(task.engine)
         layer = task.layer
-        logger.info(f'Processing on layer {layer}')
+        # logger.info(f'Processing on layer {layer}')
 
         # no locking on eval store
         engine_copy.eval_store.update_evals(
@@ -284,7 +284,7 @@ def get_best_move(engine:FastEngine, threads:int=0):
         move_tree = depth_search(engine)
     else:
         move_tree = depth_search(engine, threads)
-    logger.info(f'{engine.game.turn}\'s moves:\n{move_tree}')
+    # logger.info(f'{engine.game.turn}\'s moves:\n{move_tree}')
     crawls = []
     for ch in move_tree:
         crawl = crawl_depth_chart(ch)
@@ -331,7 +331,7 @@ def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, Mo
         next_nodes = [
             set_movenode(mv) for mv in task.move.chart.next
         ]
-        logger.debug(f'On layer {layer} Next nodes: {[node.id for node in next_nodes]}')
+        # logger.debug(f'On layer {layer} Next nodes: {[node.id for node in next_nodes]}')
         for n in next_nodes:
             # print(f'Processing node: {n.id} {n.chart}')
             task.move.next.append(n.id)
