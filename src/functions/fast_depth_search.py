@@ -137,13 +137,18 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
                            args=(log_queue, listener_config))
         listener.start()
 
+        i_set_eval_store = time.perf_counter()
         eval_store.set_positions(
             engine.eval_store.get_positions()
         )
+        f_set_eval_store = time.perf_counter()
+        delta_e_store = f_set_eval_store - i_set_eval_store
+
         for mv in mv_args:
             # count_procs.value += 1
             move_queue.put(mv)
 
+        i_search = time.perf_counter()
         processes = []
         for i in range(num_workers):
             p = Process(
@@ -171,19 +176,29 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
         for p in processes:
             p.join()
 
+        f_search = time.perf_counter()
+        del_search = f_search - i_search
+
         log_queue.put_nowait(None)
         listener.join()
 
+        i_update_e_store = time.perf_counter()
         engine.eval_store.update_evals(
             eval_store.get_positions()
         )
+        f_update_e_store = time.perf_counter()
+        delta_update_e_store = f_update_e_store - i_update_e_store
 
         # result_nodes = dict(move_nodes)
         # print(f'Result nodes:')
         # for rn in result_nodes:
         #     print(f'----------\n{rn}\n------------')
         end = time.perf_counter()
+        logger.info(f'Set eval store duration: {delta_e_store}s')
+        logger.info(f'Update eval store duration: {delta_update_e_store}s')
+        logger.info(f'Search duration: {del_search}s')
         logger.info(f'Depth_search time: {end-start}s')
+        logger.info(f'With {num_workers} processes')
 
         return build_tree(move_nodes, mv_nodes)
 
@@ -246,8 +261,10 @@ def search_process(move_queue:Queue, store:EvalStore,
         # with keys.counter:
         #     counter.value -= 1
         end = time.perf_counter()
-        
-        logger.info(f'{current_process().name} search process: {end-start}s')
+
+        name = current_process().name
+        if name == 'Worker-1':
+            logger.info(f'{name} search process: {end-start}s')
         move_queue.task_done()
             
 

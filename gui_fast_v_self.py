@@ -24,7 +24,7 @@ def main():
     # Depth search parameters
     depth = 1
     breadth = 2
-    w_threads = 32
+    w_threads = 4
     b_threads = 4
     event = f'Fast Engine: Depth: {depth}, Breadth: {breadth}, Threads: {w_threads}. Singe Engine, shared eval_store'
 
