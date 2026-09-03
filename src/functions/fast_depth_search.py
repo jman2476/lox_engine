@@ -259,10 +259,13 @@ def search_process(move_queue:Queue, store:EvalStore,
         time_dict['register eval'] = f_register_eval - i_register_eval
 
         if task.parent_id is not None:
+            i_parent = time.perf_counter()
             parent = registry[task.parent_id]
             parent.next.append(task.move.id)
             with keys.registry:
                 registry[task.parent_id] = parent
+            f_parent = time.perf_counter()
+            time_dict['parent register'] = f_parent - i_parent
 
         if layer < engine_copy.depth:
             # print(f'On layer {layer}, add next nodes')
@@ -279,6 +282,12 @@ def search_process(move_queue:Queue, store:EvalStore,
         end = time.perf_counter()
 
         name = current_process().name
+
+        times_str = 'Times taken:'
+        for key in time_dict:
+            times_str += f'\n{key}: {time_dict[key]}s'
+        logger.info(times_str)
+
         if name == 'Worker-1':
             logger.info(f'{name} search process: {end-start}s')
         move_queue.task_done()
@@ -363,28 +372,6 @@ def search_proc_4(move_queue:Queue, store:EvalStore,
         # with keys.counter:
         #     counter.value -= 1
         move_queue.task_done()
-            
-
-# def get_best_move(engine:FastEngine, threads:int=0):
-#     if threads == 0:
-#         move_tree = depth_search(engine)
-#     else:
-#         move_tree = depth_search(engine, threads)
-#     # logger.info(f'{engine.game.turn}\'s moves:\n{move_tree}')
-#     crawls = []
-#     for ch in move_tree:
-#         crawl = crawl_depth_chart(ch)
-#         if crawl[3] is None:
-#             crawl[3] = crawl[1]
-#             crawl[4] = crawl[2]
-#         crawls.append(crawl)
-#     if crawls[0][2] == 'white':
-#         best = max(crawls, key=lambda c: c[3])
-#     else:
-#         best = min(crawls, key=lambda c: c[3])
-#     print(f'Playing {best[0]} for {best[2]}')
-#     engine.game.parse_move(best[0])
-#     print(engine.game)
 
 
 def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, MoveNode], active_workers:EvalManager.Value, keys:KeyChain):
