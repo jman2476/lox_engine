@@ -208,22 +208,31 @@ def search_process(move_queue:Queue, store:EvalStore,
                    keys: KeyChain,
                    log_queue:Queue,
                    log_config):
-    # log_config(log_queue)
+    log_config(log_queue)
     while True:
         # with keys.counter:
         #     counter.value += 1
+        time_dict = {}
         start = time.perf_counter()
         task = move_queue.get()
         if task is None:
             break
 
+        i_copy = time.perf_counter()
         engine_copy = copy.deepcopy(task.engine)
+        f_copy = time.perf_counter()
+        time_dict['copy'] = f_copy - i_copy
+
         layer = task.layer
         # logger.info(f'Processing on layer {layer}')
+
+        i_eval_copy = time.perf_counter()
         with keys.get_store():
             engine_copy.eval_store.update_evals(
                 store.get_positions()
             )
+        f_eval_copy = time.perf_counter()
+        time_dict['eval store copy'] = f_eval_copy - i_eval_copy
 
         engine_copy.game.parse_move(task.move.chart.move, False, True)
         next_moves = engine_copy.find_ranked_moves()
@@ -234,13 +243,20 @@ def search_process(move_queue:Queue, store:EvalStore,
         next_nodes = [
             set_movenode(mv) for mv in task.move.chart.next
         ]
+
+        i_update_eval = time.perf_counter()
         with keys.store:
             store.update_evals(
                 engine_copy.eval_store.get_positions()
             )
+        f_update_eval = time.perf_counter()
+        time_dict['update eval'] = f_update_eval - i_update_eval
 
+        i_register_eval = time.perf_counter()
         with keys.registry:
             registry[task.move.id] = task.move
+        f_register_eval = time.perf_counter()
+        time_dict['register eval'] = f_register_eval - i_register_eval
 
         if task.parent_id is not None:
             parent = registry[task.parent_id]
