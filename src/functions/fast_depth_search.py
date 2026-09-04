@@ -150,6 +150,7 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
 
         i_search = time.perf_counter()
         processes = []
+        process_timing = ''
         for i in range(num_workers):
             p = Process(
                 target=search_process,
@@ -162,19 +163,29 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
                 name=f'Worker-{i+1}'
             )
             processes.append(p)
+            proc_start = time.perf_counter()
             p.start()
+            proc_end = time.perf_counter()
+            process_timing += f'\nP-{p.name} started in {(proc_end - proc_start):2.2}s'
 
         # while not move_queue.empty() or count_procs.value > 0:
         #     print(f'Is queue empty: {move_queue.empty()}')
         #     print(f'Value of count_procs: {count_procs.value}')
         #     time.sleep(0.1)
+        queue_join_start = time.perf_counter()
         move_queue.join()
+        queue_join_end = time.perf_counter()
+        dt_queue = queue_join_end - queue_join_start
 
         for _ in range(num_workers):
             move_queue.put(None)
 
+        pjoin_timing = ''
         for p in processes:
+            pjoin_start = time.perf_counter()
             p.join()
+            pjoin_end = time.perf_counter()
+            pjoin_timing += f'\nP-{p.name} joined in {(pjoin_end - pjoin_start):2.2}s'
 
         f_search = time.perf_counter()
         del_search = f_search - i_search
@@ -194,11 +205,14 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
         # for rn in result_nodes:
         #     print(f'----------\n{rn}\n------------')
         end = time.perf_counter()
-        logger.info(f'Set eval store duration: {delta_e_store}s')
-        logger.info(f'Update eval store duration: {delta_update_e_store}s')
-        logger.info(f'Search duration: {del_search}s')
-        logger.info(f'Depth_search time: {end-start}s')
+        logger.info(f'Set eval store duration: {delta_e_store:2.4}s')
+        logger.info(f'Update eval store duration: {delta_update_e_store:2.4}s')
+        logger.info(f'Search duration: {del_search:2.4}s')
+        logger.info(f'Depth_search time: {end-start:2.4}s')
+        logger.info(f'Queue join time: {dt_queue:2.4}s')
         logger.info(f'With {num_workers} processes')
+        logger.info(f'Process start timings: {process_timing}')
+        logger.info(f'Process join timings: {pjoin_timing}')
 
         return build_tree(move_nodes, mv_nodes)
 
@@ -286,10 +300,10 @@ def search_process(move_queue:Queue, store:EvalStore,
         times_str = 'Times taken:'
         for key in time_dict:
             times_str += f'\n{key}: {time_dict[key]}s'
-        logger.info(times_str)
+        # logger.info(times_str)
 
-        if name == 'Worker-1':
-            logger.info(f'{name} search process: {end-start}s')
+        # if name == 'Worker-1':
+        #     logger.info(f'{name} search process: {end-start}s')
         move_queue.task_done()
             
 
