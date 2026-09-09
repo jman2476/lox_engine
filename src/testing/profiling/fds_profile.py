@@ -9,11 +9,12 @@ def main():
     game = Game()
     game.start_new_game()
     engine = FastEngine(game, 'white', (2,3))
+    threads = 4
 
     profiler = cProfile.Profile()
     profiler.enable()
 
-    get_best_move(engine)
+    get_best_move(engine, threads)
 
     profiler.disable()
     stats = pstats.Stats(profiler).sort_stats('cumtime')
