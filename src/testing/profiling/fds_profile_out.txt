@@ -1,0 +1,79 @@
+Creating pgn file /home/JayBlue/personal_projects/lox_engine/recent_games/Human v Human-2026-09-09-01:45:24.086940.pgn
+Playing e4 for white
+rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1
+         4520389 function calls (3764299 primitive calls) in 5.884 seconds
+
+   Ordered by: cumulative time
+   List reduced from 564 to 30 due to restriction <30>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000    5.884    5.884 /home/JayBlue/personal_projects/lox_engine/src/functions/fast_depth_search.py:310(get_best_move)
+        1    0.000    0.000    5.837    5.837 /home/JayBlue/personal_projects/lox_engine/src/functions/fast_depth_search.py:108(depth_search)
+      370    4.840    0.013    4.840    0.013 {built-in method posix.read}
+      179    0.000    0.000    4.818    0.027 /home/JayBlue/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py:434(_recv_bytes)
+      358    0.000    0.000    4.818    0.013 /home/JayBlue/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py:395(_recv)
+      110    0.000    0.000    4.815    0.044 /home/JayBlue/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/multiprocessing/connection.py:251(recv)
+       86    0.000    0.000    4.792    0.056 /home/JayBlue/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/multiprocessing/managers.py:818(_callmethod)
+        1    0.000    0.000    4.785    4.785 <string>:1(join)
+        1    0.000    0.000    0.973    0.973 /home/JayBlue/personal_projects/lox_engine/src/engines/fast_engine.py:21(find_ranked_moves)
+   461/41    0.003    0.000    0.962    0.023 /home/JayBlue/personal_projects/lox_engine/src/game.py:145(parse_move)
+692369/942    0.432    0.000    0.937    0.001 /home/JayBlue/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/copy.py:119(deepcopy)
+32529/942    0.055    0.000    0.933    0.001 /home/JayBlue/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/copy.py:248(_reconstruct)
+        1    0.000    0.000    0.930    0.930 /home/JayBlue/personal_projects/lox_engine/src/engines/fast_engine.py:60(eval_moves)
+33471/942    0.094    0.000    0.927    0.001 /home/JayBlue/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/copy.py:218(_deepcopy_dict)
+       21    0.000    0.000    0.918    0.044 /home/JayBlue/personal_projects/lox_engine/src/game.py:243(is_checkmated)
+      336    0.000    0.000    0.894    0.003 /home/JayBlue/personal_projects/lox_engine/src/functions/find_moves.py:24(find_available_moves)
+     9420    0.023    0.000    0.850    0.000 /home/JayBlue/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/copy.py:192(_deepcopy_list)
+      176    0.002    0.000    0.743    0.004 /home/JayBlue/personal_projects/lox_engine/src/functions/find_moves.py:103(find_pawn_moves)
+      369    0.001    0.000    0.356    0.001 /home/JayBlue/personal_projects/lox_engine/src/functions/parse.py:20(parse_pawn_move)
+       44    0.000    0.000    0.188    0.004 /home/JayBlue/personal_projects/lox_engine/src/functions/find_moves.py:270(find_knight_moves)
+      154    0.001    0.000    0.188    0.001 /home/JayBlue/personal_projects/lox_engine/src/functions/find_moves.py:343(validate_legal_moves)
+  1401240    0.118    0.000    0.118    0.000 {method 'get' of 'dict' objects}
+       92    0.001    0.000    0.090    0.001 /home/JayBlue/personal_projects/lox_engine/src/functions/parse.py:254(parse_piece_move)
+   878072    0.062    0.000    0.062    0.000 {built-in method builtins.id}
+   108390    0.034    0.000    0.051    0.000 /home/JayBlue/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/copy.py:232(_keep_alive)
+        1    0.000    0.000    0.048    0.048 /home/JayBlue/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/multiprocessing/managers.py:645(__enter__)
+        1    0.000    0.000    0.048    0.048 /home/JayBlue/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/multiprocessing/managers.py:538(start)
+        1    0.000    0.000    0.043    0.043 /home/JayBlue/personal_projects/lox_engine/src/engines/fast_engine.py:29(find_moves)
+       16    0.000    0.000    0.043    0.003 /home/JayBlue/personal_projects/lox_engine/src/functions/find_moves.py:43(find_move_notation)
+    65058    0.010    0.000    0.042    0.000 /home/JayBlue/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/copy.py:253(<genexpr>)
+
+
+         4520389 function calls (3764299 primitive calls) in 5.884 seconds
+
+   Ordered by: internal time
+   List reduced from 564 to 30 due to restriction <30>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+      370    4.840    0.013    4.840    0.013 {built-in method posix.read}
+692369/942    0.432    0.000    0.937    0.001 /home/JayBlue/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/copy.py:119(deepcopy)
+  1401240    0.118    0.000    0.118    0.000 {method 'get' of 'dict' objects}
+33471/942    0.094    0.000    0.927    0.001 /home/JayBlue/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/copy.py:218(_deepcopy_dict)
+   878072    0.062    0.000    0.062    0.000 {built-in method builtins.id}
+32529/942    0.055    0.000    0.933    0.001 /home/JayBlue/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/copy.py:248(_reconstruct)
+   108390    0.034    0.000    0.051    0.000 /home/JayBlue/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/copy.py:232(_keep_alive)
+   549586    0.029    0.000    0.029    0.000 /home/JayBlue/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/copy.py:173(_deepcopy_atomic)
+     9420    0.023    0.000    0.850    0.000 /home/JayBlue/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/copy.py:192(_deepcopy_list)
+   224803    0.019    0.000    0.019    0.000 {method 'append' of 'list' objects}
+    32028    0.014    0.000    0.028    0.000 /home/JayBlue/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/copy.py:226(_deepcopy_method)
+       23    0.012    0.001    0.012    0.001 {method 'poll' of 'select.poll' objects}
+    32048    0.010    0.000    0.010    0.000 {method '__reduce_ex__' of 'object' objects}
+    65058    0.010    0.000    0.042    0.000 /home/JayBlue/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/copy.py:253(<genexpr>)
+    32048    0.008    0.000    0.012    0.000 /home/JayBlue/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/copyreg.py:98(__newobj__)
+    32176    0.008    0.000    0.008    0.000 {method 'update' of 'dict' objects}
+    65232    0.007    0.000    0.007    0.000 {built-in method builtins.getattr}
+    65427    0.007    0.000    0.007    0.000 {built-in method builtins.isinstance}
+     2676    0.006    0.000    0.010    0.000 /home/JayBlue/personal_projects/lox_engine/src/functions/diagonals.py:77(get_diagonal_squares)
+      462    0.005    0.000    0.006    0.000 /home/JayBlue/personal_projects/lox_engine/src/game.py:43(set_fen)
+     1032    0.005    0.000    0.036    0.000 /home/JayBlue/personal_projects/lox_engine/src/board.py:211(find_checks)
+      964    0.005    0.000    0.006    0.000 /home/JayBlue/personal_projects/lox_engine/src/board.py:185(get_black_pieces)
+     4183    0.004    0.000    0.006    0.000 /home/JayBlue/personal_projects/lox_engine/src/functions/parse.py:6(parse_square)
+     1124    0.004    0.000    0.005    0.000 /home/JayBlue/personal_projects/lox_engine/src/board.py:376(knight)
+    33474    0.004    0.000    0.004    0.000 {method 'items' of 'dict' objects}
+    32083    0.004    0.000    0.004    0.000 {built-in method __new__ of type object at 0x14f80d0}
+     1032    0.003    0.000    0.004    0.000 /home/JayBlue/personal_projects/lox_engine/src/board.py:409(king)
+   461/41    0.003    0.000    0.962    0.023 /home/JayBlue/personal_projects/lox_engine/src/game.py:145(parse_move)
+    32103    0.003    0.000    0.003    0.000 {built-in method builtins.hasattr}
+      640    0.003    0.000    0.005    0.000 /home/JayBlue/personal_projects/lox_engine/src/functions/squares_controlled.py:36(__add__)
+
+
