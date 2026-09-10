@@ -1,14 +1,13 @@
 from src.engines.fast_engine import FastEngine
 from src.eval_store import EvalManager, EvalStore
 from src.functions.depth_search import DepthChart, crawl_depth_chart
-from multiprocessing import Process
+from multiprocessing import Process, current_process
 from multiprocessing.managers import ValueProxy
 import copy, time, random, os, uuid
 from queue import Queue
 from typing import Self
-import logging
+import logging, logging.handlers
 logger = logging.getLogger(__name__)
-
 
 class SearchArgs():
     def __init__(self, engine:FastEngine, 
@@ -77,8 +76,39 @@ def set_movenode(ch:DepthChart) -> MoveNode:
     # return MoveNode(node_id, ch)
     return MoveNode(uuid.uuid4(), ch)
 
+
+# Configure process-safe logging:
+def listener_config():
+    root = logging.getLogger()
+    h = logging.handlers.RotatingFileHandler('fdstest.log', 'a', 300, 10)
+    f = logging.Formatter('%(asctime)s %(processName)-10s %(name)s %(levelname)-8s %(message)s')
+    h.setFormatter(f)
+    root.addHandler(h)
+
+def listener_process(queue, configurer):
+    configurer()
+    while True:
+        try:
+            record = queue.get()
+            if record is None:
+                break
+            logger  = logging.getLogger(record.name)
+            logger.handle(record)
+        except Exception:
+            import sys, traceback
+            print('Problem encountered: ', file=sys.stderr)
+            traceback.print_exc(file=sys.stderr)
+
+def worker_config(queue):
+    h = logging.handlers.QueueHandler(queue)
+    root = logging.getLogger()
+    root.addHandler(h)
+    
+
 def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> list[DepthChart]:
     # Rewriting depth search tree to properly lock values
+    logger.info('Start depth search')
+    start = time.perf_counter()
     moves = engine.find_ranked_moves()
     turn, fen = engine.game.turn, engine.game.fen
     mv_charts = [
@@ -102,66 +132,121 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
         # count_procs = manager.Value('i', 0)
         key_chain = KeyChain(manager)
 
+        log_queue = manager.Queue(-1)
+        listener = Process(target=listener_process,
+                           args=(log_queue, listener_config))
+        listener.start()
+
+        i_set_eval_store = time.perf_counter()
         eval_store.set_positions(
             engine.eval_store.get_positions()
         )
+        f_set_eval_store = time.perf_counter()
+        delta_e_store = f_set_eval_store - i_set_eval_store
+
         for mv in mv_args:
             # count_procs.value += 1
             move_queue.put(mv)
 
+        i_search = time.perf_counter()
         processes = []
+        process_timing = ''
         for i in range(num_workers):
             p = Process(
                 target=search_process,
-                args=(move_queue, eval_store, move_nodes,
-                    #    count_procs,
-                         key_chain),
+                args=(move_queue, 
+                      eval_store, 
+                      move_nodes,
+                      key_chain,
+                      log_queue,
+                      worker_config),
                 name=f'Worker-{i+1}'
             )
             processes.append(p)
+            proc_start = time.perf_counter()
             p.start()
+            proc_end = time.perf_counter()
+            process_timing += f'\nP-{p.name} started in {(proc_end - proc_start):2.2}s'
 
         # while not move_queue.empty() or count_procs.value > 0:
         #     print(f'Is queue empty: {move_queue.empty()}')
         #     print(f'Value of count_procs: {count_procs.value}')
         #     time.sleep(0.1)
+        queue_join_start = time.perf_counter()
         move_queue.join()
+        queue_join_end = time.perf_counter()
+        dt_queue = queue_join_end - queue_join_start
 
         for _ in range(num_workers):
             move_queue.put(None)
 
+        pjoin_timing = ''
         for p in processes:
+            pjoin_start = time.perf_counter()
             p.join()
+            pjoin_end = time.perf_counter()
+            pjoin_timing += f'\nP-{p.name} joined in {(pjoin_end - pjoin_start):2.2}s'
 
+        f_search = time.perf_counter()
+        del_search = f_search - i_search
+
+        log_queue.put_nowait(None)
+        listener.join()
+
+        i_update_e_store = time.perf_counter()
         engine.eval_store.update_evals(
             eval_store.get_positions()
         )
+        f_update_e_store = time.perf_counter()
+        delta_update_e_store = f_update_e_store - i_update_e_store
 
         # result_nodes = dict(move_nodes)
         # print(f'Result nodes:')
         # for rn in result_nodes:
         #     print(f'----------\n{rn}\n------------')
+        end = time.perf_counter()
+        logger.info(f'Set eval store duration: {delta_e_store:2.4}s')
+        logger.info(f'Update eval store duration: {delta_update_e_store:2.4}s')
+        logger.info(f'Search duration: {del_search:2.4}s')
+        logger.info(f'Depth_search time: {end-start:2.4}s')
+        logger.info(f'Queue join time: {dt_queue:2.4}s')
+        logger.info(f'With {num_workers} processes')
+        logger.info(f'Process start timings: {process_timing}')
+        logger.info(f'Process join timings: {pjoin_timing}')
 
         return build_tree(move_nodes, mv_nodes)
 
 def search_process(move_queue:Queue, store:EvalStore, 
                    registry:dict[str,MoveNode], 
                 #    counter, 
-                   keys: KeyChain):
+                   keys: KeyChain,
+                   log_queue:Queue,
+                   log_config):
+    log_config(log_queue)
     while True:
         # with keys.counter:
         #     counter.value += 1
+        time_dict = {}
+        start = time.perf_counter()
         task = move_queue.get()
         if task is None:
             break
 
+        i_copy = time.perf_counter()
         engine_copy = copy.deepcopy(task.engine)
+        f_copy = time.perf_counter()
+        time_dict['copy'] = f_copy - i_copy
+
         layer = task.layer
         # logger.info(f'Processing on layer {layer}')
+
+        i_eval_copy = time.perf_counter()
         with keys.get_store():
             engine_copy.eval_store.update_evals(
                 store.get_positions()
             )
+        f_eval_copy = time.perf_counter()
+        time_dict['eval store copy'] = f_eval_copy - i_eval_copy
 
         engine_copy.game.parse_move(task.move.chart.move, False, True)
         next_moves = engine_copy.find_ranked_moves()
@@ -172,19 +257,29 @@ def search_process(move_queue:Queue, store:EvalStore,
         next_nodes = [
             set_movenode(mv) for mv in task.move.chart.next
         ]
+
+        i_update_eval = time.perf_counter()
         with keys.store:
             store.update_evals(
                 engine_copy.eval_store.get_positions()
             )
+        f_update_eval = time.perf_counter()
+        time_dict['update eval'] = f_update_eval - i_update_eval
 
+        i_register_eval = time.perf_counter()
         with keys.registry:
             registry[task.move.id] = task.move
+        f_register_eval = time.perf_counter()
+        time_dict['register eval'] = f_register_eval - i_register_eval
 
         if task.parent_id is not None:
+            i_parent = time.perf_counter()
             parent = registry[task.parent_id]
             parent.next.append(task.move.id)
             with keys.registry:
                 registry[task.parent_id] = parent
+            f_parent = time.perf_counter()
+            time_dict['parent register'] = f_parent - i_parent
 
         if layer < engine_copy.depth:
             # print(f'On layer {layer}, add next nodes')
@@ -198,10 +293,22 @@ def search_process(move_queue:Queue, store:EvalStore,
 
         # with keys.counter:
         #     counter.value -= 1
+        end = time.perf_counter()
+
+        name = current_process().name
+
+        times_str = 'Times taken:'
+        for key in time_dict:
+            times_str += f'\n{key}: {time_dict[key]}s'
+        # logger.info(times_str)
+
+        # if name == 'Worker-1':
+        #     logger.info(f'{name} search process: {end-start}s')
         move_queue.task_done()
             
 
 def get_best_move(engine:FastEngine, threads:int=0):
+    start = time.perf_counter()
     if threads == 0:
         move_tree = depth_search(engine)
     else:
@@ -219,12 +326,26 @@ def get_best_move(engine:FastEngine, threads:int=0):
     else:
         best = min(crawls, key=lambda c: c[3])
     print(f'Playing {best[0]} for {best[2]}')
+    end = time.perf_counter()
+    logger.info(f'FDS get best move: {end-start}s')
     engine.game.parse_move(best[0])
     print(engine.game)
 
+def build_tree(nodes:dict[str, MoveNode], root_nodes:list[MoveNode]) -> list[DepthChart]:
+    results = []
+    id_list = [node.id for node in root_nodes]
+    for id in id_list:
+        node = nodes[id]
+        # logger.debug(f'Current node: {node}')
+        chart = node.chart
+        # logger.debug(f'Next nodes: {[(i,nodes[i]) for i in node.next]}')
+        chart.next = build_tree(nodes, [nodes[i] for i in node.next])
+        results.append(chart)
+    return results
+
 def search_proc_4(move_queue:Queue, store:EvalStore, 
                    registry:dict[str,MoveNode], 
-                   counter, 
+                #    counter, 
                    keys: KeyChain):
     while True:
         # with keys.counter:
@@ -274,175 +395,137 @@ def search_proc_4(move_queue:Queue, store:EvalStore,
         # else:
             # print(f'Max depth search reached at layer {layer}')
 
-        with keys.counter:
-            counter.value -= 1
+        # with keys.counter:
+        #     counter.value -= 1
         move_queue.task_done()
-            
-
-def get_best_move(engine:FastEngine, threads:int=0):
-    if threads == 0:
-        move_tree = depth_search(engine)
-    else:
-        move_tree = depth_search(engine, threads)
-    # logger.info(f'{engine.game.turn}\'s moves:\n{move_tree}')
-    crawls = []
-    for ch in move_tree:
-        crawl = crawl_depth_chart(ch)
-        if crawl[3] is None:
-            crawl[3] = crawl[1]
-            crawl[4] = crawl[2]
-        crawls.append(crawl)
-    if crawls[0][2] == 'white':
-        best = max(crawls, key=lambda c: c[3])
-    else:
-        best = min(crawls, key=lambda c: c[3])
-    print(f'Playing {best[0]} for {best[2]}')
-    engine.game.parse_move(best[0])
-    print(engine.game)
 
 
-def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, MoveNode], active_workers:EvalManager.Value, keys:KeyChain):
-    # Must rewrite using TreeNodeArgs!!!!!!
-    while True:
-        # logger.debug(f'Active workers: {active_workers.value}')
-        with keys.get_counter():
-            active_workers.value += 1
-        print(f'Queue size {move_queueu.qsize()}')
-        task = move_queueu.get()
-        if task is None:
-            break
+# def search_proc_2(move_queueu:Queue, store:EvalStore, node_registry:dict[str, MoveNode], active_workers:EvalManager.Value, keys:KeyChain):
+#     # Must rewrite using TreeNodeArgs!!!!!!
+#     while True:
+#         # logger.debug(f'Active workers: {active_workers.value}')
+#         with keys.get_counter():
+#             active_workers.value += 1
+#         print(f'Queue size {move_queueu.qsize()}')
+#         task = move_queueu.get()
+#         if task is None:
+#             break
 
-        engine_copy = copy.deepcopy(task.engine)
-        layer = task.layer
-        # logger.debug(f'Search Proc 2 layer: {layer}')
-        with keys.get_store():
-            engine_copy.eval_store.update_evals(
-                store.get_positions()
-            )
-        engine_copy.game.parse_move(task.move.chart.move, False, True)
-        next_moves = engine_copy.find_ranked_moves()
-        with keys.get_store():
-            store.update_evals(
-                engine_copy.eval_store.get_positions()
-            )
-        task.move.chart.set_next(
-            next_moves[:engine_copy.breadth], layer, engine_copy.game.turn, engine_copy.game.fen
-        )
-        next_nodes = [
-            set_movenode(mv) for mv in task.move.chart.next
-        ]
-        # logger.debug(f'On layer {layer} Next nodes: {[node.id for node in next_nodes]}')
-        for n in next_nodes:
-            # print(f'Processing node: {n.id} {n.chart}')
-            task.move.next.append(n.id)
-            with keys.get_registry():
-                node_registry[n.id] = n
+#         engine_copy = copy.deepcopy(task.engine)
+#         layer = task.layer
+#         # logger.debug(f'Search Proc 2 layer: {layer}')
+#         with keys.get_store():
+#             engine_copy.eval_store.update_evals(
+#                 store.get_positions()
+#             )
+#         engine_copy.game.parse_move(task.move.chart.move, False, True)
+#         next_moves = engine_copy.find_ranked_moves()
+#         with keys.get_store():
+#             store.update_evals(
+#                 engine_copy.eval_store.get_positions()
+#             )
+#         task.move.chart.set_next(
+#             next_moves[:engine_copy.breadth], layer, engine_copy.game.turn, engine_copy.game.fen
+#         )
+#         next_nodes = [
+#             set_movenode(mv) for mv in task.move.chart.next
+#         ]
+#         # logger.debug(f'On layer {layer} Next nodes: {[node.id for node in next_nodes]}')
+#         for n in next_nodes:
+#             # print(f'Processing node: {n.id} {n.chart}')
+#             task.move.next.append(n.id)
+#             with keys.get_registry():
+#                 node_registry[n.id] = n
 
-        # print(f'Task.move.next: {task.move.next}')
-        with keys.get_registry():
-            node_registry[task.move.id] = task.move
-            # set parent node.next
-            if task.parent_id is not None:
-                parent = node_registry[task.parent_id]
-                parent.next.append(task.move.id)
-                node_registry[task.parent_id] = parent
-        print(f'Layer {layer} is{' ' if layer>engine_copy.depth else  ' not'} greater than {engine_copy.depth}')
+#         # print(f'Task.move.next: {task.move.next}')
+#         with keys.get_registry():
+#             node_registry[task.move.id] = task.move
+#             # set parent node.next
+#             if task.parent_id is not None:
+#                 parent = node_registry[task.parent_id]
+#                 parent.next.append(task.move.id)
+#                 node_registry[task.parent_id] = parent
+#         print(f'Layer {layer} is{' ' if layer>engine_copy.depth else  ' not'} greater than {engine_copy.depth}')
 
-        if layer < engine_copy.depth:
-            print(f'Adding new layer to the queue')
-            next_searches = task.set_next(next_nodes, engine_copy)
+#         if layer < engine_copy.depth:
+#             print(f'Adding new layer to the queue')
+#             next_searches = task.set_next(next_nodes, engine_copy)
 
-            for s in next_searches:
-                move_queueu.put(s)
-                print(f'Search {s} added to queue')
-        else:
-            print('Max depth reached')
-            logger.debug('max depth reached')
-        # logger.debug(f'Active workers: {active_workers.value}')
+#             for s in next_searches:
+#                 move_queueu.put(s)
+#                 print(f'Search {s} added to queue')
+#         else:
+#             print('Max depth reached')
+#             logger.debug('max depth reached')
+#         # logger.debug(f'Active workers: {active_workers.value}')
         
-        with keys.get_counter():
-            active_workers.value -= 1
-        move_queueu.task_done()
+#         with keys.get_counter():
+#             active_workers.value -= 1
+#         move_queueu.task_done()
 
-def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
-    # Differs from depth_search by using a dictionary to store
-    # all nodes of the search as EvalNodes, to be rebuild into a
-    # list[DepthChart] at the end.
-    moves = engine.find_ranked_moves()
-    turn, fen = engine.game.turn, engine.game.fen
-    mv_charts = [
-        DepthChart(mv[0], mv[1], 0, turn, fen)
-        for mv in moves
-    ]
-    mv_nodes = [
-        set_movenode(mv) for mv in mv_charts
-    ]
-    mv_args = [
-        MoveArgs(engine, 0, None, mv) 
-        for mv in mv_nodes
-    ]
-    ##### Must incorporate tree node args!
-    num_processes = 4
-    results = []
+# def depth_search_tree(engine:FastEngine) -> list[DepthChart]:
+#     # Differs from depth_search by using a dictionary to store
+#     # all nodes of the search as EvalNodes, to be rebuild into a
+#     # list[DepthChart] at the end.
+#     moves = engine.find_ranked_moves()
+#     turn, fen = engine.game.turn, engine.game.fen
+#     mv_charts = [
+#         DepthChart(mv[0], mv[1], 0, turn, fen)
+#         for mv in moves
+#     ]
+#     mv_nodes = [
+#         set_movenode(mv) for mv in mv_charts
+#     ]
+#     mv_args = [
+#         MoveArgs(engine, 0, None, mv) 
+#         for mv in mv_nodes
+#     ]
+#     ##### Must incorporate tree node args!
+#     num_processes = 4
+#     results = []
 
-    EvalManager.register('EvalStore', EvalStore)
-    # EvalManager.register('KeyChain', KeyChain)
-    with EvalManager() as manager:
-        eval_store = manager.EvalStore()
-        move_queue = manager.Queue()
-        move_nodes = manager.dict()
-        active_workers = manager.Value('i', 0)
-        print(f'active workers is a {type(active_workers)} type')
-        key_chain = KeyChain(manager)
+#     EvalManager.register('EvalStore', EvalStore)
+#     # EvalManager.register('KeyChain', KeyChain)
+#     with EvalManager() as manager:
+#         eval_store = manager.EvalStore()
+#         move_queue = manager.Queue()
+#         move_nodes = manager.dict()
+#         active_workers = manager.Value('i', 0)
+#         print(f'active workers is a {type(active_workers)} type')
+#         key_chain = KeyChain(manager)
 
-        eval_store.set_positions(
-            engine.eval_store.get_positions()
-        )
-        for mv in mv_args:
-            move_queue.put(mv)
+#         eval_store.set_positions(
+#             engine.eval_store.get_positions()
+#         )
+#         for mv in mv_args:
+#             move_queue.put(mv)
 
-        processes = []
-        for i in range(num_processes):
-            p = Process(
-                target=search_proc_2,
-                args=(move_queue, eval_store, move_nodes, active_workers, key_chain),
-                name=f'Worker-{i+1}'
-            )
-            processes.append(p)
-            p.start()
+#         processes = []
+#         for i in range(num_processes):
+#             p = Process(
+#                 target=search_proc_2,
+#                 args=(move_queue, eval_store, move_nodes, active_workers, key_chain),
+#                 name=f'Worker-{i+1}'
+#             )
+#             processes.append(p)
+#             p.start()
 
-        # print(f'Active workers: {active_workers.value}')
+#         # print(f'Active workers: {active_workers.value}')
 
-        while not move_queue.empty() and active_workers.value > 0:
-            # logger.debug(f'Active workers: {active_workers.value}')
-            time.sleep(0.01)
+#         while not move_queue.empty() and active_workers.value > 0:
+#             # logger.debug(f'Active workers: {active_workers.value}')
+#             time.sleep(0.01)
 
-        for _ in range(num_processes):
-            move_queue.put(None)
+#         for _ in range(num_processes):
+#             move_queue.put(None)
 
-        for p in processes:
-            p.join()
+#         for p in processes:
+#             p.join()
 
-        engine.eval_store.update_evals(
-            eval_store.get_positions()
-        )
+#         engine.eval_store.update_evals(
+#             eval_store.get_positions()
+#         )
         
-        # logger.info(f'Fast eval store: {engine.eval_store}')
-        return build_tree(move_nodes, mv_nodes)
+#         # logger.info(f'Fast eval store: {engine.eval_store}')
+#         return build_tree(move_nodes, mv_nodes)
 
-def build_tree(nodes:dict[str, MoveNode], root_nodes:list[MoveNode]) -> list[DepthChart]:
-    results = []
-    id_list = [node.id for node in root_nodes]
-    # print(f'Node dict:')
-    # for k,v in nodes.items():
-    #     print(f'{k}: {v}, next: {v.next}')
-    # print(f'Root nodes: {root_nodes}')
-    # print(f'id_list: {id_list}')
-    for id in id_list:
-        node = nodes[id]
-        # logger.debug(f'Current node: {node}')
-        chart = node.chart
-        # logger.debug(f'Next nodes: {[(i,nodes[i]) for i in node.next]}')
-        chart.next = build_tree(nodes, [nodes[i] for i in node.next])
-        results.append(chart)
-    return results

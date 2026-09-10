@@ -22,9 +22,9 @@ def main():
     pygame.mouse.set_visible(True)
     screen = pygame.display.set_mode((1200, 900))
     # Depth search parameters
-    depth = 1
-    breadth = 2
-    w_threads = 32
+    depth = 2
+    breadth = 3
+    w_threads = 4
     b_threads = 4
     event = f'Fast Engine: Depth: {depth}, Breadth: {breadth}, Threads: {w_threads}. Singe Engine, shared eval_store'
 
