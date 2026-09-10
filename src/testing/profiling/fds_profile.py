@@ -18,10 +18,14 @@ def main():
 
     profiler.disable()
     stats = pstats.Stats(profiler).sort_stats('cumtime')
+
+    print('------By cumulative time------\n')
     stats.print_stats(30)
 
+    print('------By total time------\n')
     stats.sort_stats('tottime')
     stats.print_stats(30)
+
 
 if __name__ == '__main__':
     mp.set_start_method('forkserver')
