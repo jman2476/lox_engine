@@ -134,7 +134,7 @@ class TestGameEnd(unittest.TestCase):
     def test_fifty_move_from_fen(self):
         print('--Test 50 move: from fen--')
         game = Game()
-        fen = 'kq6/6QK/8/8/8/8/8/8 w - - 49 1'
+        fen = 'kq6/6QK/8/8/8/8/8/8 w - - 99 1'
         game.read_fen(fen)
         game.set_fen()
         # print(game.board)
