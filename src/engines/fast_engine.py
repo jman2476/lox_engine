@@ -12,11 +12,13 @@ logger = logging.getLogger(__name__)
 class FastEngine(Engine):
     def __init__(self, game:Game, 
                  side:Literal['white', 'black'], 
-                 search:tuple[int,int]=(5,2)):
+                 search:tuple[int,int]=(5,2),
+                 weight:float=1):
         super().__init__(game, side, 'fast', search[0])
         self.breadth = search[1]
         self.search = search
         self.eval_store = EvalStore()
+        self.sq_ctrl_weight = weight
 
     def find_ranked_moves(self) -> list[tuple[str, float]]:
         start = time.perf_counter()
@@ -81,7 +83,7 @@ class FastEngine(Engine):
                         case '1/2-1/2':
                             eval = 0.0
                         case _:
-                            eval = get_evaluation(game_copy.board)
+                            eval = get_evaluation(game_copy.board, self.sq_ctrl_weight)
                     self.eval_store.set_eval(game_copy.fen, eval)
                 move_evals.append((mv, eval))
             except:
