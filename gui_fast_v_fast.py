@@ -22,11 +22,12 @@ def main():
     pygame.mouse.set_visible(True)
     screen = pygame.display.set_mode((1200, 900))
     # Depth search parameters
-    depth = 3
-    breadth = 4
+    depth = 2
+    breadth = 2
     w_threads = 8
     b_threads = 4
-    event = f'Fast Engine: Depth: {depth}, Breadth: {breadth}, Threads: W->{w_threads} B->{b_threads}'
+    w_weight, b_weight = 0.1, 1
+    event = f'Fast Engine: Depth: {depth}, Breadth: {breadth}, Threads: W->{w_threads} B->{b_threads}, Opponent square wieghting: W->{w_weight}, B->{b_weight}'
 
     clock = pygame.time.Clock()
     running = True
@@ -38,8 +39,8 @@ def main():
 
 
     # Engine setup
-    engine_fast_b = FastEngine(game_board.game, 'black', (depth, breadth))
-    engine_naive_w = FastEngine(game_board.game, 'white', (depth, breadth))
+    engine_fast_b = FastEngine(game_board.game, 'black', (depth, breadth), b_weight)
+    engine_naive_w = FastEngine(game_board.game, 'white', (depth, breadth), w_weight)
     game_board.game.b_player = 'Fast Managed Multi Proc'
     game_board.game.w_player = 'Fast Managed Multi Proc'
 
