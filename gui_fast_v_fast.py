@@ -40,7 +40,7 @@ def main():
 
     # Engine setup
     engine_fast_b = FastEngine(game_board.game, 'black', (depth, breadth), b_weight)
-    engine_naive_w = FastEngine(game_board.game, 'white', (depth, breadth), w_weight)
+    engine_fast_w = FastEngine(game_board.game, 'white', (depth, breadth), w_weight)
     game_board.game.b_player = 'Fast Managed Multi Proc'
     game_board.game.w_player = 'Fast Managed Multi Proc'
 
@@ -81,7 +81,7 @@ def main():
             if (game_board.game.winner is None and elapsed > 2.0):
                 if game_board.game.turn == 'white':
                     start = time.perf_counter()
-                    fds_best_move(engine_naive_w, w_threads)
+                    fds_best_move(engine_fast_w, w_threads)
                     end = time.perf_counter()
                     w_engine_d_t.append(end - start)
                     print(game_board.game.board)
