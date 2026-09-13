@@ -23,7 +23,7 @@ def main():
     screen = pygame.display.set_mode((1200, 900))
     # Depth search parameters
     depth = 3
-    breadth = 2
+    breadth = 4
     w_threads = 8
     b_threads = 4
     event = f'Fast Engine: Depth: {depth}, Breadth: {breadth}, Threads: W->{w_threads} B->{b_threads}'

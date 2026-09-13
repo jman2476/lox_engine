@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 #   4. Pawn structure
 #   5. Space controlled
 
-def get_evaluation(board):
+def get_evaluation(board, scale:float=1):
     w_pieces = board.white()
     b_pieces = board.black()
     eval = count_material(w_pieces, b_pieces)
@@ -39,7 +39,7 @@ def get_evaluation(board):
     #     king_attack -= k_atk_black.squares[sq]
     # for sq in k_atk_white.squares:
     #     king_attack += k_atk_white.squares[sq]
-    eval += 0.1 * (opp_sq_balance + king_attack)
+    eval += 0.1 * (scale * opp_sq_balance + king_attack)
     return eval
 
 def count_material(w_pieces, b_pieces):
@@ -58,7 +58,7 @@ def count_material(w_pieces, b_pieces):
 def calc_king_safety(board, side, k_attack:ControlledSquares):
     # For each square around the king, how many times is each attacked
     # by enemy side minus how many times is the square defended?
-    # If squaes attacked, how many squares are free for the king to move into?
+    # If squares attacked, how many squares are free for the king to move into?
     # From those free squares, how many more squares are free in the path?
     ## Currently folded into space_control function as second return
     sq_atk_count = 0
