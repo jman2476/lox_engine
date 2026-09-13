@@ -278,7 +278,7 @@ class Game():
                 self.pgnw.final_result()
 
     def handle_fifty_move_rule(self, is_eval=False):
-        if self.halfmove >= 50:
+        if self.halfmove >= 100:
             self.winner = '1/2-1/2'
             if not is_eval:
                 self.pgnw.final_result()
