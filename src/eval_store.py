@@ -24,14 +24,13 @@ class EvalStore():
 
     def set_key(self, fen:str) -> str:
         # NOTE: position keys account only for piece positions,
-        #       turn, and fifty move rule. They DO NOT account 
-        #       for castling or en-passent possibilities.
-        #       As of now, this is not an issue because position
-        #       evaluations do not take ep or castling into account.
+        #       turn, and fifty move rule. Cache keys will now 
+        #       use castling and ep, too, to avoid false cache hits
         parts = fen.split()
         fifty_mv = "T" if int(parts[-2]) >= 50 else "F"
         # TODO: Add in castling and position repeats to the cache key
-        return f'{parts[0]}|{parts[1]}|{fifty_mv}'
+        castle, ep = parts[2], parts[3]
+        return f'{parts[0]}|{parts[1]}|{fifty_mv}{castle}{ep}'
 
     def parse_key(self, key:str) -> tuple[str,str,bool]:
         parts = key.split('|')
