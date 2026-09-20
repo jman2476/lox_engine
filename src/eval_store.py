@@ -30,6 +30,7 @@ class EvalStore():
         #       evaluations do not take ep or castling into account.
         parts = fen.split()
         fifty_mv = "T" if int(parts[-2]) >= 50 else "F"
+        # TODO: Add in castling and position repeats to the cache key
         return f'{parts[0]}|{parts[1]}|{fifty_mv}'
 
     def parse_key(self, key:str) -> tuple[str,str,bool]:
