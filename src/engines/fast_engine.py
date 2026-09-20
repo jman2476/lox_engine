@@ -70,7 +70,10 @@ class FastEngine(Engine):
                 game_copy.parse_move(mv, False, True)
                 stored_eval, exists = self.eval_store.get_eval(game_copy.fen)
                 if exists:
-                    eval = stored_eval
+                    if game_copy.winner == '1/2-1/2':
+                        eval = 0.0
+                    else:
+                        eval = stored_eval
                     # logger.info('Move found in eval store')
                     
                 else:

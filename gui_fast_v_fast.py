@@ -24,7 +24,7 @@ def main():
     # Depth search parameters
     depth = 2
     breadth = 2
-    w_threads = 8
+    w_threads = 4
     b_threads = 4
     w_weight, b_weight = 0.1, 1
     event = f'Fast Engine: Depth: {depth}, Breadth: {breadth}, Threads: W->{w_threads} B->{b_threads}, Opponent square wieghting: W->{w_weight}, B->{b_weight}'

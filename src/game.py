@@ -88,6 +88,10 @@ class Game():
         else:
             self.board_states[board_fen] = 1
 
+    def check_repetition(self):
+        board_fen = self.fen.split()[0]
+        return self.board_states[board_fen]
+
     def __read_castling(self):
         game_board = self.board.board
         castle_str = ''
