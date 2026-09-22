@@ -153,7 +153,7 @@ def depth_search(engine:FastEngine, num_workers:int=os.process_cpu_count()) -> l
         process_timing = ''
         for i in range(num_workers):
             p = Process(
-                target=search_process,
+                target=search_proc_4,
                 args=(move_queue, 
                       eval_store, 
                       move_nodes,
